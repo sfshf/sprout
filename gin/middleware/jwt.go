@@ -1,0 +1,48 @@
+package middleware
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/sfshf/sprout/gin/ginx"
+	"github.com/sfshf/sprout/pkg/jwtauth"
+	"github.com/sfshf/sprout/repo"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+const (
+	SessionId = "sessionId"
+)
+
+func SessionIdFromGinX(ginx *gin.Context) string {
+	if sessionId, exists := ginx.Get(SessionId); exists {
+		return sessionId.(string)
+	} else {
+		return ""
+	}
+}
+
+func JWT(auth *jwtauth.JWTAuth) gin.HandlerFunc {
+	staffRepo := repo.StaffRepo()
+	return func(c *gin.Context) {
+		ctx := c.Request.Context()
+		if jwtString := c.GetHeader("Authorization"); jwtString != "" {
+			subject, err := auth.ParseSubject(jwtString)
+			if err != nil {
+				ginx.AbortWithInvalidToken(c, jwtauth.ErrInvalidToken.Error())
+				return
+			}
+			sessionId, err := primitive.ObjectIDFromHex(subject)
+			if err != nil {
+				ginx.AbortWithInvalidToken(c, err.Error())
+				return
+			}
+			err = staffRepo.VerifySignInToken(ctx, &sessionId, &jwtString)
+			if err != nil {
+				ginx.AbortWithInvalidToken(c, err.Error())
+				return
+			}
+			c.Set(SessionId, subject)
+			c.Next()
+			return
+		}
+	}
+}
