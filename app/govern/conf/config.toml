@@ -1,0 +1,80 @@
+RunMode = "debug"
+WWW = ""
+Swagger = false
+PrintConfig = true
+
+[Global]
+AppName = "Govern"
+AppIcon = "favicon.ico"
+DateFormat = "2006-01-02"
+DatetimeFormat = "2006-01-02 15:04:05"
+TimeZone = "Asia/Shanghai"
+
+[Root]
+Account = "root"
+Password = "12341234"
+
+[MongoDB]
+# Uri to the mongo database.
+ClientUri = "mongodb://127.0.0.1:27017/?directConnection=true"
+# The name of a database.
+Database = "sprout"
+
+[JWTAuth]
+Enable = true
+SigningKey = ""
+Expired = 7200
+
+[Casbin]
+Enable = true
+Debug = true
+Model = ""
+AutoLoad = false
+AutoLoadInternal = 60
+
+[PicCaptcha]
+Enable = false
+Length = 4
+Width = 680
+Height = 450
+MaxSkew = 1.0
+DotCount = 10
+Threshold = 100
+Expiration = 60
+RedisStore = false
+RedisDB = 0
+RedisPrefix = "PicCaptcha:"
+
+[HTTP]
+Host = "127.0.0.1"
+Port = 8080
+CertFile = ""
+KeyFile = ""
+ShutdownTimeout = 10
+MaxContentLength = 8192
+MaxLoggerLength = 8192
+
+[Log]
+# If true, then skip lo log to os.Stderr.
+SkipStderr = false
+# If true, then log to mongo database.
+Log2Mongo = false
+MongoCollection = "log"
+# Max value of the number of workers in the task queue.
+MaxWorkers = 50
+# Max value of the number of buffers in the task queue.
+MaxBuffers = 10000
+
+[CORS]
+Enable = true
+AllowOrigins = []
+AllowMethods = []
+AllowHeaders = []
+AllowCredentials = true
+MaxAge = 0
+
+[Redis]
+Addr = ""
+Password = ""
+
+
