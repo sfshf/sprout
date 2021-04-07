@@ -12,8 +12,8 @@ const (
 	SessionId = "sessionId"
 )
 
-func SessionIdFromGinX(ginx *gin.Context) string {
-	if sessionId, exists := ginx.Get(SessionId); exists {
+func SessionIdFromGinX(c *gin.Context) string {
+	if sessionId, exists := c.Get(SessionId); exists {
 		return sessionId.(string)
 	} else {
 		return ""
@@ -35,6 +35,7 @@ func JWT(auth *jwtauth.JWTAuth) gin.HandlerFunc {
 				ginx.AbortWithInvalidToken(c, err.Error())
 				return
 			}
+			// Verify whether the token is in use, to guarantee an account signed in by only one person.
 			err = staffRepo.VerifySignInToken(ctx, &sessionId, &jwtString)
 			if err != nil {
 				ginx.AbortWithInvalidToken(c, err.Error())

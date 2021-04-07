@@ -27,16 +27,15 @@ func (a *Controller) InitRoutes(app *gin.Engine) {
 	app.PUT("/signup", a.Api.Staff.SignUp)
 	app.GET("/picCaptcha", a.Api.Staff.GetPicCaptcha)
 	app.POST("/signin", a.Api.Staff.SignIn)
+	app.Use(middleware.JWT(a.Auther), middleware.Casbin(a.Enforcer, conf.C.Root.SessionId))
+	{
+		app.GET("/picCaptchaAnswer/:id", a.Api.Staff.GetPicCaptchaAnswer)
+		app.GET("/signout", a.Api.Staff.SignOut)
+		app.DELETE("/signoff/:id", a.Api.Staff.SignOff)
+	}
 
 	v1 := app.Group("/api/v1")
 	{
-		v1.Use(middleware.JWT(a.Auther), middleware.Casbin(a.Enforcer, conf.C.Root.SessionId))
-		{
-			v1.GET("/picCaptchaAnswer/:id", a.Api.Staff.GetPicCaptchaAnswer)
-			v1.GET("/signout/:id", a.Api.Staff.SignOut)
-			v1.DELETE("/signoff/:id", a.Api.Staff.SignOff)
-		}
-
 		casbin := v1.Group("/casbin")
 		{
 			policy := casbin.Group("/policy")

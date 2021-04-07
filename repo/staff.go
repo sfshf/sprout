@@ -118,3 +118,8 @@ func (a *Staff) VerifySignInToken(ctx context.Context, id *primitive.ObjectID, t
 	}
 	return nil
 }
+
+func (a *Staff) SignOut(ctx context.Context, id *primitive.ObjectID) error {
+	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"signInToken": ""}})
+	return err
+}

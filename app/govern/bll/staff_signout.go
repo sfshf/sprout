@@ -1,7 +1,14 @@
 package bll
 
-import "context"
+import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
-func (a *Staff) Signout(ctx context.Context) error {
-	return nil
+func (a *Staff) SignOut(ctx context.Context, id string) error {
+	staffId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	return a.staffRepo.SignOut(ctx, &staffId)
 }

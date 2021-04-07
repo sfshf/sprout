@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/sfshf/sprout/app/govern/conf"
 	"github.com/sfshf/sprout/gin/middleware"
@@ -8,7 +9,7 @@ import (
 	"time"
 )
 
-func InitCasbin() (*casbin.SyncedEnforcer, func()) {
+func InitCasbin(ctx context.Context) (*casbin.SyncedEnforcer, func()) {
 	c := conf.C.Casbin
 	if c.Model == "" {
 		c.Model = "app/govern/conf/casbin_rbac.model"

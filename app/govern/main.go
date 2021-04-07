@@ -35,7 +35,7 @@ func main() {
 	captcha := InitPictureCaptcha()
 	InitRepos(ctx)
 	InitRootAccount(ctx)
-	enforcer, deferFunc := InitCasbin()
+	enforcer, deferFunc := InitCasbin(ctx)
 	defer deferFunc()
 	api := api.Init(auther, captcha)
 	controller := NewController(auther, enforcer, api)

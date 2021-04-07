@@ -67,7 +67,14 @@ func (a *Staff) SignIn(c *gin.Context) {
 }
 
 func (a *Staff) SignOut(c *gin.Context) {
-	//ctx := c.Request.Context()
+	ctx := c.Request.Context()
+	sessionId := middleware.SessionIdFromGinX(c)
+	if err := a.bll.SignOut(ctx, sessionId); err != nil {
+		ginx.AbortWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
 }
 
 func (a *Staff) SignUp(c *gin.Context) {

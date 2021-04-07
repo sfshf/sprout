@@ -7,8 +7,10 @@ p = sub, obj, act
 [role_definition]
 g = _, _
 
+# https://casbin.org/docs/en/how-it-works#effect
+# When allow and deny exist at the same time, deny takes precedence.
 [policy_effect]
-e = some(where (p.eft == allow))
+e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
 
 [matchers]
 m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act

@@ -6,6 +6,7 @@ import (
 	"github.com/sfshf/sprout/gin/ginx"
 )
 
+// Casbin return a PERM access control gin middleware.
 func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
@@ -13,7 +14,12 @@ func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFu
 			c.Next()
 			return
 		}
-		authorized, err := enforcer.Enforce(sessionId, c.FullPath(), c.Request.Method)
+		// https://casbin.org/docs/en/how-it-works#request
+		// A basic request is a tuple object, at least including
+		// subject (accessed entity), object (accessed resource) and action (access method).
+		// TODO: `sub` should be a role entity.
+		sub := sessionId
+		authorized, err := enforcer.Enforce(sub, c.FullPath(), c.Request.Method)
 		if err != nil {
 			ginx.AbortWithUnauthorized(c, err.Error())
 			return
