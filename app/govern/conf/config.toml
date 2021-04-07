@@ -16,7 +16,7 @@ Password = "12341234"
 
 [MongoDB]
 # Uri to the mongo database.
-ClientUri = "mongodb://127.0.0.1:27017/?directConnection=true"
+ServerUri = "mongodb://127.0.0.1:27017/sprout?directConnection=true"
 # The name of a database.
 Database = "sprout"
 
