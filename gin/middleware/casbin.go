@@ -3,14 +3,13 @@ package middleware
 import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/app/govern/conf"
 	"github.com/sfshf/sprout/gin/ginx"
 )
 
-func Casbin(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
+func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
-		if sessionId == conf.C.Root.SessionId {
+		if sessionId == rootSessionId {
 			c.Next()
 			return
 		}

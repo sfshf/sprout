@@ -6,11 +6,24 @@ import (
 	"github.com/sfshf/sprout/repo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"net/url"
+	"strings"
 )
 
 func InitRepos(ctx context.Context) {
 	c := conf.C.MongoDB
-	client, err := mongo.NewClient(options.Client().ApplyURI(c.ClientUri))
+	srvUri, err := url.Parse(c.ServerUri)
+	if err != nil {
+		panic(err)
+	}
+	cliOpt := options.Client().SetHosts([]string{srvUri.Host})
+	if direct := srvUri.Query().Get("directConnection"); direct != "" && strings.ToUpper(direct) == "TRUE" {
+		cliOpt.SetDirect(true)
+	}
+	if dbName := srvUri.Path[1:]; dbName != "" {
+		c.Database = dbName
+	}
+	client, err := mongo.NewClient(cliOpt)
 	if err != nil {
 		panic(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/app/govern/api"
+	"github.com/sfshf/sprout/app/govern/conf"
 	"github.com/sfshf/sprout/gin/middleware"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 )
@@ -29,7 +30,7 @@ func (a *Controller) InitRoutes(app *gin.Engine) {
 
 	v1 := app.Group("/api/v1")
 	{
-		v1.Use(middleware.JWT(a.Auther), middleware.Casbin(a.Enforcer))
+		v1.Use(middleware.JWT(a.Auther), middleware.Casbin(a.Enforcer, conf.C.Root.SessionId))
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.Api.Staff.GetPicCaptchaAnswer)
 			v1.GET("/signout/:id", a.Api.Staff.SignOut)

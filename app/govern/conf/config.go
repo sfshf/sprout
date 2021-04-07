@@ -10,10 +10,16 @@ import (
 
 var (
 	C config
+
+	EnvConfigFile      = "CONFIG_FILE"
+	EnvCasbinModelFile = "CASBIN_MODEL_FILE"
+	EnvMongoUri        = "MONGO_URI"
+	EnvMongoDatabase   = "MONGO_DATABASE"
+	EnvHttpHost        = "HTTP_HOST"
 )
 
 func Init() {
-	fpath := os.Getenv("CONF")
+	fpath := os.Getenv(EnvConfigFile)
 	if fpath == "" {
 		fpath = "app/govern/conf/config.toml"
 	}
@@ -24,6 +30,18 @@ func Init() {
 	}
 	if err := viper.Unmarshal(&C); err != nil {
 		panic(err)
+	}
+	if c := os.Getenv(EnvCasbinModelFile); c != "" {
+		C.Casbin.Model = c
+	}
+	if c := os.Getenv(EnvMongoUri); c != "" {
+		C.MongoDB.ServerUri = c
+	}
+	if c := os.Getenv(EnvMongoDatabase); c != "" {
+		C.MongoDB.Database = c
+	}
+	if c := os.Getenv(EnvHttpHost); c != "" {
+		C.HTTP.Host = c
 	}
 	if C.PrintConfig {
 		fmt.Printf("%s\n", json.MarshalIndent2String(C))
@@ -62,7 +80,7 @@ type root struct {
 }
 
 type mongoDB struct {
-	ClientUri string
+	ServerUri string
 	Database  string
 }
 
