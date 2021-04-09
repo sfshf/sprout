@@ -88,6 +88,9 @@ A web-app demo implemented by Go!
 
 ## Profiles:
 
+- [go tool pprof](https://wiki.jikexueyuan.com/project/go-command-tutorial/0.12.html)
+- [An Introduction to go tool trace](https://about.sourcegraph.com/go/an-introduction-to-go-tool-trace-rhys-hiltner/)
+- [go tool trace](https://making.pusher.com/go-tool-trace/)
 - [github.com/google/gops](https://github.com/google/gops/)
 
 
