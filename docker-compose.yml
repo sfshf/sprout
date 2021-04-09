@@ -1,31 +1,27 @@
 version: "3.8"
 
 services:
-  govern:
-    image: govern:latest
-    networks:
-      - sprout
-    working_dir: /app
-    command: ./govern
-    environment:
-      MONGO_HOST: mongo
-      MONGO_DB: sprout
-      MONGO_USER: root
-      MONGO_PASSWORD:
-    ports:
-      - 8080:8080
-
-  mongo:
+  govern-mongo:
     image: mongo:latest
     network:
       - sprout
     volumes:
-      - govern-mongo-data:/data/db
-    environment:
-      MONGO_ROOT_PASSWORD:
-      MONGO_DB: sprout
+      - govern-mongo-data-db:/data/db
+      - govern-mongo-data-configdb:/data/configdb
+    ports:
+    - 27017:27017
+
+  govern:
+    image: govern:latest
+    networks:
+      - sprout
+    ports:
+      - 8080:8080
+      - 8090:8090
 
   volumes:
-    govern-mongo-data
+    govern-mongo-data-db:
+    govern-mongo-data-configdb:
+
   networks:
-    sprout
+    sprout:
