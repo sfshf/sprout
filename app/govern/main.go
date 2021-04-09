@@ -9,6 +9,8 @@ import (
 	swag "github.com/swaggo/gin-swagger"
 	swagFiles "github.com/swaggo/gin-swagger/swaggerFiles"
 	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -42,6 +44,10 @@ func main() {
 	router := InitGinEngine()
 	controller.InitRoutes(router)
 	InitHTTPServer(ctx, router)
+
+	go func() {
+		log.Println(http.ListenAndServe(":8090", nil))
+	}()
 
 EXIT:
 	for {

@@ -23,9 +23,9 @@ func InitHTTPServer(ctx context.Context, handler http.Handler) func() {
 	go func() {
 		log.Printf("HTTP server is running at %s", addr)
 		var err error
-		if c.CertFile != "" && c.KeyFile != "" {
+		if c.CertFile != "" && c.CertKeyFile != "" {
 			srv.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS12}
-			err = srv.ListenAndServeTLS(c.CertFile, c.KeyFile)
+			err = srv.ListenAndServeTLS(c.CertFile, c.CertKeyFile)
 		} else {
 			err = srv.ListenAndServe()
 		}

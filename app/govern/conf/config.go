@@ -16,6 +16,8 @@ var (
 	EnvMongoUri        = "MONGO_URI"
 	EnvMongoDatabase   = "MONGO_DATABASE"
 	EnvHttpHost        = "HTTP_HOST"
+	EnvCertFile        = "HTTP_CERT_FILE"
+	EnvCertKeyFile     = "HTTP_CERT_KEY_FILE"
 )
 
 func Init() {
@@ -42,6 +44,12 @@ func Init() {
 	}
 	if c := os.Getenv(EnvHttpHost); c != "" {
 		C.HTTP.Host = c
+	}
+	if c := os.Getenv(EnvCertFile); c != "" {
+		C.HTTP.CertFile = c
+	}
+	if c := os.Getenv(EnvCertKeyFile); c != "" {
+		C.HTTP.CertKeyFile = c
 	}
 	if C.PrintConfig {
 		fmt.Printf("%s\n", json.MarshalIndent2String(C))
@@ -116,7 +124,7 @@ type http struct {
 	Host             string
 	Port             int
 	CertFile         string
-	KeyFile          string
+	CertKeyFile      string
 	ShutdownTimeout  int
 	MaxContentLength int
 	MaxLoggerLength  int
