@@ -45,8 +45,6 @@ func (a *Staff) Collection() *mongo.Collection {
 }
 
 func (a *Staff) UpsertRootAccount(ctx context.Context, account, password string) (string, error) {
-	salt := model.NewPasswdSalt()
-	passwd := model.PasswdPtr(password, salt)
 	var staff model.Staff
 	if err := a.coll.FindOne(
 		ctx,
@@ -62,6 +60,8 @@ func (a *Staff) UpsertRootAccount(ctx context.Context, account, password string)
 	} else {
 		return staff.ID.Hex(), nil
 	}
+	salt := model.NewPasswdSalt()
+	passwd := model.PasswdPtr(password, salt)
 	res, err := a.coll.InsertOne(
 		ctx,
 		bson.M{

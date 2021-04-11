@@ -18,12 +18,11 @@ func StringPtr(s string) *string {
 
 func NewPasswdSalt() string {
 	key := PasswdSalt + time.Now().String()
-	data, _ := hash.MD5([]byte(key), nil)
-	return data
+	return hash.MD5StringIgnorePrefixAndError(key)
 }
 
 func PasswdPtr(passwd string, salt string) *string {
-	data, _ := hash.MD5([]byte(salt+passwd), nil)
+	data := hash.MD5StringIgnorePrefixAndError(salt + passwd)
 	return &data
 }
 
