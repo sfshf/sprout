@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/sfshf/sprout/app/govern/conf"
-	"github.com/sfshf/sprout/gin/middleware"
 	"github.com/sfshf/sprout/repo"
 	"time"
 )
@@ -19,8 +18,7 @@ func InitCasbin(ctx context.Context) (*casbin.SyncedEnforcer, func()) {
 		panic(err)
 	}
 	e.EnableLog(c.Debug)
-	adapter := middleware.NewCasbinMongoAdapter(repo.CasbinRepo().Collection())
-	err = e.InitWithModelAndAdapter(e.GetModel(), adapter)
+	err = e.InitWithModelAndAdapter(e.GetModel(), repo.CasbinRepo())
 	if err != nil {
 		panic(err)
 	}
