@@ -8,13 +8,13 @@ import (
 	"github.com/sfshf/sprout/gin/middleware"
 	"github.com/sfshf/sprout/model"
 	"github.com/sfshf/sprout/schema"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (a *Staff) GetPicCaptcha(c *gin.Context) {
 	ctx := c.Request.Context()
-	captchaId := c.Query("id")
-	resp, err := a.bll.GeneratePicCaptchaIdAndB64s(ctx, captchaId)
+	resp, err := a.bll.GeneratePicCaptchaIdAndB64s(ctx, c.Query("id"))
 	if err != nil {
 		ginx.AbortWithFailure(c, nil)
 		return
@@ -26,7 +26,7 @@ func (a *Staff) GetPicCaptcha(c *gin.Context) {
 func (a *Staff) GetPicCaptchaAnswer(c *gin.Context) {
 	ctx := c.Request.Context()
 	sessionId := middleware.SessionIdFromGinX(c)
-	if sessionId != conf.C.Root.SessionId {
+	if sessionId.Hex() != conf.C.Root.SessionId {
 		ginx.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
@@ -93,19 +93,19 @@ func (a *Staff) SignUp(c *gin.Context) {
 }
 
 func (a *Staff) SignOff(c *gin.Context) {
-	id := c.Param("id")
-	staffId, err := primitive.ObjectIDFromHex(id)
+	ctx := c.Request.Context()
+	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.AbortWithInvalidArguments(c, err.Error())
 		return
 	}
 	sessionId := middleware.SessionIdFromGinX(c)
-	if (id != sessionId && sessionId != conf.C.Root.SessionId) ||
-		(sessionId == conf.C.Root.SessionId && id == conf.C.Root.SessionId) {
+	if (objId.Hex() != sessionId.Hex() && sessionId.Hex() != conf.C.Root.SessionId) ||
+		(sessionId.Hex() == conf.C.Root.SessionId && objId.Hex() == conf.C.Root.SessionId) {
 		ginx.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
-	if err := a.bll.SignOff(c, staffId); err != nil {
+	if err := a.bll.SignOff(ctx, &objId); err != nil {
 		ginx.AbortWithFailure(c, err.Error())
 		return
 	}
@@ -114,13 +114,69 @@ func (a *Staff) SignOff(c *gin.Context) {
 }
 
 func (a *Staff) Update(c *gin.Context) {
+	ctx := c.Request.Context()
+	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.AbortWithInvalidArguments(c, err.Error())
+		return
+	}
+	sessionId := middleware.SessionIdFromGinX(c)
+	if objId.Hex() != sessionId.Hex() || sessionId.Hex() != conf.C.Root.SessionId {
+		ginx.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
+		return
+	}
+	var arg bll.StaffUpdateReq
+	if err := c.ShouldBind(&arg); err != nil {
+		ginx.AbortWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.Update(ctx, sessionId, &arg); err != nil {
+		ginx.AbortWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
 
+func (a *Staff) Profile(c *gin.Context) {
+	ctx := c.Request.Context()
+	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.AbortWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.Profile(ctx, &objId)
+	if err != nil {
+		ginx.AbortWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }
 
 func (a *Staff) List(c *gin.Context) {
-
-}
-
-func (a *Staff) Info(c *gin.Context) {
-
+	ctx := c.Request.Context()
+	var arg bll.StaffListReq
+	if err := c.ShouldBindQuery(&arg); err != nil {
+		ginx.AbortWithInvalidArguments(c, err.Error())
+		return
+	}
+	sort := make(bson.M, 0)
+	if arg.OrderBy != nil {
+		orderBy, err := arg.OrderBy.Values()
+		if err != nil {
+			ginx.AbortWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
+			return
+		}
+		for k, v := range orderBy {
+			sort[k] = v
+		}
+	}
+	res, err := a.bll.List(ctx, &arg, sort)
+	if err != nil {
+		ginx.AbortWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }

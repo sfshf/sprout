@@ -1,10 +1,10 @@
 package bll
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (a *Staff) SignOff(c *gin.Context, staffId primitive.ObjectID) error {
-	return a.staffRepo.DeleteOne(c.Request.Context(), &staffId)
+func (a *Staff) SignOff(ctx context.Context, objId *primitive.ObjectID) error {
+	return a.staffRepo.DeleteOne(ctx, objId)
 }

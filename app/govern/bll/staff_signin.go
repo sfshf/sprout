@@ -59,13 +59,18 @@ func (a *Staff) VerifyAccountAndPassword(ctx context.Context, account, password 
 	return staff, nil
 }
 
-func (a *Staff) SignIn(ctx context.Context, id *primitive.ObjectID, ip *string, ts *primitive.DateTime) (*SigninResp, error) {
-	token, expiresAt, err := a.auther.GenerateToken(id.Hex())
+func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *string, ts *primitive.DateTime) (*SigninResp, error) {
+	token, expiresAt, err := a.auther.GenerateToken(objId.Hex())
 	if err != nil {
 		return nil, err
 	}
-	tokenPtr := model.StringPtr(token)
-	if err := a.staffRepo.SignIn(ctx, id, tokenPtr, ip, ts); err != nil {
+	obj := &model.Staff{
+		ID:             objId,
+		SignInToken:    model.StringPtr(token),
+		LastSignInIp:   ip,
+		LastSignInTime: ts,
+	}
+	if err := a.staffRepo.UpdateOne(ctx, obj); err != nil {
 		return nil, err
 	}
 	return &SigninResp{

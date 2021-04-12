@@ -12,11 +12,11 @@ const (
 	SessionId = "sessionId"
 )
 
-func SessionIdFromGinX(c *gin.Context) string {
+func SessionIdFromGinX(c *gin.Context) *primitive.ObjectID {
 	if sessionId, exists := c.Get(SessionId); exists {
-		return sessionId.(string)
+		return sessionId.(*primitive.ObjectID)
 	} else {
-		return ""
+		return nil
 	}
 }
 
@@ -41,7 +41,7 @@ func JWT(auth *jwtauth.JWTAuth) gin.HandlerFunc {
 				ginx.AbortWithInvalidToken(c, err.Error())
 				return
 			}
-			c.Set(SessionId, subject)
+			c.Set(SessionId, &sessionId)
 			c.Next()
 			return
 		}

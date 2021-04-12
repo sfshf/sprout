@@ -24,14 +24,14 @@ type Controller struct {
 }
 
 func (a *Controller) InitRoutes(app *gin.Engine) {
-	app.PUT("/signup", a.Api.Staff.SignUp)
+	app.PUT("/signUp", a.Api.Staff.SignUp)
 	app.GET("/picCaptcha", a.Api.Staff.GetPicCaptcha)
-	app.POST("/signin", a.Api.Staff.SignIn)
+	app.POST("/signIn", a.Api.Staff.SignIn)
 	app.Use(middleware.JWT(a.Auther), middleware.Casbin(a.Enforcer, conf.C.Root.SessionId))
 	{
 		app.GET("/picCaptchaAnswer/:id", a.Api.Staff.GetPicCaptchaAnswer)
-		app.GET("/signout", a.Api.Staff.SignOut)
-		app.DELETE("/signoff/:id", a.Api.Staff.SignOff)
+		app.GET("/signOut", a.Api.Staff.SignOut)
+		app.DELETE("/signOff/:id", a.Api.Staff.SignOff)
 	}
 
 	v1 := app.Group("/api/v1")
@@ -51,7 +51,7 @@ func (a *Controller) InitRoutes(app *gin.Engine) {
 		staff := v1.Group("/staff")
 		{
 			staff.POST("/:id", a.Api.Staff.Update)
-			staff.GET("/:id", a.Api.Staff.Info)
+			staff.GET("/:id", a.Api.Staff.Profile)
 			staff.GET("", a.Api.Staff.List)
 		}
 

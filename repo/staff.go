@@ -96,19 +96,20 @@ func (a *Staff) DeleteOne(ctx context.Context, id *primitive.ObjectID) error {
 	return err
 }
 
+func (a *Staff) FindOneByID(ctx context.Context, id *primitive.ObjectID) (*model.Staff, error) {
+	var m model.Staff
+	if err := a.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&m); err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
 func (a *Staff) FindOneByAccount(ctx context.Context, username string) (*model.Staff, error) {
 	var m model.Staff
 	if err := a.coll.FindOne(ctx, bson.M{"account": username}).Decode(&m); err != nil {
 		return nil, err
 	}
 	return &m, nil
-}
-
-func (a *Staff) SignIn(ctx context.Context, id *primitive.ObjectID, token, ip *string, ts *primitive.DateTime) error {
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"signInToken": token, "lastSignInIp": ip, "lastSignInTime": ts}}
-	_, err := a.coll.UpdateOne(ctx, filter, update)
-	return err
 }
 
 func (a *Staff) VerifySignInToken(ctx context.Context, id *primitive.ObjectID, token *string) error {
@@ -119,7 +120,30 @@ func (a *Staff) VerifySignInToken(ctx context.Context, id *primitive.ObjectID, t
 	return nil
 }
 
-func (a *Staff) SignOut(ctx context.Context, id *primitive.ObjectID) error {
-	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"signInToken": ""}})
+func (a *Staff) UpdateOne(ctx context.Context, obj *model.Staff) error {
+	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": obj.ID}, bson.M{"$set": obj})
 	return err
+}
+
+func (a *Staff) FindManyByFilter(ctx context.Context, filter interface{}, opts ...*options.FindOptions) ([]model.Staff, error) {
+	res := make([]model.Staff, 0)
+	cursor, err := a.coll.Find(ctx, filter, opts...)
+	if err != nil {
+		return nil, err
+	}
+	for cursor.Next(ctx) {
+		var one model.Staff
+		if err := cursor.Decode(&one); err != nil {
+			return nil, err
+		}
+		res = append(res, one)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (a *Staff) CountByFilter(ctx context.Context, filter interface{}) (int64, error) {
+	return a.coll.CountDocuments(ctx, filter, options.Count().SetMaxTime(time.Minute))
 }

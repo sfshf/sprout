@@ -10,7 +10,7 @@ import (
 func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
-		if sessionId == rootSessionId {
+		if sessionId.Hex() == rootSessionId {
 			c.Next()
 			return
 		}
@@ -18,7 +18,7 @@ func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFu
 		// A basic request is a tuple object, at least including
 		// subject (accessed entity), object (accessed resource) and action (access method).
 		// TODO: `sub` should be a role entity.
-		sub := sessionId
+		sub := sessionId.Hex()
 		authorized, err := enforcer.Enforce(sub, c.FullPath(), c.Request.Method)
 		if err != nil {
 			ginx.AbortWithUnauthorized(c, err.Error())

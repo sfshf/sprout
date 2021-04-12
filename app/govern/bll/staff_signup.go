@@ -9,8 +9,8 @@ type SignupReq struct {
 	Account           string   `json:"account" binding:"required,gte=2,lte=32"`
 	Password          string   `json:"password" binding:"required,gte=8,lte=32"`
 	RealName          string   `json:"realName" binding:"required,gte=2,lte=32"`
-	Email             string   `json:"email" binding:"email"`
-	Phone             string   `json:"phone" binding:"gte=11,lte=14"`
+	Email             string   `json:"email" binding:"required,email"`
+	Phone             string   `json:"phone" binding:"required,gte=11,lte=14"`
 	Gender            string   `json:"gender" binding:"oneof=unknown male female"`
 	SignInIpWhitelist []string `json:"signInIpWhitelist" binding:"dive,ip"`
 	Timestamp         int64    `json:"timestamp" binding:"required,gte=0"`
