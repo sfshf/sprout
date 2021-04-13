@@ -43,6 +43,5 @@ var (
 )
 
 func NewGinEngine(ctx context.Context) (*gin.Engine, func(), error) {
-	wire.Build(ComponentSet)
-	return gin.Default(), nil, nil
+	panic(wire.Build(ComponentSet))
 }

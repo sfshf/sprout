@@ -11,6 +11,7 @@ import (
 var (
 	C config
 
+	EnvWWW             = "WWW"
 	EnvConfigFile      = "CONFIG_FILE"
 	EnvCasbinModelFile = "CASBIN_MODEL_FILE"
 	EnvMongoUri        = "MONGO_URI"
@@ -32,6 +33,9 @@ func init() {
 	}
 	if err := viper.Unmarshal(&C); err != nil {
 		panic(err)
+	}
+	if c := os.Getenv(EnvWWW); c != "" {
+		C.WWW = c
 	}
 	if c := os.Getenv(EnvCasbinModelFile); c != "" {
 		C.Casbin.Model = c

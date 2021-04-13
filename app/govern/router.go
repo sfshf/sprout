@@ -28,9 +28,6 @@ func NewRouter(ctrl *Controller) *gin.Engine {
 	if conf.C.Swagger {
 		app.GET("/swagger/*any", swag.WrapHandler(swagFiles.Handler))
 	}
-	if dir := conf.C.WWW; dir != "" {
-		app.Use(middleware.WWW(dir))
-	}
 	ctrl.InitRoutes(app)
 	return app
 }

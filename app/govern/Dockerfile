@@ -9,6 +9,7 @@ RUN set -eo pipefail && \
 
 FROM alpine:3.12
 LABEL name="govern-binary" version="1.0"
+MAINTAINER sfshf
 ENV CONFIG_FILE="/app/config.toml"
 ENV CASBIN_MODEL_FILE="/app/casbin_rbac.model"
 ENV MONGO_URI="mongodb://govern-mongo:27017/sprout?directConnection=true"

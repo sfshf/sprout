@@ -1,5 +1,5 @@
 RunMode = "debug"
-WWW = ""
+WWW = "app/govern/_content/"
 Swagger = false
 PrintConfig = true
 

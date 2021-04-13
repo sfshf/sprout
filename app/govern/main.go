@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/sfshf/sprout/app/govern/conf"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
@@ -32,6 +33,12 @@ func main() {
 	}
 	defer clear()
 	RunHTTPServer(ctx, router)
+
+	go func() {
+		if root := conf.C.WWW; root != "" {
+			log.Fatal(http.ListenAndServe(":9000", http.FileServer(http.Dir(root))))
+		}
+	}()
 
 	go func() {
 		log.Println(http.ListenAndServe(":8090", nil))
