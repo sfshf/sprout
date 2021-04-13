@@ -4,7 +4,6 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/bll"
@@ -28,20 +27,19 @@ var (
 		repo.NewUserRepo,
 		repo.NewAccessLogRepo,
 	)
-	ComponentSet = wire.NewSet(
+	AppSet = wire.NewSet(
 		NewAuth,
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
 		RepoSet,
-		InitRootAccount,
-		ApiSet,
 		BllSet,
-		wire.Struct(new(Controller), "*"),
+		ApiSet,
 		NewRouter,
+		wire.Struct(new(App), "*"),
 	)
 )
 
-func NewGinEngine(ctx context.Context) (*gin.Engine, func(), error) {
-	panic(wire.Build(ComponentSet))
+func NewApp(ctx context.Context) (*App, func(), error) {
+	panic(wire.Build(AppSet))
 }

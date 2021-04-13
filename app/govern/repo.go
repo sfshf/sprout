@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"github.com/sfshf/sprout/app/govern/conf"
-	"github.com/sfshf/sprout/repo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/url"
@@ -31,14 +30,4 @@ func NewMongoDB(ctx context.Context) (*mongo.Database, error) {
 		return nil, err
 	}
 	return client.Database(c.Database), nil
-}
-
-func InitRootAccount(ctx context.Context, repo *repo.Staff) error {
-	c := conf.C.Root
-	if sessionId, err := repo.UpsertRootAccount(ctx, c.Account, c.Password); err != nil {
-		return err
-	} else {
-		c.SessionId = sessionId
-		return nil
-	}
 }

@@ -17,7 +17,9 @@ ENV MONGO_DATABASE="sprout"
 ENV HTTP_HOST="govern"
 ENV HTTP_CERT_FILE=""
 ENV HTTP_CERT_KEY_FILE=""
-EXPOSE 8080/tcp
+EXPOSE 8000/tcp
+EXPOSE 8010/tcp
+EXPOSE 9000/tcp
 #RUN echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && apk --update add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /sprout/govern /sprout/app/govern/conf/config.toml /sprout/app/govern/conf/casbin_rbac.model ./

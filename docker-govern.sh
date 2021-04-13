@@ -19,7 +19,9 @@ docker build -t govern:latest \
 docker rm -f govern
 # Run a new container named govern.
 docker run -itd -p 8080:8080 \
--p 8090:8090 \
+-p 8000:8000 \
+-p 8010:8010 \
+-p 9000:9000 \
 --network sprout \
 --name govern \
 govern

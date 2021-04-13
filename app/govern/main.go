@@ -27,12 +27,14 @@ func main() {
 	signal.Notify(sc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
 	ctx := context.Background()
-	router, clear, err := NewGinEngine(ctx)
+	app, clear, err := NewApp(ctx)
 	if err != nil {
 		panic(err)
 	}
 	defer clear()
-	RunHTTPServer(ctx, router)
+	app.InitRootAccount(ctx)
+	app.InitRoutes(ctx)
+	app.RunHTTPServer(ctx)
 
 	go func() {
 		if root := conf.C.WWW; root != "" {
@@ -41,7 +43,7 @@ func main() {
 	}()
 
 	go func() {
-		log.Println(http.ListenAndServe(":8090", nil))
+		log.Println(http.ListenAndServe(":8010", nil))
 	}()
 
 EXIT:

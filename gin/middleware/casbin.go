@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/gin/ginx"
@@ -10,6 +11,8 @@ import (
 func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
+		fmt.Println(sessionId.Hex())
+		fmt.Println(rootSessionId)
 		if sessionId.Hex() == rootSessionId {
 			c.Next()
 			return

@@ -7,7 +7,6 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/bll"
@@ -20,33 +19,41 @@ import (
 
 // Injectors from wire.go:
 
-func NewGinEngine(ctx context.Context) (*gin.Engine, func(), error) {
-	jwtAuth := NewAuth()
+func NewApp(ctx context.Context) (*App, func(), error) {
+	engine := NewRouter()
 	database, err := NewMongoDB(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
-	casbin := repo.NewCasbinRepo(ctx, database)
-	syncedEnforcer, cleanup := NewCasbin(ctx, casbin)
 	staff := repo.NewStaffRepo(ctx, database)
+	jwtAuth := NewAuth()
 	captcha := NewPictureCaptcha()
 	bllStaff := bll.NewStaff(staff, jwtAuth, captcha)
 	apiStaff := api.NewStaff(bllStaff)
+	casbin := repo.NewCasbinRepo(ctx, database)
 	bllCasbin := bll.NewCasbin(casbin)
 	apiCasbin := api.NewCasbin(bllCasbin)
 	user := repo.NewUserRepo(ctx, database)
 	bllUser := bll.NewUser(user)
 	apiUser := api.NewUser(bllUser)
-	controller := &Controller{
-		Auther:    jwtAuth,
-		Enforcer:  syncedEnforcer,
-		Staff:     apiStaff,
-		Casbin:    apiCasbin,
-		User:      apiUser,
-		StaffRepo: staff,
+	role := repo.NewRoleRepo(ctx, database)
+	accessLog := repo.NewAccessLogRepo(ctx, database)
+	syncedEnforcer, cleanup := NewCasbin(ctx, casbin)
+	app := &App{
+		Router:        engine,
+		StaffApi:      apiStaff,
+		CasbinApi:     apiCasbin,
+		UserApi:       apiUser,
+		StaffRepo:     staff,
+		CasbinRepo:    casbin,
+		RoleRepo:      role,
+		UserRepo:      user,
+		AccessLogRepo: accessLog,
+		Auther:        jwtAuth,
+		Enforcer:      syncedEnforcer,
+		PicCaptcha:    captcha,
 	}
-	engine := NewRouter(controller)
-	return engine, func() {
+	return app, func() {
 		cleanup()
 	}, nil
 }
@@ -54,17 +61,17 @@ func NewGinEngine(ctx context.Context) (*gin.Engine, func(), error) {
 // wire.go:
 
 var (
-	ApiSet       = wire.NewSet(api.NewStaff, api.NewCasbin, api.NewUser)
-	BllSet       = wire.NewSet(bll.NewStaff, bll.NewCasbin, bll.NewUser)
-	RepoSet      = wire.NewSet(repo.NewStaffRepo, repo.NewCasbinRepo, repo.NewRoleRepo, repo.NewUserRepo, repo.NewAccessLogRepo)
-	ComponentSet = wire.NewSet(
+	ApiSet  = wire.NewSet(api.NewStaff, api.NewCasbin, api.NewUser)
+	BllSet  = wire.NewSet(bll.NewStaff, bll.NewCasbin, bll.NewUser)
+	RepoSet = wire.NewSet(repo.NewStaffRepo, repo.NewCasbinRepo, repo.NewRoleRepo, repo.NewUserRepo, repo.NewAccessLogRepo)
+	AppSet  = wire.NewSet(
 		NewAuth,
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
 		RepoSet,
-		InitRootAccount,
+		BllSet,
 		ApiSet,
-		BllSet, wire.Struct(new(Controller), "*"), NewRouter,
+		NewRouter, wire.Struct(new(App), "*"),
 	)
 )
