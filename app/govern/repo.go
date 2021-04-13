@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func InitRepos(ctx context.Context) {
+func NewMongoDB(ctx context.Context) (*mongo.Database, error) {
 	c := conf.C.MongoDB
 	srvUri, err := url.Parse(c.ServerUri)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	cliOpt := options.Client().SetHosts([]string{srvUri.Host})
 	if direct := srvUri.Query().Get("directConnection"); direct != "" && strings.ToUpper(direct) == "TRUE" {
@@ -25,25 +25,20 @@ func InitRepos(ctx context.Context) {
 	}
 	client, err := mongo.NewClient(cliOpt)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if err = client.Connect(ctx); err != nil {
-		panic(err)
+		return nil, err
 	}
-	db := client.Database(c.Database)
-	repo.InitStaffRepo(ctx, db)
-	repo.InitRoleRepo(ctx, db)
-	repo.InitCasbinRepo(ctx, db)
-	repo.InitUserRepo(ctx, db)
-	repo.InitAccessLogRepo(ctx, db)
+	return client.Database(c.Database), nil
 }
 
-func InitRootAccount(ctx context.Context) {
+func InitRootAccount(ctx context.Context, repo *repo.Staff) error {
 	c := conf.C.Root
-	staffRepo := repo.StaffRepo()
-	if sessionId, err := staffRepo.UpsertRootAccount(ctx, c.Account, c.Password); err != nil {
-		panic(err)
+	if sessionId, err := repo.UpsertRootAccount(ctx, c.Account, c.Password); err != nil {
+		return err
 	} else {
 		c.SessionId = sessionId
+		return nil
 	}
 }

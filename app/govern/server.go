@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func InitHTTPServer(ctx context.Context, handler http.Handler) func() {
+func RunHTTPServer(ctx context.Context, handler http.Handler) func() {
 	c := conf.C.HTTP
 	addr := fmt.Sprintf("%s:%d", c.Host, c.Port)
 	srv := &http.Server{

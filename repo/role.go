@@ -8,15 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-func RoleRepo() *Role {
-	return _role
-}
-
-func InitRoleRepo(ctx context.Context, db *mongo.Database) {
-	_role = &Role{
+func NewRoleRepo(ctx context.Context, db *mongo.Database) *Role {
+	a := &Role{
 		coll: db.Collection(roleCollName),
 	}
-	_role.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
+	a.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys: bson.D{
 				{"name", bsonx.Int32(1)},
@@ -24,11 +20,10 @@ func InitRoleRepo(ctx context.Context, db *mongo.Database) {
 			Options: options.Index().SetUnique(true),
 		},
 	})
+	return a
 }
 
 var (
-	_role *Role
-
 	roleCollName = "role"
 )
 

@@ -1,12 +1,12 @@
 package main
 
 import (
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/sfshf/sprout/app/govern/conf"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 )
 
-func InitAuth() *jwtauth.JWTAuth {
+func NewAuth() *jwtauth.JWTAuth {
 	c := conf.C.JWTAuth
 	var opts []jwtauth.Option
 	if c.Expired > 0 {

@@ -12,15 +12,11 @@ import (
 	"time"
 )
 
-func StaffRepo() *Staff {
-	return _staff
-}
-
-func InitStaffRepo(ctx context.Context, db *mongo.Database) {
-	_staff = &Staff{
+func NewStaffRepo(ctx context.Context, db *mongo.Database) *Staff {
+	a := &Staff{
 		coll: db.Collection(staffCollName),
 	}
-	_staff.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
+	a.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys: bson.D{
 				{"account", bsonx.Int32(1)},
@@ -28,11 +24,10 @@ func InitStaffRepo(ctx context.Context, db *mongo.Database) {
 			Options: options.Index().SetUnique(true),
 		},
 	})
+	return a
 }
 
 var (
-	_staff *Staff
-
 	staffCollName = "staff"
 )
 

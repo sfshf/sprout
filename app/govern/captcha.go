@@ -5,7 +5,7 @@ import (
 	"github.com/sfshf/sprout/app/govern/conf"
 )
 
-func InitPictureCaptcha() *b64Captcha.Captcha {
+func NewPictureCaptcha() *b64Captcha.Captcha {
 	c := conf.C.PicCaptcha
 	driver := b64Captcha.NewDriverDigit(c.Height, c.Width, c.Length, c.MaxSkew, c.DotCount)
 	var store b64Captcha.Store

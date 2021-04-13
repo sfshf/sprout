@@ -12,15 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-func CasbinRepo() *Casbin {
-	return _casbin
-}
-
-func InitCasbinRepo(ctx context.Context, db *mongo.Database) {
-	_casbin = &Casbin{
+func NewCasbinRepo(ctx context.Context, db *mongo.Database) *Casbin {
+	a := &Casbin{
 		coll: db.Collection(casbinCollName),
 	}
-	_casbin.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
+	a.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys: bson.D{
 				{"pType", bsonx.Int32(1)},
@@ -34,11 +30,10 @@ func InitCasbinRepo(ctx context.Context, db *mongo.Database) {
 			Options: options.Index().SetUnique(true),
 		},
 	})
+	return a
 }
 
 var (
-	_casbin *Casbin
-
 	casbinCollName = "casbin"
 )
 

@@ -5,19 +5,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AccessLogRepo() *AccessLog {
-	return _accessLog
-}
-
-func InitAccessLogRepo(ctx context.Context, db *mongo.Database) {
-	_accessLog = &AccessLog{
+func NewAccessLogRepo(ctx context.Context, db *mongo.Database) *AccessLog {
+	a := &AccessLog{
 		coll: db.Collection(accessLogCollName),
 	}
+	return a
 }
 
 var (
-	_accessLog *AccessLog
-
 	accessLogCollName = "accessLog"
 )
 

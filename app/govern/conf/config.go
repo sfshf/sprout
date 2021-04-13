@@ -20,7 +20,7 @@ var (
 	EnvCertKeyFile     = "HTTP_CERT_KEY_FILE"
 )
 
-func Init() {
+func init() {
 	fpath := os.Getenv(EnvConfigFile)
 	if fpath == "" {
 		fpath = "app/govern/conf/config.toml"

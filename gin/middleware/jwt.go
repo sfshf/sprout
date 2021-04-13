@@ -20,8 +20,7 @@ func SessionIdFromGinX(c *gin.Context) *primitive.ObjectID {
 	}
 }
 
-func JWT(auth *jwtauth.JWTAuth) gin.HandlerFunc {
-	staffRepo := repo.StaffRepo()
+func JWT(auth *jwtauth.JWTAuth, repo *repo.Staff) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
 		if jwtString := c.GetHeader("Authorization"); jwtString != "" {
@@ -36,7 +35,7 @@ func JWT(auth *jwtauth.JWTAuth) gin.HandlerFunc {
 				return
 			}
 			// Verify whether the token is in use, to guarantee an account signed in by only one person.
-			err = staffRepo.VerifySignInToken(ctx, &sessionId, &jwtString)
+			err = repo.VerifySignInToken(ctx, &sessionId, &jwtString)
 			if err != nil {
 				ginx.AbortWithInvalidToken(c, err.Error())
 				return

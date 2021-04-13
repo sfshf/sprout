@@ -151,6 +151,7 @@ A web-app demo implemented by Go!
 
 
 - [Casbin](https://github.com/casbin/casbin)
+    - [github.com/LyricTian/gin-admin](https://github.com/LyricTian/gin-admin)
     - [Access Control Policy Specification Language Based on Metamodel (in Chinese)（必读）](http://www.jos.org.cn/1000-9825/5624.htm)
     - [Basic Role-Based HTTP Authorization in Go with Casbin](https://zupzup.org/casbin-http-role-auth/)
     - [以角色为基础的存取控制](https://baike.tw.lvfukeji.com/wiki/RBAC)

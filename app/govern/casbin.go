@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func InitCasbin(ctx context.Context) (*casbin.SyncedEnforcer, func()) {
+func NewCasbin(ctx context.Context, repo *repo.Casbin) (*casbin.SyncedEnforcer, func()) {
 	c := conf.C.Casbin
 	if c.Model == "" {
 		c.Model = "app/govern/conf/casbin_rbac.model"
@@ -18,7 +18,7 @@ func InitCasbin(ctx context.Context) (*casbin.SyncedEnforcer, func()) {
 		panic(err)
 	}
 	e.EnableLog(c.Debug)
-	err = e.InitWithModelAndAdapter(e.GetModel(), repo.CasbinRepo())
+	err = e.InitWithModelAndAdapter(e.GetModel(), repo)
 	if err != nil {
 		panic(err)
 	}

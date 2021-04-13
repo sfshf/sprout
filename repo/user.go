@@ -8,15 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-func UserRepo() *User {
-	return _user
-}
-
-func InitUserRepo(ctx context.Context, db *mongo.Database) {
-	_user = &User{
+func NewUserRepo(ctx context.Context, db *mongo.Database) *User {
+	a := &User{
 		coll: db.Collection(userCollName),
 	}
-	_user.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
+	a.coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys: bson.D{
 				{"account", bsonx.Int32(1)},
@@ -24,11 +20,10 @@ func InitUserRepo(ctx context.Context, db *mongo.Database) {
 			Options: options.Index().SetUnique(true),
 		},
 	})
+	return a
 }
 
 var (
-	_user *User
-
 	userCollName = "user"
 )
 
