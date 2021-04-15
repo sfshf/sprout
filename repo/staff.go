@@ -2,8 +2,8 @@ package repo
 
 import (
 	"context"
+	"github.com/sfshf/sprout/govern/internal/pkg/jwtauth"
 	"github.com/sfshf/sprout/model"
-	"github.com/sfshf/sprout/pkg/jwtauth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
