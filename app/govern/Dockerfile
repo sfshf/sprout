@@ -7,7 +7,7 @@ RUN set -eo pipefail && \
     go mod tidy && \
     go build -o govern ./app/govern
 
-FROM alpine:3.12
+FROM alpine:3.12 AS binary
 LABEL name="govern-binary" version="1.0"
 MAINTAINER sfshf
 ENV CONFIG_FILE="/app/config.toml"

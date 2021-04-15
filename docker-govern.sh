@@ -12,9 +12,17 @@ docker run -itdp 27017:27017 \
 --network sprout \
 mongo
 
-# Build a govern app image using the specific Dockerfile.
-docker build -t govern:latest \
+# Build a govern app builder image using the specific Dockerfile.
+docker build \
+--target builder \
+-t govern-builder:latest \
 -f app/govern/Dockerfile .
+# Build a govern app binary image using the specific Dockerfile.
+docker build \
+--target binary \
+-t govern-binary:latest \
+-f app/govern/Dockerfile .
+
 # Remove the old container named govern, if has.
 docker rm -f govern
 # Run a new container named govern.
@@ -24,5 +32,5 @@ docker run -itd -p 8080:8080 \
 -p 9000:9000 \
 --network sprout \
 --name govern \
-govern
+govern-binary
 
