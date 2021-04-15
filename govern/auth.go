@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/sfshf/sprout/govern/conf"
-	"github.com/sfshf/sprout/govern/internal/pkg/jwtauth"
+	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/pkg/jwtauth"
 )
 
 func NewAuth() *jwtauth.JWTAuth {
-	c := conf.C.JWTAuth
+	c := config.C.JWTAuth
 	var opts []jwtauth.Option
 	if c.Expired > 0 {
 		opts = append(opts, jwtauth.SetExpired(c.Expired))

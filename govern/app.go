@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	b64Captcha "github.com/mojocn/base64Captcha"
 	"github.com/sfshf/sprout/govern/api"
-	"github.com/sfshf/sprout/govern/conf"
-	"github.com/sfshf/sprout/govern/internal/ginx/middleware"
-	"github.com/sfshf/sprout/govern/internal/pkg/jwtauth"
+	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/govern/ginx/middleware"
+	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 	"log"
 	"net/http"
@@ -35,7 +35,7 @@ type App struct {
 }
 
 func (a *App) InitRootAccount(ctx context.Context) error {
-	c := conf.C.Root
+	c := config.C.Root
 	if sessionId, err := a.StaffRepo.UpsertRootAccount(ctx, c.Account, c.Password); err != nil {
 		return err
 	} else {
@@ -45,7 +45,7 @@ func (a *App) InitRootAccount(ctx context.Context) error {
 }
 
 func (a *App) RunHTTPServer(ctx context.Context) func() {
-	c := conf.C.HTTP
+	c := config.C.HTTP
 	addr := fmt.Sprintf("%s:%d", c.Host, c.Port)
 	srv := &http.Server{
 		Addr:         addr,
@@ -85,7 +85,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
 		v1.POST("/signIn", a.StaffApi.SignIn)
 
-		v1.Use(middleware.JWT(a.Auther, a.StaffRepo), middleware.Casbin(a.Enforcer, conf.C.Root.SessionId))
+		v1.Use(middleware.JWT(a.Auther, a.StaffRepo), middleware.Casbin(a.Enforcer, config.C.Root.SessionId))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)

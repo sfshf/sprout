@@ -1,7 +1,7 @@
 FROM golang:1.16.3-alpine3.12 AS builder
-LABEL name="govern-builder" version="1.0"
-WORKDIR /govern
-COPY ./govern ./model ./repo ./service ./
+LABEL name="builder" version="1.0"
+WORKDIR /sprout
+COPY . .
 RUN set -eo pipefail && \
     go env -w GOPROXY="https://goproxy.io,direct" && \
     go mod tidy && \
@@ -22,6 +22,6 @@ EXPOSE 8010/tcp
 EXPOSE 9000/tcp
 #RUN echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && apk --update add --no-cache ca-certificates
 WORKDIR /app
-COPY --from=builder /sprout/govern /sprout/app/govern/conf/config.toml /sprout/app/govern/conf/casbin_rbac.model ./
+COPY --from=builder /sprout/govern /sprout/govern/conf/config.toml /sprout/govern/conf/casbin_rbac.model ./
 CMD ["./govern"]
 

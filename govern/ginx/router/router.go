@@ -1,15 +1,15 @@
-package main
+package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/conf"
-	"github.com/sfshf/sprout/govern/internal/ginx/middleware"
+	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/govern/ginx/middleware"
 	swag "github.com/swaggo/gin-swagger"
 	swagFiles "github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func NewRouter() *gin.Engine {
-	gin.SetMode(conf.C.RunMode)
+	gin.SetMode(config.C.RunMode)
 
 	app := gin.New()
 	app.NoMethod(middleware.NoMethodHandler())
@@ -21,7 +21,7 @@ func NewRouter() *gin.Engine {
 	// TODO CORS middleware
 	// TODO TraceID middleware
 	// TODO GZIP
-	if conf.C.Swagger {
+	if config.C.Swagger {
 		app.GET("/swagger/*any", swag.WrapHandler(swagFiles.Handler))
 	}
 	return app

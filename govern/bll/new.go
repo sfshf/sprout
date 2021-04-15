@@ -2,7 +2,7 @@ package bll
 
 import (
 	b64Captcha "github.com/mojocn/base64Captcha"
-	"github.com/sfshf/sprout/govern/internal/pkg/jwtauth"
+	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 )
 

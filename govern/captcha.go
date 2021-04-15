@@ -2,11 +2,11 @@ package main
 
 import (
 	b64Captcha "github.com/mojocn/base64Captcha"
-	"github.com/sfshf/sprout/govern/conf"
+	"github.com/sfshf/sprout/govern/config"
 )
 
 func NewPictureCaptcha() *b64Captcha.Captcha {
-	c := conf.C.PicCaptcha
+	c := config.C.PicCaptcha
 	driver := b64Captcha.NewDriverDigit(c.Height, c.Width, c.Length, c.MaxSkew, c.DotCount)
 	var store b64Captcha.Store
 	if c.RedisStore {

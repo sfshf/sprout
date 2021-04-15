@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/internal/ginx/response"
-	"github.com/sfshf/sprout/govern/internal/pkg/jwtauth"
+	"github.com/sfshf/sprout/govern/ginx/response"
+	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

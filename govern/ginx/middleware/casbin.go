@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/internal/ginx/response"
+	"github.com/sfshf/sprout/govern/ginx/response"
 )
 
 // Casbin return a PERM access control ginx middleware.

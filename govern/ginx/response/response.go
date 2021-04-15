@@ -2,7 +2,7 @@ package response
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/internal/schema"
+	"github.com/sfshf/sprout/govern/schema"
 	"net/http"
 )
 

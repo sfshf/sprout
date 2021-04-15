@@ -10,6 +10,7 @@ import (
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/govern/api"
 	"github.com/sfshf/sprout/govern/bll"
+	"github.com/sfshf/sprout/govern/ginx/router"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -20,7 +21,7 @@ import (
 // Injectors from wire.go:
 
 func NewApp(ctx context.Context) (*App, func(), error) {
-	engine := NewRouter()
+	engine := router.NewRouter()
 	database, err := NewMongoDB(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -72,6 +73,6 @@ var (
 		RepoSet,
 		BllSet,
 		ApiSet,
-		NewRouter, wire.Struct(new(App), "*"),
+		router.NewRouter, wire.Struct(new(App), "*"),
 	)
 )

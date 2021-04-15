@@ -2,17 +2,17 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/internal/schema"
+	"github.com/sfshf/sprout/govern/schema"
 	"net/http"
 )
 
-func NoMethodHandler() gin.HandlerFunc {
+func NoRouteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.AbortWithStatusJSON(
 			http.StatusOK,
 			schema.Resp{
-				Code: schema.NoMethod,
-				Msg:  schema.NoMethod.String(),
+				Code: schema.NoRoute,
+				Msg:  schema.NoRoute.String(),
 			},
 		)
 		return

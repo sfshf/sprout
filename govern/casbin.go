@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"github.com/casbin/casbin/v2"
-	"github.com/sfshf/sprout/govern/conf"
+	"github.com/sfshf/sprout/govern/config"
 	"github.com/sfshf/sprout/repo"
 	"time"
 )
 
 func NewCasbin(ctx context.Context, repo *repo.Casbin) (*casbin.SyncedEnforcer, func()) {
-	c := conf.C.Casbin
+	c := config.C.Casbin
 	if c.Model == "" {
-		c.Model = "app/govern/conf/casbin_rbac.model"
+		c.Model = "govern/config/casbin_rbac.model"
 	}
 	e, err := casbin.NewSyncedEnforcer(c.Model)
 	if err != nil {

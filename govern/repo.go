@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/sfshf/sprout/govern/conf"
+	"github.com/sfshf/sprout/govern/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/url"
@@ -10,7 +10,7 @@ import (
 )
 
 func NewMongoDB(ctx context.Context) (*mongo.Database, error) {
-	c := conf.C.MongoDB
+	c := config.C.MongoDB
 	srvUri, err := url.Parse(c.ServerUri)
 	if err != nil {
 		return nil, err

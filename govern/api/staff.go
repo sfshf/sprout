@@ -3,11 +3,11 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/govern/bll"
-	"github.com/sfshf/sprout/govern/conf"
-	"github.com/sfshf/sprout/govern/internal/ginx/middleware"
-	"github.com/sfshf/sprout/govern/internal/ginx/request"
-	"github.com/sfshf/sprout/govern/internal/ginx/response"
-	"github.com/sfshf/sprout/govern/internal/schema"
+	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/govern/ginx/middleware"
+	"github.com/sfshf/sprout/govern/ginx/request"
+	"github.com/sfshf/sprout/govern/ginx/response"
+	"github.com/sfshf/sprout/govern/schema"
 	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -27,7 +27,7 @@ func (a *Staff) GetPicCaptcha(c *gin.Context) {
 func (a *Staff) GetPicCaptchaAnswer(c *gin.Context) {
 	ctx := c.Request.Context()
 	sessionId := middleware.SessionIdFromGinX(c)
-	if sessionId.Hex() != conf.C.Root.SessionId {
+	if sessionId.Hex() != config.C.Root.SessionId {
 		response.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
@@ -47,7 +47,7 @@ func (a *Staff) SignIn(c *gin.Context) {
 		response.AbortWithInvalidArguments(c, err.Error())
 		return
 	}
-	if conf.C.PicCaptcha.Enable && !a.bll.VerifyPictureCaptcha(ctx, arg.PicCaptchaId, arg.PicCaptchaAnswer) {
+	if config.C.PicCaptcha.Enable && !a.bll.VerifyPictureCaptcha(ctx, arg.PicCaptchaId, arg.PicCaptchaAnswer) {
 		response.AbortWithInvalidCaptcha(c, schema.ErrInvalidCaptcha.Error())
 		return
 	}
@@ -101,8 +101,8 @@ func (a *Staff) SignOff(c *gin.Context) {
 		return
 	}
 	sessionId := middleware.SessionIdFromGinX(c)
-	if (objId.Hex() != sessionId.Hex() && sessionId.Hex() != conf.C.Root.SessionId) ||
-		(sessionId.Hex() == conf.C.Root.SessionId && objId.Hex() == conf.C.Root.SessionId) {
+	if (objId.Hex() != sessionId.Hex() && sessionId.Hex() != config.C.Root.SessionId) ||
+		(sessionId.Hex() == config.C.Root.SessionId && objId.Hex() == config.C.Root.SessionId) {
 		response.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
@@ -122,7 +122,7 @@ func (a *Staff) Update(c *gin.Context) {
 		return
 	}
 	sessionId := middleware.SessionIdFromGinX(c)
-	if objId.Hex() != sessionId.Hex() || sessionId.Hex() != conf.C.Root.SessionId {
+	if objId.Hex() != sessionId.Hex() || sessionId.Hex() != config.C.Root.SessionId {
 		response.AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}

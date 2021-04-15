@@ -1,8 +1,8 @@
-package conf
+package config
 
 import (
 	"fmt"
-	"github.com/sfshf/sprout/govern/internal/pkg/json"
+	"github.com/sfshf/sprout/pkg/json"
 	"github.com/spf13/viper"
 	"os"
 	"time"
@@ -11,7 +11,6 @@ import (
 var (
 	C config
 
-	EnvWWW             = "WWW"
 	EnvConfigFile      = "CONFIG_FILE"
 	EnvCasbinModelFile = "CASBIN_MODEL_FILE"
 	EnvMongoUri        = "MONGO_URI"
@@ -24,7 +23,7 @@ var (
 func init() {
 	fpath := os.Getenv(EnvConfigFile)
 	if fpath == "" {
-		fpath = "app/govern/conf/config.toml"
+		fpath = "govern/config/config.toml"
 	}
 	viper.Reset()
 	viper.SetConfigFile(fpath)
@@ -33,9 +32,6 @@ func init() {
 	}
 	if err := viper.Unmarshal(&C); err != nil {
 		panic(err)
-	}
-	if c := os.Getenv(EnvWWW); c != "" {
-		C.WWW = c
 	}
 	if c := os.Getenv(EnvCasbinModelFile); c != "" {
 		C.Casbin.Model = c
