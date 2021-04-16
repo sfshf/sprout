@@ -2,12 +2,12 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/bll"
-	"github.com/sfshf/sprout/govern/config"
-	"github.com/sfshf/sprout/govern/ginx/middleware"
-	"github.com/sfshf/sprout/govern/ginx/request"
-	"github.com/sfshf/sprout/govern/ginx/response"
-	"github.com/sfshf/sprout/govern/schema"
+	"github.com/sfshf/sprout/app/govern/bll"
+	"github.com/sfshf/sprout/app/govern/config"
+	"github.com/sfshf/sprout/app/govern/ginx/middleware"
+	"github.com/sfshf/sprout/app/govern/ginx/request"
+	"github.com/sfshf/sprout/app/govern/ginx/response"
+	"github.com/sfshf/sprout/app/govern/schema"
 	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

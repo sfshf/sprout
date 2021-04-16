@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/app/govern/config"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 )
 

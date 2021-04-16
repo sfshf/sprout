@@ -8,9 +8,9 @@ package main
 import (
 	"context"
 	"github.com/google/wire"
-	"github.com/sfshf/sprout/govern/api"
-	"github.com/sfshf/sprout/govern/bll"
-	"github.com/sfshf/sprout/govern/ginx/router"
+	"github.com/sfshf/sprout/app/govern/api"
+	"github.com/sfshf/sprout/app/govern/bll"
+	"github.com/sfshf/sprout/app/govern/ginx/router"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -37,7 +37,6 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	user := repo.NewUserRepo(ctx, database)
 	bllUser := bll.NewUser(user)
 	apiUser := api.NewUser(bllUser)
-	role := repo.NewRoleRepo(ctx, database)
 	accessLog := repo.NewAccessLogRepo(ctx, database)
 	syncedEnforcer, cleanup := NewCasbin(ctx, casbin)
 	app := &App{
@@ -47,7 +46,6 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		UserApi:       apiUser,
 		StaffRepo:     staff,
 		CasbinRepo:    casbin,
-		RoleRepo:      role,
 		UserRepo:      user,
 		AccessLogRepo: accessLog,
 		Auther:        jwtAuth,
@@ -64,7 +62,7 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 var (
 	ApiSet  = wire.NewSet(api.NewStaff, api.NewCasbin, api.NewUser)
 	BllSet  = wire.NewSet(bll.NewStaff, bll.NewCasbin, bll.NewUser)
-	RepoSet = wire.NewSet(repo.NewStaffRepo, repo.NewCasbinRepo, repo.NewRoleRepo, repo.NewUserRepo, repo.NewAccessLogRepo)
+	RepoSet = wire.NewSet(repo.NewStaffRepo, repo.NewCasbinRepo, repo.NewUserRepo, repo.NewAccessLogRepo)
 	AppSet  = wire.NewSet(
 		NewAuth,
 		NewCasbin,
@@ -72,7 +70,6 @@ var (
 		NewMongoDB,
 		RepoSet,
 		BllSet,
-		ApiSet,
-		router.NewRouter, wire.Struct(new(App), "*"),
+		ApiSet, router.NewRouter, wire.Struct(new(App), "*"),
 	)
 )

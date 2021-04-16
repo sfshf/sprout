@@ -16,12 +16,12 @@ mongo
 docker build \
 --target builder \
 -t builder:latest \
--f govern/Dockerfile .
+-f app/govern/Dockerfile .
 # Build a govern app binary image using the specific Dockerfile.
 docker build \
 --target binary \
 -t govern-binary:latest \
--f govern/Dockerfile .
+-f app/govern/Dockerfile .
 
 # Remove the old container named govern, if has.
 docker rm -f govern

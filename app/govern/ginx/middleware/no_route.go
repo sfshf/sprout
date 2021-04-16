@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/schema"
+	"github.com/sfshf/sprout/app/govern/schema"
 	"net/http"
 )
 

@@ -23,7 +23,7 @@ var (
 func init() {
 	fpath := os.Getenv(EnvConfigFile)
 	if fpath == "" {
-		fpath = "govern/config/config.toml"
+		fpath = "app/govern/config/config.toml"
 	}
 	viper.Reset()
 	viper.SetConfigFile(fpath)

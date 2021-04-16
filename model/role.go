@@ -9,9 +9,3 @@ type Role struct {
 	Memo    *string             `bson:"memo,omitempty"`
 	Creator *primitive.ObjectID `bson:"creator,omitempty"`
 }
-
-// Role names.
-const (
-	RootRole     = "ROOT"
-	OrdinaryRole = "ORDINARY"
-)

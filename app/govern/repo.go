@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/app/govern/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/url"

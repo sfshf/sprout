@@ -5,9 +5,9 @@ package main
 import (
 	"context"
 	"github.com/google/wire"
-	"github.com/sfshf/sprout/govern/api"
-	"github.com/sfshf/sprout/govern/bll"
-	"github.com/sfshf/sprout/govern/ginx/router"
+	"github.com/sfshf/sprout/app/govern/api"
+	"github.com/sfshf/sprout/app/govern/bll"
+	"github.com/sfshf/sprout/app/govern/ginx/router"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -24,7 +24,6 @@ var (
 	RepoSet = wire.NewSet(
 		repo.NewStaffRepo,
 		repo.NewCasbinRepo,
-		repo.NewRoleRepo,
 		repo.NewUserRepo,
 		repo.NewAccessLogRepo,
 	)

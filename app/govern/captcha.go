@@ -2,7 +2,7 @@ package main
 
 import (
 	b64Captcha "github.com/mojocn/base64Captcha"
-	"github.com/sfshf/sprout/govern/config"
+	"github.com/sfshf/sprout/app/govern/config"
 )
 
 func NewPictureCaptcha() *b64Captcha.Captcha {

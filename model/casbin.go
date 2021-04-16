@@ -17,3 +17,9 @@ const (
 	PType_P = "p" // Policy Type -- policy definition.
 	PType_g = "g" // Policy Type -- role or group definition.
 )
+
+// Role names.
+const (
+	RootRole     = "root"
+	OrdinaryRole = "ordinary"
+)

@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/govern/config"
-	"github.com/sfshf/sprout/govern/ginx/middleware"
+	"github.com/sfshf/sprout/app/govern/config"
+	"github.com/sfshf/sprout/app/govern/ginx/middleware"
 	swag "github.com/swaggo/gin-swagger"
 	swagFiles "github.com/swaggo/gin-swagger/swaggerFiles"
 )

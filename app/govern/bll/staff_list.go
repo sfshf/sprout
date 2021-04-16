@@ -2,7 +2,7 @@ package bll
 
 import (
 	"context"
-	"github.com/sfshf/sprout/govern/schema"
+	"github.com/sfshf/sprout/app/govern/schema"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/sfshf/sprout/govern/bll"
+	"github.com/sfshf/sprout/app/govern/bll"
 )
 
 type Staff struct {

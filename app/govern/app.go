@@ -7,9 +7,9 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	b64Captcha "github.com/mojocn/base64Captcha"
-	"github.com/sfshf/sprout/govern/api"
-	"github.com/sfshf/sprout/govern/config"
-	"github.com/sfshf/sprout/govern/ginx/middleware"
+	"github.com/sfshf/sprout/app/govern/api"
+	"github.com/sfshf/sprout/app/govern/config"
+	"github.com/sfshf/sprout/app/govern/ginx/middleware"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 	"log"
@@ -25,7 +25,6 @@ type App struct {
 
 	StaffRepo     *repo.Staff
 	CasbinRepo    *repo.Casbin
-	RoleRepo      *repo.Role
 	UserRepo      *repo.User
 	AccessLogRepo *repo.AccessLog
 
@@ -85,13 +84,15 @@ func (a *App) InitRoutes(ctx context.Context) {
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
 		v1.POST("/signIn", a.StaffApi.SignIn)
 
-		v1.Use(middleware.JWT(a.Auther, a.StaffRepo), middleware.Casbin(a.Enforcer, config.C.Root.SessionId))
+		v1.Use(middleware.JWT(a.Auther, a.StaffRepo))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)
 			v1.GET("/signOut", a.StaffApi.SignOut)
 			v1.DELETE("/signOff/:id", a.StaffApi.SignOff)
 		}
+
+		v1.Use(middleware.Casbin(a.Enforcer, config.C.Root.SessionId))
 
 		staff := v1.Group("/staff")
 		{
