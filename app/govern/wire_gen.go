@@ -10,7 +10,6 @@ import (
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/bll"
-	"github.com/sfshf/sprout/app/govern/ginx/router"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -21,7 +20,7 @@ import (
 // Injectors from wire.go:
 
 func NewApp(ctx context.Context) (*App, func(), error) {
-	engine := router.NewRouter()
+	engine := NewRouter()
 	database, err := NewMongoDB(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -32,13 +31,13 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	bllStaff := bll.NewStaff(staff, jwtAuth, captcha)
 	apiStaff := api.NewStaff(bllStaff)
 	casbin := repo.NewCasbinRepo(ctx, database)
-	bllCasbin := bll.NewCasbin(casbin)
+	enforcer := NewCasbin(ctx, casbin)
+	bllCasbin := bll.NewCasbin(enforcer, staff)
 	apiCasbin := api.NewCasbin(bllCasbin)
 	user := repo.NewUserRepo(ctx, database)
 	bllUser := bll.NewUser(user)
 	apiUser := api.NewUser(bllUser)
 	accessLog := repo.NewAccessLogRepo(ctx, database)
-	syncedEnforcer, cleanup := NewCasbin(ctx, casbin)
 	app := &App{
 		Router:        engine,
 		StaffApi:      apiStaff,
@@ -49,11 +48,10 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		UserRepo:      user,
 		AccessLogRepo: accessLog,
 		Auther:        jwtAuth,
-		Enforcer:      syncedEnforcer,
+		Enforcer:      enforcer,
 		PicCaptcha:    captcha,
 	}
 	return app, func() {
-		cleanup()
 	}, nil
 }
 
@@ -70,6 +68,7 @@ var (
 		NewMongoDB,
 		RepoSet,
 		BllSet,
-		ApiSet, router.NewRouter, wire.Struct(new(App), "*"),
+		ApiSet,
+		NewRouter, wire.Struct(new(App), "*"),
 	)
 )

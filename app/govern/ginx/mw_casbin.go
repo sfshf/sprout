@@ -1,18 +1,14 @@
-package middleware
+package ginx
 
 import (
-	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/sfshf/sprout/app/govern/ginx/response"
 )
 
 // Casbin return a PERM access control ginx middleware.
-func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFunc {
+func Casbin(enforcer *casbin.Enforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
-		fmt.Println(sessionId.Hex())
-		fmt.Println(rootSessionId)
 		if sessionId.Hex() == rootSessionId {
 			c.Next()
 			return
@@ -24,11 +20,11 @@ func Casbin(enforcer *casbin.SyncedEnforcer, rootSessionId string) gin.HandlerFu
 		sub := sessionId.Hex()
 		authorized, err := enforcer.Enforce(sub, c.FullPath(), c.Request.Method)
 		if err != nil {
-			response.AbortWithUnauthorized(c, err.Error())
+			AbortWithUnauthorized(c, err.Error())
 			return
 		}
 		if !authorized {
-			response.AbortWithUnauthorized(c, nil)
+			AbortWithUnauthorized(c, nil)
 			return
 		}
 		c.Next()

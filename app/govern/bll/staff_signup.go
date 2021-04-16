@@ -26,7 +26,6 @@ func (a *Staff) SignUp(ctx context.Context, req *SignupReq) error {
 		Email:             &req.Email,
 		Phone:             &req.Phone,
 		Gender:            model.UpperStringPtr(req.Gender),
-		Role:              model.UpperStringPtr(model.OrdinaryRole),
 		SignInIpWhitelist: req.SignInIpWhitelist,
 		SignUpAt:          model.DatetimePtr(req.Timestamp),
 	}

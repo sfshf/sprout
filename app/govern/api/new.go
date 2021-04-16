@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/app/govern/bll"
 )
 
@@ -15,7 +16,8 @@ func NewStaff(bll *bll.Staff) *Staff {
 }
 
 type Casbin struct {
-	bll *bll.Casbin
+	bll    *bll.Casbin
+	Routes gin.RoutesInfo
 }
 
 func NewCasbin(bll *bll.Casbin) *Casbin {

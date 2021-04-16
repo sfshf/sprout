@@ -1,6 +1,7 @@
 package bll
 
 import (
+	"github.com/casbin/casbin/v2"
 	b64Captcha "github.com/mojocn/base64Captcha"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
@@ -21,12 +22,14 @@ func NewStaff(repo *repo.Staff, auther *jwtauth.JWTAuth, captcha *b64Captcha.Cap
 }
 
 type Casbin struct {
-	casbinRepo *repo.Casbin
+	enforcer  *casbin.Enforcer
+	staffRepo *repo.Staff
 }
 
-func NewCasbin(repo *repo.Casbin) *Casbin {
+func NewCasbin(enforcer *casbin.Enforcer, staffRepo *repo.Staff) *Casbin {
 	return &Casbin{
-		casbinRepo: repo,
+		enforcer:  enforcer,
+		staffRepo: staffRepo,
 	}
 }
 

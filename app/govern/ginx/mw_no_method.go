@@ -1,4 +1,4 @@
-package middleware
+package ginx
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-func NoRouteHandler() gin.HandlerFunc {
+func NoMethodHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.AbortWithStatusJSON(
 			http.StatusOK,
 			schema.Resp{
-				Code: schema.NoRoute,
-				Msg:  schema.NoRoute.String(),
+				Code: schema.NoMethod,
+				Msg:  schema.NoMethod.String(),
 			},
 		)
 		return

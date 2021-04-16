@@ -9,7 +9,7 @@ import (
 	b64Captcha "github.com/mojocn/base64Captcha"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/config"
-	"github.com/sfshf/sprout/app/govern/ginx/middleware"
+	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 	"log"
@@ -29,7 +29,7 @@ type App struct {
 	AccessLogRepo *repo.AccessLog
 
 	Auther     *jwtauth.JWTAuth
-	Enforcer   *casbin.SyncedEnforcer
+	Enforcer   *casbin.Enforcer
 	PicCaptcha *b64Captcha.Captcha
 }
 
@@ -84,7 +84,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
 		v1.POST("/signIn", a.StaffApi.SignIn)
 
-		v1.Use(middleware.JWT(a.Auther, a.StaffRepo))
+		v1.Use(ginx.JWT(a.Auther, a.StaffRepo))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)
@@ -92,7 +92,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 			v1.DELETE("/signOff/:id", a.StaffApi.SignOff)
 		}
 
-		v1.Use(middleware.Casbin(a.Enforcer, config.C.Root.SessionId))
+		v1.Use(ginx.Casbin(a.Enforcer, config.C.Root.SessionId))
 
 		staff := v1.Group("/staff")
 		{
@@ -102,14 +102,40 @@ func (a *App) InitRoutes(ctx context.Context) {
 		}
 
 		casbin := v1.Group("/casbin")
+		casbin.Use(ginx.IsRoot(config.C.Root.SessionId))
 		{
+			priority := casbin.Group("/priority")
+			{
+				priority.GET("", a.CasbinApi.Priorities)
+			}
+
+			object := casbin.Group("/resource")
+			{
+				object.GET("", a.CasbinApi.ObjectActionMap)
+			}
+
 			policy := casbin.Group("/policy")
 			{
-				policy.PUT("", a.CasbinApi.AddPolicy)
-				policy.GET("/:id", a.CasbinApi.Policy)
-				policy.POST("/:id", a.CasbinApi.UpdatePolicy)
-				policy.DELETE("/:id", a.CasbinApi.RemovePolicy)
-				policy.GET("", a.CasbinApi.Policies)
+				//policy.PUT("", a.CasbinApi.AddPolicy)
+				policy.GET("/:role", a.CasbinApi.PoliciesOfRole)
+				//policy.POST("/:id", a.CasbinApi.UpdatePolicy)
+				//policy.DELETE("/:id", a.CasbinApi.RemovePolicy)
+				//policy.GET("", a.CasbinApi.Policies)
+			}
+
+			role := casbin.Group("/role")
+			{
+				role.PUT("", a.CasbinApi.AddRole)
+				role.DELETE("/:role", a.CasbinApi.DeleteRole)
+				role.PUT("/:role/set/:staffId", a.CasbinApi.SetRole)
+				role.DELETE("/:role/unset/:staffId", a.CasbinApi.UnsetRole)
+				role.GET("", a.CasbinApi.Roles)
+				role.GET("/:staffId", a.CasbinApi.RolesOfStaff)
+			}
+
+			staff := casbin.Group("/staff")
+			{
+				staff.GET("/:role", a.CasbinApi.StaffsOfRole)
 			}
 		}
 
@@ -122,4 +148,5 @@ func (a *App) InitRoutes(ctx context.Context) {
 			user.GET("", a.UserApi.List)
 		}
 	}
+	a.CasbinApi.Routes = a.Router.Routes()
 }

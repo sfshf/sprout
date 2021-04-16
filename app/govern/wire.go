@@ -7,7 +7,6 @@ import (
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/bll"
-	"github.com/sfshf/sprout/app/govern/ginx/router"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -35,7 +34,7 @@ var (
 		RepoSet,
 		BllSet,
 		ApiSet,
-		router.NewRouter,
+		NewRouter,
 		wire.Struct(new(App), "*"),
 	)
 )

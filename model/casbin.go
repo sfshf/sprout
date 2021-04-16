@@ -14,12 +14,15 @@ type Casbin struct {
 }
 
 const (
-	PType_P = "p" // Policy Type -- policy definition.
-	PType_g = "g" // Policy Type -- role or group definition.
+	PTypeP = "p" // Policy Type -- policy definition.
+	PTypeG = "g" // Policy Type -- role or group definition.
 )
 
-// Role names.
 const (
-	RootRole     = "root"
-	OrdinaryRole = "ordinary"
+	PriorityMIN = 1
+	PriorityMAX = 31
+)
+
+const (
+	RootRole = "ROOT"
 )

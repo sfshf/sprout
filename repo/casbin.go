@@ -2,7 +2,7 @@ package repo
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	casbin_model "github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/sfshf/sprout/model"
@@ -93,29 +93,53 @@ func (a *Casbin) LoadPolicy(m casbin_model.Model) error {
 	return cursor.Close(ctx)
 }
 
-func (a *Casbin) savePolicyLine(ctx context.Context, pType string, rule []string) *model.Casbin {
-	line := &model.Casbin{
+func (a *Casbin) lineToModel(ctx context.Context, pType string, rule []string) *model.Casbin {
+	m := &model.Casbin{
 		PType: model.StringPtr(pType),
 	}
 	if len(rule) > 0 {
-		line.V0 = &rule[0]
+		m.V0 = &rule[0]
 	}
 	if len(rule) > 1 {
-		line.V1 = &rule[1]
+		m.V1 = &rule[1]
 	}
 	if len(rule) > 2 {
-		line.V0 = &rule[2]
+		m.V2 = &rule[2]
 	}
 	if len(rule) > 3 {
-		line.V1 = &rule[3]
+		m.V3 = &rule[3]
 	}
 	if len(rule) > 4 {
-		line.V0 = &rule[4]
+		m.V4 = &rule[4]
 	}
 	if len(rule) > 5 {
-		line.V1 = &rule[5]
+		m.V5 = &rule[5]
 	}
-	return line
+	return m
+}
+
+func (a *Casbin) lineToBsonM(ctx context.Context, pType string, rule []string) bson.D {
+	m := make(bson.D, 0, 6)
+	m = append(m, bson.E{"pType", pType})
+	if len(rule) > 0 {
+		m = append(m, bson.E{"v0", rule[0]})
+	}
+	if len(rule) > 1 {
+		m = append(m, bson.E{"v1", rule[1]})
+	}
+	if len(rule) > 2 {
+		m = append(m, bson.E{"v2", rule[2]})
+	}
+	if len(rule) > 3 {
+		m = append(m, bson.E{"v3", rule[3]})
+	}
+	if len(rule) > 4 {
+		m = append(m, bson.E{"v4", rule[4]})
+	}
+	if len(rule) > 5 {
+		m = append(m, bson.E{"v5", rule[5]})
+	}
+	return m
 }
 
 // SavePolicy saves all policy rules to the storage.
@@ -125,15 +149,15 @@ func (a *Casbin) SavePolicy(m casbin_model.Model) error {
 		return err
 	}
 	var lines []interface{}
-	for pType, ast := range m["p"] {
+	for pType, ast := range m[model.PTypeP] {
 		for _, rule := range ast.Policy {
-			line := a.savePolicyLine(ctx, pType, rule)
+			line := a.lineToBsonM(ctx, pType, rule)
 			lines = append(lines, line)
 		}
 	}
-	for pType, ast := range m["g"] {
+	for pType, ast := range m[model.PTypeG] {
 		for _, rule := range ast.Policy {
-			line := a.savePolicyLine(ctx, pType, rule)
+			line := a.lineToBsonM(ctx, pType, rule)
 			lines = append(lines, line)
 		}
 	}
@@ -145,17 +169,33 @@ func (a *Casbin) SavePolicy(m casbin_model.Model) error {
 
 // AddPolicy adds a policy rule to the storage.
 func (a *Casbin) AddPolicy(sec string, pType string, rule []string) error {
-	return errors.New("not implemented")
+	ctx := context.Background()
+	line := a.lineToBsonM(ctx, pType, rule)
+	_, err := a.coll.InsertOne(ctx, line)
+	return err
 }
 
 // RemovePolicy removes a policy rule from the storage.
 // This is part of the Auto-Save feature.
 func (a *Casbin) RemovePolicy(sec string, pType string, rule []string) error {
-	return errors.New("not implemented")
+	ctx := context.Background()
+	line := a.lineToBsonM(ctx, pType, rule)
+	_, err := a.coll.DeleteOne(ctx, line)
+	return err
 }
 
 // RemoveFilteredPolicy removes policy rules that match the filter from the storage.
 // This is part of the Auto-Save feature.
 func (a *Casbin) RemoveFilteredPolicy(sec string, pType string, fieldIndex int, fieldValues ...string) error {
-	return errors.New("not implemented")
+	ctx := context.Background()
+	if len(fieldValues) > 0 {
+		field := fmt.Sprintf("v%d", fieldIndex)
+		filter := bson.M{
+			"pType": pType,
+			field:   fieldValues[0],
+		}
+		_, err := a.coll.DeleteMany(ctx, filter)
+		return err
+	}
+	return nil
 }

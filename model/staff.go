@@ -17,7 +17,7 @@ type Staff struct {
 	Email             *string             `bson:"email,omitempty"`
 	Phone             *string             `bson:"phone,omitempty"`
 	Gender            *string             `bson:"gender,omitempty"`
-	Role              *string             `bson:"role,omitempty"`
+	Roles             []string            `bson:"roles,omitempty"`
 	SignInIpWhitelist []string            `bson:"signInIpWhitelist,omitempty"`
 	SignUpAt          *primitive.DateTime `bson:"signUpAt,omitempty"`
 	SignInToken       *string             `bson:"signInToken,omitempty"`

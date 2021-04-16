@@ -25,7 +25,6 @@ func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*Profil
 	}
 	res := ProfileResp{
 		Account:           *obj.Account,
-		Role:              *obj.Role,
 		SignInIpWhiteList: obj.SignInIpWhitelist,
 		SignUpAt:          int64(*obj.SignUpAt),
 	}

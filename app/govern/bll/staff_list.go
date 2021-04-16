@@ -89,7 +89,6 @@ func (a *Staff) List(ctx context.Context, arg *StaffListReq, sort bson.M) (*Staf
 		elem := StaffListElem{
 			ID:       v.ID.Hex(),
 			Account:  *v.Account,
-			Role:     *v.Role,
 			SignUpAt: int64(*v.SignUpAt),
 		}
 		if v.Email != nil {

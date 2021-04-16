@@ -1,4 +1,4 @@
-package request
+package ginx
 
 import (
 	"github.com/gin-gonic/gin"

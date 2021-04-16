@@ -45,7 +45,7 @@ func (a *Staff) UpsertRootAccount(ctx context.Context, account, password string)
 		ctx,
 		bson.M{
 			"account": account,
-			"role":    model.RootRole,
+			"role":    []string{model.RootRole},
 		},
 		options.FindOne().SetProjection(bson.D{{"_id", 1}}),
 	).Decode(&staff); err != nil {
@@ -63,7 +63,7 @@ func (a *Staff) UpsertRootAccount(ctx context.Context, account, password string)
 			"account":      account,
 			"password":     passwd,
 			"passwordSalt": salt,
-			"role":         model.RootRole,
+			"role":         []string{model.RootRole},
 			"signUpAt":     primitive.NewDateTimeFromTime(time.Now()),
 		},
 	)
