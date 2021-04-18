@@ -1,8 +1,9 @@
 package hash
 
 import (
-	"crypto"
+	"crypto/md5"
 	_ "crypto/md5"
+	"crypto/sha256"
 	_ "crypto/sha256"
 	"fmt"
 )
@@ -20,7 +21,12 @@ func MD5String(data, prefix string) (string, error) {
 }
 
 func MD5(data, prefix []byte) ([]byte, error) {
-	return hash(crypto.MD5, data, prefix)
+	h := md5.New()
+	_, err := h.Write(data)
+	if err != nil {
+		return nil, err
+	}
+	return h.Sum(prefix), nil
 }
 
 // SHA256 --------------------------------------------------------
@@ -36,16 +42,10 @@ func SHA256String(data, prefix string) (string, error) {
 }
 
 func SHA256(data, prefix []byte) ([]byte, error) {
-	return hash(crypto.SHA256, data, prefix)
-}
-
-// unexported function.
-func hash(h crypto.Hash, data, prefix []byte) ([]byte, error) {
-	hash := h.New()
-	hash.Reset()
-	_, err := hash.Write(data)
+	h := sha256.New()
+	_, err := h.Write(data)
 	if err != nil {
-		return nil, fmt.Errorf("[hash] failed to write data: %s", err)
+		return nil, err
 	}
-	return hash.Sum(prefix), nil
+	return h.Sum(prefix), nil
 }

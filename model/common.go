@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/sfshf/sprout/pkg/hash"
+	"github.com/sfshf/sprout/pkg/crypto/hash"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 	"time"
