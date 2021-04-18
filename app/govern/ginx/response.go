@@ -3,69 +3,87 @@ package ginx
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/app/govern/schema"
+	"github.com/sfshf/sprout/pkg/json"
 	"net/http"
 )
 
-func AbortWithInvalidArguments(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+const (
+	ResponseBodyKey = "_gin-gonic/gin/response/bodykey"
+)
+
+func JSONWithStatusOK(c *gin.Context, resp interface{}) {
+	c.Set(ResponseBodyKey, json.Marshal2String(resp))
+	c.JSON(http.StatusOK, resp)
+}
+
+func JSONWithInvalidArguments(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.InvalidArguments,
 		Msg:  schema.InvalidArguments.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithFailure(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithFailure(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.Failure,
 		Msg:  schema.Failure.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithDuplicateEntity(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithDuplicateEntity(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.DuplicateEntity,
 		Msg:  schema.DuplicateEntity.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithInvalidAccountOrPassword(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithInvalidAccountOrPassword(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.InvalidAccountOrPassword,
 		Msg:  schema.InvalidAccountOrPassword.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithInvalidToken(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithInvalidToken(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.InvalidToken,
 		Msg:  schema.InvalidToken.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithInvalidCaptcha(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithInvalidCaptcha(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.InvalidCaptcha,
 		Msg:  schema.InvalidCaptcha.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
-func AbortWithUnauthorized(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, schema.Resp{
+func JSONWithUnauthorized(c *gin.Context, data interface{}) {
+	resp := &schema.Resp{
 		Code: schema.Unauthorized,
 		Msg:  schema.Unauthorized.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }
 
 func JSONWithSuccess(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, schema.Resp{
+	resp := &schema.Resp{
 		Code: schema.Success,
 		Msg:  schema.Success.String(),
 		Data: data,
-	})
+	}
+	JSONWithStatusOK(c, resp)
 }

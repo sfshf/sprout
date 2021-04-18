@@ -26,6 +26,16 @@ func NewCasbin(bll *bll.Casbin) *Casbin {
 	}
 }
 
+type AccessLog struct {
+	bll *bll.AccessLog
+}
+
+func NewAccessLog(bll *bll.AccessLog) *AccessLog {
+	return &AccessLog{
+		bll: bll,
+	}
+}
+
 type User struct {
 	bll *bll.User
 }

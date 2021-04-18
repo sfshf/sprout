@@ -12,7 +12,7 @@ func IsRoot(rootId string) gin.HandlerFunc {
 			c.Next()
 			return
 		} else {
-			AbortWithUnauthorized(c, schema.ErrUnauthorized.Error())
+			JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
 			return
 		}
 	}

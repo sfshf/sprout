@@ -1,4 +1,4 @@
-package log
+package logger
 
 import (
 	"context"
@@ -21,56 +21,52 @@ import (
 
 func TestStdlogWithWriter(t *testing.T) {
 	// Set to os.Stderr
-	setStdlog(os.Stderr)
+	l := NewLogger(os.Stderr)
 
-	Info(context.TODO()).Str("foo", "bar").Msg("testing TestStdlogWithWriter")
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestStdlogWithWriter")
 }
 
 func TestSetTimeFieldName(t *testing.T) {
 	// Set to os.Stderr
-	setStdlog(os.Stderr)
+	l := NewLogger(os.Stderr)
 
-	SetTimeFieldName("timestamp")
+	l.SetTimeFieldName("timestamp")
 
-	Info(context.TODO()).Str("foo", "bar").Msg("testing TestSetTimeFieldName")
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestSetTimeFieldName")
 }
 
 func TestSetTimeLocation(t *testing.T) {
 
 	// Set to os.Stderr
-	setStdlog(os.Stderr)
+	l := NewLogger(os.Stderr)
 
-	SetTimeFieldLocation("Asia/Shanghai")
+	l.SetTimeFieldLocation("Asia/Shanghai")
 
-	Info(context.TODO()).Str("foo", "bar").Msg("testing TestSetTimeLocation")
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestSetTimeLocation")
 }
 
 func TestSetTimeFieldForamt(t *testing.T) {
 	// Set to os.Stderr
-	setStdlog(os.Stderr)
+	l := NewLogger(os.Stderr)
 
-	SetTimeFieldFormat("2006.01.02.15.04.05.999")
+	l.SetTimeFieldFormat("2006.01.02.15.04.05.999")
 
-	Info(context.TODO()).Str("foo", "bar").Msg("testing TestSetTimeFieldForamt")
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestSetTimeFieldForamt")
 }
 
 func TestStdlogWithoutWriter(t *testing.T) {
-	ctx := context.TODO()
-	setStdlog()
-	Info(ctx).Str("foo", "bar").Msg("testing TestStdlogWithoutWriter")
+	l := NewLogger()
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestStdlogWithoutWriter")
 }
 
 func TestSetVersion(t *testing.T) {
-	ctx := context.TODO()
-	SetVersion("v0.0.1")
-	// Set to os.Stderr
-	setStdlog(os.Stderr)
-	Info(ctx).Str("foo", "bar").Msg("testing TestSetVersion")
-	SetVersion("")
+	l := NewLogger(os.Stderr)
+	l.SetVersion("v0.0.1")
+	l.Info(context.Background()).Str("foo", "bar").Msg("testing TestSetVersion")
 }
 
 func TestStdlogWithContexts(t *testing.T) {
-	ctx := context.TODO()
+	ctx := context.Background()
 	ctx = NewUserIDContext(
 		NewTraceIDContext(
 			NewTagContext(ctx, "__test__"),
@@ -78,13 +74,12 @@ func TestStdlogWithContexts(t *testing.T) {
 		),
 		"userID_test",
 	)
-	// Set to os.Stderr
-	setStdlog(os.Stderr)
-	Info(ctx).Str("foo", "bar").Msg("testing TestStdlogWithContexts")
+	l := NewLogger(os.Stderr)
+	l.Info(ctx).Str("foo", "bar").Msg("testing TestStdlogWithContexts")
 }
 
 func TestStdlogWithErrorStack(t *testing.T) {
-	ctx := context.TODO()
+	ctx := context.Background()
 	ctx = NewStackContext(
 		NewUserIDContext(
 			NewTraceIDContext(
@@ -95,9 +90,8 @@ func TestStdlogWithErrorStack(t *testing.T) {
 		),
 		errors.New("error_test"),
 	)
-	// Set to os.Stderr
-	setStdlog(os.Stderr)
-	Error(ctx).Str("foo", "bar").Msg("testing TestStdlogWithStack")
+	l := NewLogger(os.Stderr)
+	l.Error(ctx).Str("foo", "bar").Msg("testing TestStdlogWithStack")
 }
 
 // func TestMongoWriter(t *testing.T) {
@@ -120,7 +114,7 @@ func TestStdlogWithErrorStack(t *testing.T) {
 // 		t.Error(err)
 // 	}
 // 	db := cli.Database("test")
-// 	coll := db.Collection("log")
+// 	coll := db.Collection("logger")
 // 	toMongo, err := MongoWriter(coll, 0)
 // 	if err != nil {
 // 		t.Error(err)
@@ -150,7 +144,7 @@ func TestStdlogWithErrorStack(t *testing.T) {
 // 		t.Error(err)
 // 	}
 // 	db := cli.Database("test")
-// 	coll := db.Collection("log")
+// 	coll := db.Collection("logger")
 // 	toMongo, err := MongoWriter(coll, 0)
 // 	if err != nil {
 // 		t.Error(err)
@@ -161,7 +155,6 @@ func TestStdlogWithErrorStack(t *testing.T) {
 // }
 
 func BenchmarkLogWithContexts(b *testing.B) {
-	SetVersion("v0.0.0")
 	ctx := NewTagContext(
 		NewUserIDContext(
 			NewTraceIDContext(context.TODO(), "traceID_foo"),
@@ -169,23 +162,22 @@ func BenchmarkLogWithContexts(b *testing.B) {
 		),
 		"tag_foo",
 	)
-	setStdlog(ioutil.Discard)
-
+	l := NewLogger(ioutil.Discard)
+	l.SetVersion("v0.0.0")
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			Info(ctx).Msg("benchmark")
+			l.Info(ctx).Msg("benchmark")
 		}
 	})
 }
 
 func BenchmarkLogWithoutContexts(b *testing.B) {
-	setStdlog(ioutil.Discard)
-
+	l := NewLogger(ioutil.Discard)
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			Info(context.TODO()).
+			l.Info(context.TODO()).
 				Str("version", "v0.0.0").
 				Str("trace_id", "traceID_foo").
 				Str("user_id", "userID_foo").

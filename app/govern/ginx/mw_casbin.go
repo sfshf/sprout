@@ -20,11 +20,11 @@ func Casbin(enforcer *casbin.Enforcer, rootSessionId string) gin.HandlerFunc {
 		sub := sessionId.Hex()
 		authorized, err := enforcer.Enforce(sub, c.FullPath(), c.Request.Method)
 		if err != nil {
-			AbortWithUnauthorized(c, err.Error())
+			JSONWithUnauthorized(c, err.Error())
 			return
 		}
 		if !authorized {
-			AbortWithUnauthorized(c, nil)
+			JSONWithUnauthorized(c, nil)
 			return
 		}
 		c.Next()

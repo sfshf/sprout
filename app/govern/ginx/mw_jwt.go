@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	SessionId = "sessionId"
+	SessionIdKey = "sessionId"
 )
 
 func SessionIdFromGinX(c *gin.Context) *primitive.ObjectID {
-	if sessionId, exists := c.Get(SessionId); exists {
+	if sessionId, exists := c.Get(SessionIdKey); exists {
 		return sessionId.(*primitive.ObjectID)
 	} else {
 		return nil
@@ -25,21 +25,22 @@ func JWT(auth *jwtauth.JWTAuth, repo *repo.Staff) gin.HandlerFunc {
 		if jwtString := c.GetHeader("Authorization"); jwtString != "" {
 			subject, err := auth.ParseSubject(jwtString)
 			if err != nil {
-				AbortWithInvalidToken(c, jwtauth.ErrInvalidToken.Error())
+				JSONWithInvalidToken(c, jwtauth.ErrInvalidToken.Error())
 				return
 			}
 			sessionId, err := primitive.ObjectIDFromHex(subject)
 			if err != nil {
-				AbortWithInvalidToken(c, err.Error())
+				JSONWithInvalidToken(c, err.Error())
 				return
 			}
 			// Verify whether the token is in use, to guarantee an account signed in by only one person.
 			err = repo.VerifySignInToken(ctx, &sessionId, &jwtString)
 			if err != nil {
-				AbortWithInvalidToken(c, err.Error())
+				JSONWithInvalidToken(c, err.Error())
 				return
 			}
-			c.Set(SessionId, &sessionId)
+			LogWithGinX(c, SessionIdKey, sessionId.Hex())
+			c.Set(SessionIdKey, &sessionId)
 			c.Next()
 			return
 		}

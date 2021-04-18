@@ -11,6 +11,7 @@ import (
 	"github.com/sfshf/sprout/app/govern/config"
 	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/pkg/jwtauth"
+	"github.com/sfshf/sprout/pkg/logger"
 	"github.com/sfshf/sprout/repo"
 	"log"
 	"net/http"
@@ -18,10 +19,12 @@ import (
 )
 
 type App struct {
-	Router    *gin.Engine
-	StaffApi  *api.Staff
-	CasbinApi *api.Casbin
-	UserApi   *api.User
+	Router *gin.Engine
+
+	StaffApi     *api.Staff
+	CasbinApi    *api.Casbin
+	AccessLogApi *api.AccessLog
+	UserApi      *api.User
 
 	StaffRepo     *repo.Staff
 	CasbinRepo    *repo.Casbin
@@ -31,6 +34,7 @@ type App struct {
 	Auther     *jwtauth.JWTAuth
 	Enforcer   *casbin.Enforcer
 	PicCaptcha *b64Captcha.Captcha
+	Logger     *logger.Logger
 }
 
 func (a *App) InitRootAccount(ctx context.Context) error {
@@ -137,6 +141,11 @@ func (a *App) InitRoutes(ctx context.Context) {
 			{
 				staff.GET("/:role", a.CasbinApi.StaffsOfRole)
 			}
+		}
+
+		accessLog := v1.Group("/accessLog")
+		{
+			accessLog.GET("", a.AccessLogApi.List)
 		}
 
 		user := v1.Group("/user")

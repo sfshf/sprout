@@ -41,6 +41,7 @@ type StaffListResp struct {
 	schema.PaginationResp
 }
 
+// TODO: model to schema, should use reflect?!
 func (a *Staff) List(ctx context.Context, arg *StaffListReq, sort bson.M) (*StaffListResp, error) {
 	var and bson.A
 	if arg.Account != "" {
@@ -69,7 +70,7 @@ func (a *Staff) List(ctx context.Context, arg *StaffListReq, sort bson.M) (*Staf
 		and = append(and, bson.M{"lastSignInTime": bson.M{"$gte": primitive.DateTime(arg.LastSignInTimeBegin)}})
 	}
 	if arg.LastSignInTimeEnd > 0 {
-		and = append(and, bson.M{"lastSignInTime": bson.M{"lt": primitive.DateTime(arg.LastSignInTimeEnd)}})
+		and = append(and, bson.M{"lastSignInTime": bson.M{"$lt": primitive.DateTime(arg.LastSignInTimeEnd)}})
 	}
 	var filter bson.M
 	if len(and) > 0 {

@@ -131,11 +131,11 @@ type http struct {
 }
 
 type log struct {
-	SkipStderr      bool
-	Log2Mongo       bool
-	MongoCollection string
-	MaxWorkers      int
-	MaxBuffers      int
+	Enable     bool
+	SkipStdout bool
+	Log2Mongo  bool
+	MaxWorkers int
+	MaxBuffers int
 }
 
 type cors struct {

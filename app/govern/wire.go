@@ -14,23 +14,27 @@ var (
 	ApiSet = wire.NewSet(
 		api.NewStaff,
 		api.NewCasbin,
-		api.NewUser)
+		api.NewAccessLog,
+		api.NewUser,
+	)
 	BllSet = wire.NewSet(
 		bll.NewStaff,
 		bll.NewCasbin,
+		bll.NewAccessLog,
 		bll.NewUser,
 	)
 	RepoSet = wire.NewSet(
 		repo.NewStaffRepo,
 		repo.NewCasbinRepo,
-		repo.NewUserRepo,
 		repo.NewAccessLogRepo,
+		repo.NewUserRepo,
 	)
 	AppSet = wire.NewSet(
 		NewAuth,
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
+		NewLogger,
 		RepoSet,
 		BllSet,
 		ApiSet,

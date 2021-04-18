@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/sfshf/sprout/app/govern/bll"
 	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/model"
@@ -26,12 +27,12 @@ func (a *Casbin) ObjectActionMap(c *gin.Context) {
 func (a *Casbin) AddRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddRoleReq
-	if err := c.ShouldBind(&arg); err != nil {
-		ginx.AbortWithInvalidArguments(c, err.Error())
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	if err := a.bll.AddRole(ctx, &arg); err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, nil)
@@ -41,7 +42,7 @@ func (a *Casbin) AddRole(c *gin.Context) {
 func (a *Casbin) DeleteRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	if err := a.bll.DeleteRole(ctx, strings.ToUpper(c.Param("role"))); err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, nil)
@@ -52,11 +53,11 @@ func (a *Casbin) SetRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("staffId"))
 	if err != nil {
-		ginx.AbortWithInvalidArguments(c, err.Error())
+		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	if err := a.bll.SetRole(ctx, &staffId, c.Param("role")); err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, nil)
@@ -67,11 +68,11 @@ func (a *Casbin) UnsetRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("staffId"))
 	if err != nil {
-		ginx.AbortWithInvalidArguments(c, err.Error())
+		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	if err := a.bll.UnsetRole(ctx, &staffId, strings.ToUpper(c.Param("role"))); err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, nil)
@@ -89,7 +90,7 @@ func (a *Casbin) StaffsOfRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	users, err := a.bll.StaffsOfRole(ctx, strings.ToUpper(c.Param("role")))
 	if err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, users)
@@ -100,12 +101,12 @@ func (a *Casbin) RolesOfStaff(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("staffId"))
 	if err != nil {
-		ginx.AbortWithInvalidArguments(c, err.Error())
+		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	roles, err := a.bll.RolesOfStaff(ctx, &staffId)
 	if err != nil {
-		ginx.AbortWithFailure(c, err.Error())
+		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, roles)

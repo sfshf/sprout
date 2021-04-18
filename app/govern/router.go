@@ -1,25 +1,27 @@
 package main
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/app/govern/config"
 	"github.com/sfshf/sprout/app/govern/ginx"
+	"github.com/sfshf/sprout/pkg/logger"
 	swag "github.com/swaggo/gin-swagger"
 	swagFiles "github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-func NewRouter() *gin.Engine {
+func NewRouter(ctx context.Context, logger *logger.Logger) *gin.Engine {
 	gin.SetMode(config.C.RunMode)
 
 	app := gin.New()
 	app.NoMethod(ginx.NoMethodHandler())
 	app.NoRoute(ginx.NoRouteHandler())
-	// TODO Custom access logger
-	app.Use(gin.Logger())
+	app.Use(ginx.Logger(logger, config.C.Log.Enable))
 	// TODO Custom recovery logger
 	app.Use(gin.Recovery())
 	// TODO CORS middleware
 	// TODO TraceID middleware
+	app.Use(ginx.TraceId())
 	// TODO GZIP
 	if config.C.Swagger {
 		app.GET("/swagger/*any", swag.WrapHandler(swagFiles.Handler))

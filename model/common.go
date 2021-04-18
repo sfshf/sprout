@@ -16,6 +16,10 @@ func StringPtr(s string) *string {
 	return &s
 }
 
+func IntPtr(i int) *int {
+	return &i
+}
+
 func NewPasswdSalt() string {
 	key := PasswdSalt + time.Now().String()
 	return hash.MD5StringIgnorePrefixAndError(key)

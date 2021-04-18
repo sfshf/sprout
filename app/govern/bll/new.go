@@ -33,6 +33,16 @@ func NewCasbin(enforcer *casbin.Enforcer, staffRepo *repo.Staff) *Casbin {
 	}
 }
 
+type AccessLog struct {
+	accessLog *repo.AccessLog
+}
+
+func NewAccessLog(repo *repo.AccessLog) *AccessLog {
+	return &AccessLog{
+		accessLog: repo,
+	}
+}
+
 type User struct {
 	userRepo *repo.User
 }

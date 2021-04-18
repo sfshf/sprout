@@ -1,3 +1,4 @@
+# debug, test, release
 RunMode = "debug"
 Swagger = false
 PrintConfig = true
@@ -54,11 +55,12 @@ MaxContentLength = 8192
 MaxLoggerLength = 8192
 
 [Log]
-# If true, then skip lo log to os.Stderr.
-SkipStderr = false
-# If true, then log to mongo database.
-Log2Mongo = false
-MongoCollection = "log"
+# If true, the use the custom logger.
+Enable = false
+# If true, then skip lo logger to os.Stdout.
+SkipStdout = true
+# If true, then logger to mongo database.
+Log2Mongo = true
 # Max value of the number of workers in the task queue.
 MaxWorkers = 50
 # Max value of the number of buffers in the task queue.
