@@ -3,17 +3,12 @@
 :-)
 
 
-A web-app demo implemented by Go!
+Out-of-the-box web app, chat server, and so on.
 
 
 :-)
 
-## Tools:
-
-Gin + MongoDB + Casbin + Wire + Docker + Nginx + Travis
-
 # REFERENCE:
-
 
 ## Go programming language:
 
