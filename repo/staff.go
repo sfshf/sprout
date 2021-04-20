@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"github.com/sfshf/sprout/model"
-	"github.com/sfshf/sprout/pkg/jwtauth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -107,12 +106,16 @@ func (a *Staff) FindOneByAccount(ctx context.Context, username string) (*model.S
 	return &m, nil
 }
 
-func (a *Staff) VerifySignInToken(ctx context.Context, id *primitive.ObjectID, token *string) error {
-	cnt, err := a.coll.CountDocuments(ctx, bson.M{"_id": id, "signInToken": token}, options.Count().SetLimit(1))
-	if err != nil || cnt < 1 {
-		return jwtauth.ErrInvalidToken
+func (a *Staff) TokenExists(ctx context.Context, id string, token string) bool {
+	sessionId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return false
 	}
-	return nil
+	cnt, err := a.coll.CountDocuments(ctx, bson.M{"_id": sessionId, "signInToken": token}, options.Count().SetLimit(1))
+	if err != nil || cnt < 1 {
+		return false
+	}
+	return true
 }
 
 func (a *Staff) UpdateOne(ctx context.Context, obj *model.Staff) error {

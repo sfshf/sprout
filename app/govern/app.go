@@ -29,8 +29,8 @@ type App struct {
 	CasbinRepo    *repo.Casbin
 	UserRepo      *repo.User
 	AccessLogRepo *repo.AccessLog
-	Redis         *cache.RedisCache
-	Cache         *cache.MemoryCache
+	RedisCache    *cache.RedisCache
+	MemoryCache   *cache.MemoryCache
 
 	Router     *gin.Engine
 	Auther     *jwtauth.JWTAuth
@@ -90,7 +90,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
 		v1.POST("/signIn", a.StaffApi.SignIn)
 
-		v1.Use(ginx.JWT(a.Auther, a.StaffRepo))
+		v1.Use(ginx.JWT(a.Auther, a.RedisCache))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)

@@ -3,19 +3,22 @@ package bll
 import (
 	"github.com/casbin/casbin/v2"
 	b64Captcha "github.com/mojocn/base64Captcha"
+	"github.com/sfshf/sprout/cache"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/repo"
 )
 
 type Staff struct {
 	staffRepo  *repo.Staff
+	redisCache *cache.RedisCache
 	auther     *jwtauth.JWTAuth
 	picCaptcha *b64Captcha.Captcha
 }
 
-func NewStaff(repo *repo.Staff, auther *jwtauth.JWTAuth, captcha *b64Captcha.Captcha) *Staff {
+func NewStaff(repo *repo.Staff, redisCache *cache.RedisCache, auther *jwtauth.JWTAuth, captcha *b64Captcha.Captcha) *Staff {
 	return &Staff{
 		staffRepo:  repo,
+		redisCache: redisCache,
 		auther:     auther,
 		picCaptcha: captcha,
 	}

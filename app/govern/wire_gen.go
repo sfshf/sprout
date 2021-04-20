@@ -25,33 +25,27 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	accessLog := repo.NewAccessLogRepo(ctx, database)
-	logger, err := NewLogger(accessLog)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	engine := NewRouter(ctx, logger)
 	staff := repo.NewStaffRepo(ctx, database)
-	jwtAuth := NewAuth()
-	captcha := NewPictureCaptcha()
-	bllStaff := bll.NewStaff(staff, jwtAuth, captcha)
-	apiStaff := api.NewStaff(bllStaff)
-	casbin := repo.NewCasbinRepo(ctx, database)
-	enforcer := NewCasbin(ctx, casbin)
-	bllCasbin := bll.NewCasbin(enforcer, staff)
-	apiCasbin := api.NewCasbin(bllCasbin)
-	bllAccessLog := bll.NewAccessLog(accessLog)
-	apiAccessLog := api.NewAccessLog(bllAccessLog)
-	user := repo.NewUserRepo(ctx, database)
-	bllUser := bll.NewUser(user)
-	apiUser := api.NewUser(bllUser)
 	client, cleanup2, err := NewRedisDB(ctx)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	redisCache := cache.NewRedisCache(client)
+	jwtAuth := NewAuth()
+	captcha := NewPictureCaptcha()
+	bllStaff := bll.NewStaff(staff, redisCache, jwtAuth, captcha)
+	apiStaff := api.NewStaff(bllStaff)
+	casbin := repo.NewCasbinRepo(ctx, database)
+	enforcer := NewCasbin(ctx, casbin)
+	bllCasbin := bll.NewCasbin(enforcer, staff)
+	apiCasbin := api.NewCasbin(bllCasbin)
+	accessLog := repo.NewAccessLogRepo(ctx, database)
+	bllAccessLog := bll.NewAccessLog(accessLog)
+	apiAccessLog := api.NewAccessLog(bllAccessLog)
+	user := repo.NewUserRepo(ctx, database)
+	bllUser := bll.NewUser(user)
+	apiUser := api.NewUser(bllUser)
 	cacheCache, cleanup3, err := NewCache(ctx)
 	if err != nil {
 		cleanup2()
@@ -59,8 +53,15 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		return nil, nil, err
 	}
 	memoryCache := cache.NewMemoryCache(cacheCache)
+	logger, err := NewLogger(accessLog)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	engine := NewRouter(ctx, logger)
 	app := &App{
-		Router:        engine,
 		StaffApi:      apiStaff,
 		CasbinApi:     apiCasbin,
 		AccessLogApi:  apiAccessLog,
@@ -69,10 +70,11 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		CasbinRepo:    casbin,
 		UserRepo:      user,
 		AccessLogRepo: accessLog,
+		RedisCache:    redisCache,
+		MemoryCache:   memoryCache,
+		Router:        engine,
 		Auther:        jwtAuth,
 		Enforcer:      enforcer,
-		Redis:         redisCache,
-		Cache:         memoryCache,
 		PicCaptcha:    captcha,
 		Logger:        logger,
 	}

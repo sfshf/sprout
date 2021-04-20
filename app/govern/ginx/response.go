@@ -23,6 +23,7 @@ func JSONWithInvalidArguments(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithFailure(c *gin.Context, data interface{}) {
@@ -32,6 +33,7 @@ func JSONWithFailure(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithDuplicateEntity(c *gin.Context, data interface{}) {
@@ -41,6 +43,7 @@ func JSONWithDuplicateEntity(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithInvalidAccountOrPassword(c *gin.Context, data interface{}) {
@@ -50,6 +53,7 @@ func JSONWithInvalidAccountOrPassword(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithInvalidToken(c *gin.Context, data interface{}) {
@@ -59,6 +63,7 @@ func JSONWithInvalidToken(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithInvalidCaptcha(c *gin.Context, data interface{}) {
@@ -68,6 +73,7 @@ func JSONWithInvalidCaptcha(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithUnauthorized(c *gin.Context, data interface{}) {
@@ -77,6 +83,7 @@ func JSONWithUnauthorized(c *gin.Context, data interface{}) {
 		Data: data,
 	}
 	JSONWithStatusOK(c, resp)
+	c.Abort()
 }
 
 func JSONWithSuccess(c *gin.Context, data interface{}) {

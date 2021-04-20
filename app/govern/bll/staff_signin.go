@@ -2,6 +2,7 @@ package bll
 
 import (
 	"context"
+	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/app/govern/schema"
 	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -60,7 +61,7 @@ func (a *Staff) VerifyAccountAndPassword(ctx context.Context, account, password 
 }
 
 func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *string, ts *primitive.DateTime) (*SigninResp, error) {
-	token, expiresAt, err := a.auther.GenerateToken(objId.Hex())
+	token, expires, expiresAt, err := a.auther.GenerateToken(objId.Hex())
 	if err != nil {
 		return nil, err
 	}
@@ -72,6 +73,9 @@ func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *strin
 	}
 	if err := a.staffRepo.UpdateOne(ctx, obj); err != nil {
 		return nil, err
+	}
+	if !a.redisCache.Set(ctx, ginx.RedisKeyPrefix+objId.Hex(), token, expires) {
+		return nil, schema.ErrFailure
 	}
 	return &SigninResp{
 		Token:     token,
