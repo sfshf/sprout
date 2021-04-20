@@ -34,6 +34,7 @@ var (
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
+		NewCache,
 		NewLogger,
 		RepoSet,
 		BllSet,

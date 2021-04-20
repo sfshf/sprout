@@ -44,6 +44,10 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	user := repo.NewUserRepo(ctx, database)
 	bllUser := bll.NewUser(user)
 	apiUser := api.NewUser(bllUser)
+	cache, cleanup, err := NewCache(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
 	app := &App{
 		Router:        engine,
 		StaffApi:      apiStaff,
@@ -56,10 +60,12 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		AccessLogRepo: accessLog,
 		Auther:        jwtAuth,
 		Enforcer:      enforcer,
+		Cache:         cache,
 		PicCaptcha:    captcha,
 		Logger:        logger,
 	}
 	return app, func() {
+		cleanup()
 	}, nil
 }
 
@@ -74,6 +80,7 @@ var (
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
+		NewCache,
 		NewLogger,
 		RepoSet,
 		BllSet,

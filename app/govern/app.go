@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
+	cache "github.com/go-pkgz/expirable-cache"
 	b64Captcha "github.com/mojocn/base64Captcha"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/config"
@@ -33,6 +34,7 @@ type App struct {
 
 	Auther     *jwtauth.JWTAuth
 	Enforcer   *casbin.Enforcer
+	Cache      cache.Cache
 	PicCaptcha *b64Captcha.Captcha
 	Logger     *logger.Logger
 }

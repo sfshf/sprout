@@ -19,10 +19,9 @@ func NewRouter(ctx context.Context, logger *logger.Logger) *gin.Engine {
 	app.Use(ginx.Logger(logger, config.C.Log.Enable))
 	// TODO Custom recovery logger
 	app.Use(gin.Recovery())
-	// TODO CORS middleware
-	// TODO TraceID middleware
+	app.Use(ginx.CORS())
 	app.Use(ginx.TraceId())
-	// TODO GZIP
+	app.Use(ginx.GZIP())
 	if config.C.Swagger {
 		app.GET("/swagger/*any", swag.WrapHandler(swagFiles.Handler))
 	}

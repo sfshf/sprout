@@ -3,12 +3,17 @@ package ginx
 import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
+	"github.com/sfshf/sprout/app/govern/schema"
 )
 
 // Casbin return a PERM access control ginx middleware.
 func Casbin(enforcer *casbin.Enforcer, rootSessionId string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionId := SessionIdFromGinX(c)
+		if sessionId == nil {
+			JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
+			return
+		}
 		if sessionId.Hex() == rootSessionId {
 			c.Next()
 			return
@@ -24,7 +29,7 @@ func Casbin(enforcer *casbin.Enforcer, rootSessionId string) gin.HandlerFunc {
 			return
 		}
 		if !authorized {
-			JSONWithUnauthorized(c, nil)
+			JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
 			return
 		}
 		c.Next()

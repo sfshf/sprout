@@ -20,6 +20,11 @@ ServerUri = "mongodb://127.0.0.1:27017/sprout?directConnection=true"
 # The name of a database.
 Database = "sprout"
 
+[Cache]
+IsLRU = true
+MaxKeys = 10000
+TTL = 15
+
 [JWTAuth]
 Enable = true
 SigningKey = ""

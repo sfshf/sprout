@@ -64,6 +64,7 @@ type config struct {
 	Global      global
 	Root        *root
 	MongoDB     mongoDB
+	Cache       cache
 	JWTAuth     jwtAuth
 	Casbin      casbin
 	PicCaptcha  picCaptcha
@@ -90,6 +91,12 @@ type root struct {
 type mongoDB struct {
 	ServerUri string
 	Database  string
+}
+
+type cache struct {
+	IsLRU   bool
+	MaxKeys int
+	TTL     int
 }
 
 type jwtAuth struct {
