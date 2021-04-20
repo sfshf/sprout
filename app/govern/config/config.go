@@ -93,7 +93,17 @@ type mongoDB struct {
 	Database  string
 }
 
+type redis struct {
+	Enable   bool
+	Network  string
+	Addr     string
+	Username string
+	Password string
+	DB       int
+}
+
 type cache struct {
+	Enable  bool
 	IsLRU   bool
 	MaxKeys int
 	TTL     int
@@ -152,9 +162,4 @@ type cors struct {
 	AllowHeaders     []string
 	AllowCredentials bool
 	MaxAge           int
-}
-
-type redis struct {
-	Addr     string
-	Passwrod string
 }

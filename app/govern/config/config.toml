@@ -20,7 +20,19 @@ ServerUri = "mongodb://127.0.0.1:27017/sprout?directConnection=true"
 # The name of a database.
 Database = "sprout"
 
+# 'redis://<user>:<password>@<host>:<port>/<db_number>'
+# Or:
+# 'unix://<user>:<password>@</path/to/redis.sock>?db=<db_number>'
+[Redis]
+Enable = true
+Network = "tcp"
+Addr = "127.0.0.1:6379"
+Username = ""
+Password = ""
+DB = 0
+
 [Cache]
+Enable = true
 IsLRU = true
 MaxKeys = 10000
 TTL = 15
@@ -32,7 +44,7 @@ Expired = 7200
 
 [Casbin]
 Enable = true
-Debug = true
+Debug = false
 Model = ""
 AutoLoad = false
 AutoLoadInternal = 60
@@ -79,8 +91,6 @@ AllowHeaders = []
 AllowCredentials = true
 MaxAge = 0
 
-[Redis]
-Addr = ""
-Password = ""
+
 
 

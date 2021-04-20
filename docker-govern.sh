@@ -10,7 +10,18 @@ docker run -itdp 27017:27017 \
 -v govern-mongo-data-db:/data/db \
 -v govern-mongo-data-configdb:/data/configdb \
 --network sprout \
-mongo
+mongo:latest
+
+# Remove the old container named govern-redis, if has.
+docker rm -f govern-redis
+# Run a new container named govern-redis.
+docker run -itdp 6379:6379 \
+--name govern-redis \
+-v govern-redis-data-db:/data/db \
+-v govern-redis-data-configdb:/data/configdb \
+--network sprout \
+redis:latest
+
 
 # Build a govern app builder image using the specific Dockerfile.
 docker build \
@@ -32,5 +43,5 @@ docker run -itd -p 8080:8080 \
 -p 9000:9000 \
 --network sprout \
 --name govern \
-govern-binary
+govern-binary:latest
 

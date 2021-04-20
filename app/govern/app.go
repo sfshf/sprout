@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	cache "github.com/go-pkgz/expirable-cache"
 	b64Captcha "github.com/mojocn/base64Captcha"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/config"
 	"github.com/sfshf/sprout/app/govern/ginx"
+	"github.com/sfshf/sprout/cache"
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/pkg/logger"
 	"github.com/sfshf/sprout/repo"
@@ -20,8 +20,6 @@ import (
 )
 
 type App struct {
-	Router *gin.Engine
-
 	StaffApi     *api.Staff
 	CasbinApi    *api.Casbin
 	AccessLogApi *api.AccessLog
@@ -31,10 +29,12 @@ type App struct {
 	CasbinRepo    *repo.Casbin
 	UserRepo      *repo.User
 	AccessLogRepo *repo.AccessLog
+	Redis         *cache.RedisCache
+	Cache         *cache.MemoryCache
 
+	Router     *gin.Engine
 	Auther     *jwtauth.JWTAuth
 	Enforcer   *casbin.Enforcer
-	Cache      cache.Cache
 	PicCaptcha *b64Captcha.Captcha
 	Logger     *logger.Logger
 }

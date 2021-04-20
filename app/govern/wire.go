@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/sfshf/sprout/app/govern/api"
 	"github.com/sfshf/sprout/app/govern/bll"
+	"github.com/sfshf/sprout/cache"
 	"github.com/sfshf/sprout/repo"
 )
 
@@ -29,14 +30,20 @@ var (
 		repo.NewAccessLogRepo,
 		repo.NewUserRepo,
 	)
+	CacheSet = wire.NewSet(
+		cache.NewMemoryCache,
+		cache.NewRedisCache,
+	)
 	AppSet = wire.NewSet(
 		NewAuth,
 		NewCasbin,
 		NewPictureCaptcha,
 		NewMongoDB,
+		NewRedisDB,
 		NewCache,
 		NewLogger,
 		RepoSet,
+		CacheSet,
 		BllSet,
 		ApiSet,
 		NewRouter,
