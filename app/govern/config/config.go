@@ -161,5 +161,5 @@ type cors struct {
 	AllowMethods     []string
 	AllowHeaders     []string
 	AllowCredentials bool
-	MaxAge           int
+	MaxAge           time.Duration
 }

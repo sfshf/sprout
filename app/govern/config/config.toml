@@ -85,11 +85,11 @@ MaxBuffers = 10000
 
 [CORS]
 Enable = true
-AllowOrigins = []
-AllowMethods = []
-AllowHeaders = []
-AllowCredentials = true
-MaxAge = 0
+AllowOrigins = ["www.sfshf.com"]
+AllowMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]
+AllowHeaders = ["Origin", "Content-Length", "Content-Type"]
+AllowCredentials = false
+MaxAge = 43200
 
 
 
