@@ -1,6 +1,6 @@
 # debug, test, release
 RunMode = "debug"
-Swagger = false
+Swagger = true
 PrintConfig = true
 
 [Global]

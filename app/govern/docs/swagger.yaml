@@ -1,0 +1,21 @@
+basePath: /api/v1
+host: localhost:8000
+info:
+  contact:
+    email: sfshf@github.com
+    name: gavin
+    url: http://github.com/sfshf
+  description: This is a back-end government app.
+  license:
+    name: MIT
+    url: https://github.com/sfshf/sprout/blob/main/LICENSE
+  termsOfService: http://swagger.io/terms/
+  title: Govern APIs
+  version: 0.0.1-beta
+paths: {}
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -222,6 +222,7 @@ Out-of-the-box web app, chat server, and so on.
 
 - [What Is OpenAPI?](https://swagger.io/docs/specification/about/)
 - [github.com/swaggo/swag](https://github.com/swaggo/swag)
+- [RESTful API](http://restful.p2hp.com/)
 
 ### SOA
 
