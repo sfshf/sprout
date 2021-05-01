@@ -14,7 +14,7 @@ import (
 
 func (a *Staff) GetPicCaptcha(c *gin.Context) {
 	ctx := c.Request.Context()
-	resp, err := a.bll.GeneratePicCaptchaIdAndB64s(ctx, c.Query("id"))
+	resp, err := a.bll.GeneratePicCaptchaIdAndB64s(ctx, c.Query("obsolete_id"))
 	if err != nil {
 		ginx.JSONWithFailure(c, nil)
 		return
@@ -69,8 +69,8 @@ func (a *Staff) SignIn(c *gin.Context) {
 			return
 		}
 	}
-	signinTime := primitive.DateTime(arg.Timestamp)
-	resp, err := a.bll.SignIn(ctx, staff.ID, clientIp, &signinTime)
+	signInTime := primitive.DateTime(arg.Timestamp)
+	resp, err := a.bll.SignIn(ctx, staff.ID, clientIp, &signInTime)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return

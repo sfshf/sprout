@@ -4,6 +4,10 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	b64Captcha "github.com/mojocn/base64Captcha"
@@ -14,9 +18,6 @@ import (
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/pkg/logger"
 	"github.com/sfshf/sprout/repo"
-	"log"
-	"net/http"
-	"time"
 )
 
 type App struct {
@@ -88,13 +89,13 @@ func (a *App) InitRoutes(ctx context.Context) {
 	{
 		v1.POST("/signUp", a.StaffApi.SignUp)
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
-		v1.PUT("/signIn", a.StaffApi.SignIn)
+		v1.PATCH("/signIn", a.StaffApi.SignIn)
 
 		v1.Use(ginx.JWT(a.Auther, a.RedisCache))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)
-			v1.PUT("/signOut", a.StaffApi.SignOut)
+			v1.PATCH("/signOut", a.StaffApi.SignOut)
 			v1.DELETE("/signOff/:id", a.StaffApi.SignOff)
 		}
 

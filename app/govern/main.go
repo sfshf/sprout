@@ -9,17 +9,29 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	_ "github.com/sfshf/sprout/app/govern/docs"
 )
 
-// @title
-// @version
-// @description
+// @title Govern APIs
+// @version 0.0.1-beta
+// @description This is a back-end government app.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name gavin
+// @contact.url http://github.com/sfshf
+// @contact.email sfshf@github.com
+
+// @license.name MIT
+// @license.url https://github.com/sfshf/sprout/blob/main/LICENSE
+
+// @host localhost:8000
+// @basePath /api/v1
+// @query.collection.format multi
+
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @schemes http https
-// @basePath /
-// @contact.name sfshf
 func main() {
 	state := 1
 	sc := make(chan os.Signal, 1)

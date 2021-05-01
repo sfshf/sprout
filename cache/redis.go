@@ -2,9 +2,9 @@ package cache
 
 import (
 	"context"
-	"fmt"
-	"github.com/go-redis/redis/v8"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 type RedisCache struct {
@@ -23,7 +23,6 @@ func (a *RedisCache) Engine() *redis.Client {
 
 func (a *RedisCache) TokenExists(ctx context.Context, key string, value string) bool {
 	res := a.cli.Get(ctx, key).Val()
-	fmt.Println(res)
 	return res == value
 }
 

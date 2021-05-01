@@ -15,8 +15,8 @@ import (
 	"github.com/sfshf/sprout/pkg/jwtauth"
 	"github.com/sfshf/sprout/pkg/logger"
 	"github.com/sfshf/sprout/repo"
-	swag "github.com/swaggo/gin-swagger"
-	swagFiles "github.com/swaggo/gin-swagger/swaggerFiles"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Logger --------------------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ func NewRouter(ctx context.Context, logger *logger.Logger) *gin.Engine {
 	app.Use(ginx.TraceId())
 	app.Use(ginx.GZIP())
 	if config.C.Swagger {
-		app.GET("/swagger/*any", swag.WrapHandler(swagFiles.Handler))
+		app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	log.Println("App router is on!!!")
 	return app

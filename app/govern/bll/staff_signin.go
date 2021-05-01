@@ -27,8 +27,8 @@ type SigninResp struct {
 	ExpiresAt int64  `json:"expiresAt"`
 }
 
-func (a *Staff) GeneratePicCaptchaIdAndB64s(ctx context.Context, id string) (*GetPicCaptchaResp, error) {
-	_ = a.picCaptcha.Store.Get(id, true)
+func (a *Staff) GeneratePicCaptchaIdAndB64s(ctx context.Context, obsoleteId string) (*GetPicCaptchaResp, error) {
+	_ = a.picCaptcha.Store.Get(obsoleteId, true)
 	id, b64s, err := a.picCaptcha.Generate()
 	if err != nil {
 		return nil, err
