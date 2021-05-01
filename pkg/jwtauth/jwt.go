@@ -23,7 +23,7 @@ func New(opts ...Option) *JWTAuth {
 }
 
 // GenerateToken return a token string, an expires (millisecond unit) and an error if has.
-func (a *JWTAuth) GenerateToken(subject string) (string, time.Duration, int64, error) {
+func (a *JWTAuth) GenerateToken(subject string) (string, int64, error) {
 	now := time.Now()
 	duration := time.Duration(a.p.expired) * time.Second
 	expiresAt := now.Add(duration).UnixNano() / 1e6
@@ -35,9 +35,9 @@ func (a *JWTAuth) GenerateToken(subject string) (string, time.Duration, int64, e
 	})
 	jwtString, err := token.SignedString(a.p.signingKey)
 	if err != nil {
-		return "", 0, 0, errors.Wrap(err, "jwt auth - failed to generate jwt token string")
+		return "", 0, errors.Wrap(err, "jwt auth - failed to generate jwt token string")
 	}
-	return a.p.tokenPrefix + jwtString, duration, expiresAt, nil
+	return a.p.tokenPrefix + jwtString, expiresAt, nil
 }
 
 func (a *JWTAuth) parseToken(jwtString string) (*kinet.StandardClaims, error) {
