@@ -86,15 +86,15 @@ func (a *App) RunHTTPServer(ctx context.Context) func() {
 func (a *App) InitRoutes(ctx context.Context) {
 	v1 := a.Router.Group("/api/v1")
 	{
-		v1.PUT("/signUp", a.StaffApi.SignUp)
+		v1.POST("/signUp", a.StaffApi.SignUp)
 		v1.GET("/picCaptcha", a.StaffApi.GetPicCaptcha)
-		v1.POST("/signIn", a.StaffApi.SignIn)
+		v1.PUT("/signIn", a.StaffApi.SignIn)
 
 		v1.Use(ginx.JWT(a.Auther, a.RedisCache))
 
 		{
 			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)
-			v1.GET("/signOut", a.StaffApi.SignOut)
+			v1.PUT("/signOut", a.StaffApi.SignOut)
 			v1.DELETE("/signOff/:id", a.StaffApi.SignOff)
 		}
 
@@ -102,7 +102,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 		staff := v1.Group("/staff")
 		{
-			staff.POST("/:id", a.StaffApi.Update)
+			staff.PUT("/:id", a.StaffApi.Update)
 			staff.GET("/:id", a.StaffApi.Profile)
 			staff.GET("", a.StaffApi.List)
 		}
@@ -122,16 +122,16 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 			policy := casbin.Group("/policy")
 			{
-				//policy.PUT("", a.CasbinApi.AddPolicy)
+				//policy.POST("", a.CasbinApi.AddPolicy)
 				policy.GET("/:role", a.CasbinApi.PoliciesOfRole)
-				//policy.POST("/:id", a.CasbinApi.UpdatePolicy)
+				//policy.PUT("/:id", a.CasbinApi.UpdatePolicy)
 				//policy.DELETE("/:id", a.CasbinApi.RemovePolicy)
 				//policy.GET("", a.CasbinApi.Policies)
 			}
 
 			role := casbin.Group("/role")
 			{
-				role.PUT("", a.CasbinApi.AddRole)
+				role.POST("", a.CasbinApi.AddRole)
 				role.DELETE("/:role", a.CasbinApi.DeleteRole)
 				role.PUT("/:role/set/:staffId", a.CasbinApi.SetRole)
 				role.DELETE("/:role/unset/:staffId", a.CasbinApi.UnsetRole)
@@ -152,9 +152,9 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 		user := v1.Group("/user")
 		{
-			user.PUT("", a.UserApi.Add)
+			user.POST("", a.UserApi.Add)
 			user.DELETE("/:id", a.UserApi.Delete)
-			user.POST("/:id", a.UserApi.Update)
+			user.PUT("/:id", a.UserApi.Update)
 			user.GET("/:id", a.UserApi.Info)
 			user.GET("", a.UserApi.List)
 		}

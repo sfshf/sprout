@@ -12,7 +12,7 @@ func CORS() gin.HandlerFunc {
 	return cors.New(
 		cors.Config{
 			AllowAllOrigins: true,
-			AllowOrigins:    c.AllowOrigins,
+			//AllowOrigins:    c.AllowOrigins,
 			//AllowOriginFunc:        nil,
 			AllowMethods:     c.AllowMethods,
 			AllowHeaders:     c.AllowHeaders,

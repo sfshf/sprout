@@ -165,6 +165,7 @@ Out-of-the-box web app, chat server, and so on.
 ### MySQL
 
 - [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/)
+  - [什么是乐观锁，什么是悲观锁](https://www.jianshu.com/p/d2ac26ca6525)
 
 - [Gorm v2](https://github.com/go-gorm/gorm)
     - [Gorm guides](https://gorm.io/docs/index.html)
