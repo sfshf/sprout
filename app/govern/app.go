@@ -94,7 +94,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 		v1.Use(ginx.JWT(a.Auther, a.RedisCache))
 
 		{
-			v1.GET("/picCaptchaAnswer/:id", a.StaffApi.GetPicCaptchaAnswer)
+			v1.GET("/picCaptchaAnswer", a.StaffApi.GetPicCaptchaAnswer)
 			v1.PATCH("/signOut", a.StaffApi.SignOut)
 			v1.DELETE("/signOff/:id", a.StaffApi.SignOff)
 		}

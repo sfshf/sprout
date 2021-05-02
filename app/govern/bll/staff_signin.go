@@ -14,7 +14,7 @@ type GetPicCaptchaResp struct {
 	PicCaptchaB64s string `json:"picCaptchaB64s"`
 }
 
-type SigninReq struct {
+type SignInReq struct {
 	Account          string `json:"account" binding:"gte=2,lte=32"`
 	Password         string `json:"password" binding:"gte=8,lte=32"`
 	PicCaptchaId     string `json:"picCaptchaId" binding:"required"`
@@ -22,7 +22,7 @@ type SigninReq struct {
 	Timestamp        int64  `json:"timestamp" binding:"gte=0"`
 }
 
-type SigninResp struct {
+type SignInResp struct {
 	Token     string `json:"token"`
 	ExpiresAt int64  `json:"expiresAt"`
 }
@@ -61,7 +61,7 @@ func (a *Staff) VerifyAccountAndPassword(ctx context.Context, account, password 
 	return staff, nil
 }
 
-func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *string, ts *primitive.DateTime) (*SigninResp, error) {
+func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *string, ts *primitive.DateTime) (*SignInResp, error) {
 	token, expiresAt, err := a.auther.GenerateToken(objId.Hex())
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *strin
 	if !a.redisCache.Set(ctx, ginx.RedisKeyPrefix+objId.Hex(), token, time.Unix(0, expiresAt*1e6).Sub(time.Now())) {
 		return nil, schema.ErrFailure
 	}
-	return &SigninResp{
+	return &SignInResp{
 		Token:     token,
 		ExpiresAt: expiresAt,
 	}, nil

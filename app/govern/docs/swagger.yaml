@@ -1,4 +1,106 @@
 basePath: /api/v1
+definitions:
+  bll.GetPicCaptchaResp:
+    properties:
+      picCaptchaB64s:
+        type: string
+      picCaptchaId:
+        type: string
+    type: object
+  bll.ProfileResp:
+    properties:
+      account:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      lastSignInIp:
+        type: string
+      lastSignInTime:
+        type: integer
+      phone:
+        type: string
+      realName:
+        type: string
+      role:
+        type: string
+      signInIpWhiteList:
+        items:
+          type: string
+        type: array
+      signUpAt:
+        type: integer
+    type: object
+  bll.SignInReq:
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+      picCaptchaAnswer:
+        type: string
+      picCaptchaId:
+        type: string
+      timestamp:
+        type: integer
+    required:
+    - picCaptchaAnswer
+    - picCaptchaId
+    type: object
+  bll.SignInResp:
+    properties:
+      expiresAt:
+        type: integer
+      token:
+        type: string
+    type: object
+  bll.SignUpReq:
+    properties:
+      account:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      realName:
+        type: string
+      signInIpWhitelist:
+        items:
+          type: string
+        type: array
+      timestamp:
+        type: integer
+    required:
+    - email
+    - timestamp
+    type: object
+  bll.StaffListResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  bll.StaffUpdateReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      signInIpWhitelist:
+        items:
+          type: string
+        type: array
+    required:
+    - email
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -12,7 +114,272 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Govern APIs
   version: 0.0.1-beta
-paths: {}
+paths:
+  /picCaptcha:
+    get:
+      description: Get a new picture captcha id and base64 string of the picture,
+        and delete the obsolete captcha of the obsolete_id, if has.
+      operationId: get-pic-captcha
+      parameters:
+      - description: an obsolete captcha id.
+        in: query
+        name: obsolete_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: captcha id and picture.
+          schema:
+            $ref: '#/definitions/bll.GetPicCaptchaResp'
+      summary: Get a picture captcha.
+      tags:
+      - staff
+  /picCaptchaAnswer:
+    get:
+      description: Get the answer code of a picture captcha with the captcha id.
+      operationId: get-pic-captcha-answer
+      parameters:
+      - description: a captcha id.
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: Invalid Token, Invalid Captcha, Unauthorized, or other errors.
+          schema:
+            type: error
+        "2000":
+          description: captcha answer code
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get the answer code of a picture captcha.
+      tags:
+      - staff
+  /signIn:
+    patch:
+      consumes:
+      - application/json
+      description: Sign in with account and password, supporting picture captcha authentication.
+      operationId: sign-in
+      parameters:
+      - description: required attributes to sign in.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.SignInReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: sign in token and expiry time.
+          schema:
+            $ref: '#/definitions/bll.SignInResp'
+      summary: Sign in.
+      tags:
+      - staff
+  /signOff/:id:
+    delete:
+      description: Sign off the session account, or some specific account only by
+        root account.
+      operationId: sign-off
+      parameters:
+      - description: id of the account to sign off.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Sign off.
+      tags:
+      - staff
+  /signOut:
+    patch:
+      description: Sign out the session account.
+      operationId: sign-out
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Sign out.
+      tags:
+      - staff
+  /signUp:
+    post:
+      consumes:
+      - application/json
+      description: Sign up a new staff account.
+      operationId: sign-up
+      parameters:
+      - description: required attributes to sign up.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.SignUpReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      summary: Sign up.
+      tags:
+      - staff
+  /staff:
+    get:
+      description: Get a list of staff accounts.
+      operationId: staff-list
+      parameters:
+      - in: query
+        name: account
+        type: string
+      - in: query
+        name: email
+        type: string
+      - in: query
+        name: gender
+        type: string
+      - in: query
+        name: lastSignInIp
+        type: string
+      - in: query
+        name: lastSignInTimeBegin
+        type: integer
+      - in: query
+        name: lastSignInTimeEnd
+        type: integer
+      - in: query
+        name: orderBy
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: perPage
+        type: integer
+      - in: query
+        name: phone
+        type: string
+      - in: query
+        name: role
+        type: string
+      - in: query
+        name: signIn
+        type: boolean
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: staff list.
+          schema:
+            $ref: '#/definitions/bll.StaffListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of staff accounts.
+      tags:
+      - staff
+  /staff/:id:
+    get:
+      description: Get the profile of a staff account.
+      operationId: staff-profile
+      parameters:
+      - description: id of the staff account.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: profile of the staff.
+          schema:
+            $ref: '#/definitions/bll.ProfileResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get infos of a staff account.
+      tags:
+      - staff
+    put:
+      consumes:
+      - application/json
+      description: Update all updatable attributes of a staff account.
+      operationId: staff-update
+      parameters:
+      - description: id of the staff account to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes to update.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.StaffUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update attributes of a staff.
+      tags:
+      - staff
 securityDefinitions:
   ApiKeyAuth:
     in: header

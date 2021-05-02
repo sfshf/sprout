@@ -8,7 +8,7 @@ import (
 
 type StaffUpdateReq struct {
 	Password          string   `json:"password" binding:"gte=8,lte=32"`
-	Email             string   `json:"email" binding:"email"`
+	Email             string   `json:"email" binding:"required,email"`
 	Phone             string   `json:"phone" binding:"gte=11,lte=14"`
 	SignInIpWhitelist []string `json:"signInIpWhitelist" binding:"dive,ip"`
 }

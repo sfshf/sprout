@@ -8,7 +8,6 @@ import (
 type PaginationReq struct {
 	Page    int64 `form:"page" binding:""`
 	PerPage int64 `form:"perPage" binding:""`
-	Total   int64 `form:"total" binding:""`
 }
 
 type PaginationResp struct {
