@@ -118,7 +118,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 			object := casbin.Group("/resource")
 			{
-				object.GET("", a.CasbinApi.ObjectActionMap)
+				object.GET("", a.CasbinApi.AllApiObjActMap)
 			}
 
 			policy := casbin.Group("/policy")
@@ -136,7 +136,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 				role.DELETE("/:role", a.CasbinApi.DeleteRole)
 				role.PUT("/:role/set/:staffId", a.CasbinApi.SetRole)
 				role.DELETE("/:role/unset/:staffId", a.CasbinApi.UnsetRole)
-				role.GET("", a.CasbinApi.Roles)
+				role.GET("", a.CasbinApi.AllRoles)
 				role.GET("/:staffId", a.CasbinApi.RolesOfStaff)
 			}
 

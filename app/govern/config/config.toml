@@ -10,6 +10,29 @@ DateFormat = "2006-01-02"
 DatetimeFormat = "2006-01-02 15:04:05"
 TimeZone = "Asia/Shanghai"
 
+[Log]
+# If true, the use the custom logger.
+Enable = false
+# If true, then skip lo logger to os.Stdout.
+SkipStdout = true
+# If true, then logger to mongo database.
+Log2Mongo = true
+# Max value of the number of workers in the task queue.
+MaxWorkers = 50
+# Max value of the number of buffers in the task queue.
+MaxBuffers = 10000
+
+[CORS]
+Enable = false
+AllowOrigins = ["www.sfshf.com"]
+AllowMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]
+AllowHeaders = ["Origin", "Content-Length", "Content-Type"]
+AllowCredentials = false
+MaxAge = 43200
+
+[GZIP]
+Enable = false
+
 [Root]
 Account = "root"
 Password = "12341234"
@@ -71,25 +94,7 @@ ShutdownTimeout = 10
 MaxContentLength = 8192
 MaxLoggerLength = 8192
 
-[Log]
-# If true, the use the custom logger.
-Enable = false
-# If true, then skip lo logger to os.Stdout.
-SkipStdout = true
-# If true, then logger to mongo database.
-Log2Mongo = true
-# Max value of the number of workers in the task queue.
-MaxWorkers = 50
-# Max value of the number of buffers in the task queue.
-MaxBuffers = 10000
 
-[CORS]
-Enable = true
-AllowOrigins = ["www.sfshf.com"]
-AllowMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]
-AllowHeaders = ["Origin", "Content-Length", "Content-Type"]
-AllowCredentials = false
-MaxAge = 43200
 
 
 

@@ -10,20 +10,44 @@ import (
 	"strings"
 )
 
+// Priorities
+// @description Get predefined priority range of roles.
+// @id casbin-role-priority
+// @tags casbin
+// @summary Get predefined priority range of roles.
+// @produce json
+// @security ApiKeyAuth
+// @success 2000 {array} []int "minimum and maximum value of the predefined priority range."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /casbin/priority [GET]
 func (a *Casbin) Priorities(c *gin.Context) {
 	ginx.JSONWithSuccess(c, []int{model.PriorityMIN, model.PriorityMAX})
 	return
 }
 
-func (a *Casbin) ObjectActionMap(c *gin.Context) {
-	resource := make(map[string]string, len(a.Routes))
+// AllApiObjActMap
+// @description Get an object-action map of all apis.
+// @id casbin-role-api-object-action-map
+// @tags casbin
+// @summary Get an object-action map of all apis.
+// @produce json
+// @security ApiKeyAuth
+// @success 2000 {map} map[string]string "object-action map of all apis."
+// @failure 1000 {error} error "feasible and predictable errors."
+func (a *Casbin) AllApiObjActMap(c *gin.Context) {
+	objActMap := make(map[string]string, len(a.Routes))
 	for _, route := range a.Routes {
-		resource[route.Path] = route.Method
+		objActMap[route.Path] = route.Method
 	}
-	ginx.JSONWithSuccess(c, resource)
+	ginx.JSONWithSuccess(c, objActMap)
 	return
 }
 
+// AddRole
+// @description Add a role.
+// @id casbin-role-add
+// @tags casbin
+// @summary Add a role
 func (a *Casbin) AddRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddRoleReq
@@ -79,7 +103,7 @@ func (a *Casbin) UnsetRole(c *gin.Context) {
 	return
 }
 
-func (a *Casbin) Roles(c *gin.Context) {
+func (a *Casbin) AllRoles(c *gin.Context) {
 	ctx := c.Request.Context()
 	roles := a.bll.Roles(ctx)
 	ginx.JSONWithSuccess(c, roles)

@@ -62,6 +62,9 @@ type config struct {
 	Swagger     bool
 	PrintConfig bool
 	Global      global
+	Log         log
+	CORS        cors
+	GZIP        gzip
 	Root        *root
 	MongoDB     mongoDB
 	Cache       cache
@@ -69,8 +72,6 @@ type config struct {
 	Casbin      casbin
 	PicCaptcha  picCaptcha
 	HTTP        http
-	Log         log
-	CORS        cors
 	Redis       redis
 }
 
@@ -80,6 +81,27 @@ type global struct {
 	DateFormat     string
 	DatetimeFormat string
 	TimeZone       string
+}
+
+type log struct {
+	Enable     bool
+	SkipStdout bool
+	Log2Mongo  bool
+	MaxWorkers int
+	MaxBuffers int
+}
+
+type cors struct {
+	Enable           bool
+	AllowOrigins     []string
+	AllowMethods     []string
+	AllowHeaders     []string
+	AllowCredentials bool
+	MaxAge           time.Duration
+}
+
+type gzip struct {
+	Enable bool
 }
 
 type root struct {
@@ -145,21 +167,4 @@ type http struct {
 	ShutdownTimeout  int
 	MaxContentLength int
 	MaxLoggerLength  int
-}
-
-type log struct {
-	Enable     bool
-	SkipStdout bool
-	Log2Mongo  bool
-	MaxWorkers int
-	MaxBuffers int
-}
-
-type cors struct {
-	Enable           bool
-	AllowOrigins     []string
-	AllowMethods     []string
-	AllowHeaders     []string
-	AllowCredentials bool
-	MaxAge           time.Duration
 }

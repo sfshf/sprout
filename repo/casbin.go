@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"fmt"
 	casbin_model "github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/sfshf/sprout/model"
@@ -169,33 +168,33 @@ func (a *Casbin) SavePolicy(m casbin_model.Model) error {
 
 // AddPolicy adds a policy rule to the storage.
 func (a *Casbin) AddPolicy(sec string, pType string, rule []string) error {
-	ctx := context.Background()
-	line := a.lineToBsonM(ctx, pType, rule)
-	_, err := a.coll.InsertOne(ctx, line)
-	return err
+	//ctx := context.Background()
+	//line := a.lineToBsonM(ctx, pType, rule)
+	//_, err := a.coll.InsertOne(ctx, line)
+	return nil
 }
 
 // RemovePolicy removes a policy rule from the storage.
 // This is part of the Auto-Save feature.
 func (a *Casbin) RemovePolicy(sec string, pType string, rule []string) error {
-	ctx := context.Background()
-	line := a.lineToBsonM(ctx, pType, rule)
-	_, err := a.coll.DeleteOne(ctx, line)
-	return err
+	//ctx := context.Background()
+	//line := a.lineToBsonM(ctx, pType, rule)
+	//_, err := a.coll.DeleteOne(ctx, line)
+	return nil
 }
 
 // RemoveFilteredPolicy removes policy rules that match the filter from the storage.
 // This is part of the Auto-Save feature.
 func (a *Casbin) RemoveFilteredPolicy(sec string, pType string, fieldIndex int, fieldValues ...string) error {
-	ctx := context.Background()
-	if len(fieldValues) > 0 {
-		field := fmt.Sprintf("v%d", fieldIndex)
-		filter := bson.M{
-			"pType": pType,
-			field:   fieldValues[0],
-		}
-		_, err := a.coll.DeleteMany(ctx, filter)
-		return err
-	}
+	//ctx := context.Background()
+	//if len(fieldValues) > 0 {
+	//	field := fmt.Sprintf("v%d", fieldIndex)
+	//	filter := bson.M{
+	//		"pType": pType,
+	//		field:   fieldValues[0],
+	//	}
+	//	_, err := a.coll.DeleteMany(ctx, filter)
+	//	return err
+	//}
 	return nil
 }

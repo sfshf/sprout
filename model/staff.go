@@ -17,12 +17,15 @@ type Staff struct {
 	Email             *string             `bson:"email,omitempty"`
 	Phone             *string             `bson:"phone,omitempty"`
 	Gender            *string             `bson:"gender,omitempty"`
-	Roles             []string            `bson:"roles,omitempty"`
+	Roles             []string            `bson:"roles,omitempty"` // a role-name slice.
 	SignInIpWhitelist []string            `bson:"signInIpWhitelist,omitempty"`
 	SignUpAt          *primitive.DateTime `bson:"signUpAt,omitempty"`
 	SignInToken       *string             `bson:"signInToken,omitempty"`
 	LastSignInIp      *string             `bson:"lastSignInIp,omitempty"`
 	LastSignInTime    *primitive.DateTime `bson:"lastSignInTime,omitempty"`
+	Enable            *bool               `bson:"enable,omitempty"` // true: enable; false/nil: disable.
+	CreatedAt         *primitive.DateTime `bson:"createdAt,omitempty"`
+	UpdatedAt         *primitive.DateTime `bson:"updatedAt,omitempty"`
 }
 
 // Genders.

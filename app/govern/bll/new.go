@@ -8,6 +8,36 @@ import (
 	"github.com/sfshf/sprout/repo"
 )
 
+type Menu struct {
+	menuRepo *repo.Menu
+}
+
+func NewMenu(repo *repo.Menu) *Menu {
+	return &Menu{
+		menuRepo: repo,
+	}
+}
+
+type Api struct {
+	apiRepo *repo.Api
+}
+
+func NewApi(repo *repo.Api) *Api {
+	return &Api{
+		apiRepo: repo,
+	}
+}
+
+type Role struct {
+	roleRepo *repo.Role
+}
+
+func NewRole(repo *repo.Role) *Role {
+	return &Role{
+		roleRepo: repo,
+	}
+}
+
 type Staff struct {
 	staffRepo  *repo.Staff
 	redisCache *cache.RedisCache

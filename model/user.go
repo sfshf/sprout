@@ -8,7 +8,7 @@ type User struct {
 	Password      *string             `bson:"password,omitempty"`
 	PasswordSalt  *string             `bson:"passwordSalt,omitempty"`
 	Nickname      *string             `bson:"nickname,omitempty"`
-	Realname      *string             `bson:"realname,omitempty"`
+	RealName      *string             `bson:"realName,omitempty"`
 	Avatar        *string             `bson:"avatar,omitempty"`
 	QRCode        *string             `bson:"qrCode,omitempty"`
 	MoreInfo      *MoreInfo           `bson:"moreInfo,omitempty"`

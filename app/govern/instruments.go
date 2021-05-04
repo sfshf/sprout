@@ -49,7 +49,9 @@ func NewRouter(ctx context.Context, logger *logger.Logger) *gin.Engine {
 	app.Use(ginx.Logger(logger, config.C.Log.Enable))
 	// TODO Custom recovery logger
 	app.Use(gin.Recovery())
-	app.Use(ginx.CORS())
+	if config.C.CORS.Enable {
+		app.Use(ginx.CORS())
+	}
 	app.Use(ginx.TraceId())
 	app.Use(ginx.GZIP())
 	if config.C.Swagger {
