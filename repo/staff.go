@@ -145,3 +145,18 @@ func (a *Staff) FindManyByFilter(ctx context.Context, filter interface{}, opts .
 func (a *Staff) CountByFilter(ctx context.Context, filter interface{}) (int64, error) {
 	return a.coll.CountDocuments(ctx, filter, options.Count().SetMaxTime(time.Minute))
 }
+
+func (a *Staff) EvictRole(ctx context.Context, id *primitive.ObjectID, role *string) error {
+	_, err := a.coll.UpdateOne(
+		ctx,
+		bson.D{
+			{"_id", id},
+			{"roles", role},
+		},
+		bson.M{
+			"$pull": bson.M{
+				"roles": role,
+			},
+		})
+	return err
+}

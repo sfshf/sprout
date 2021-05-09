@@ -61,12 +61,12 @@ MaxKeys = 10000
 TTL = 15
 
 [JWTAuth]
-Enable = true
+Enable = false
 SigningKey = ""
 Expired = 7200
 
 [Casbin]
-Enable = true
+Enable = false
 Debug = false
 Model = ""
 AutoLoad = false

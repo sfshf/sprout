@@ -171,18 +171,18 @@ func (a *Staff) SignUp(c *gin.Context) {
 // @router /signOff/:id [DELETE]
 func (a *Staff) SignOff(c *gin.Context) {
 	ctx := c.Request.Context()
-	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	sessionId := ginx.SessionIdFromGinX(c)
-	if (objId.Hex() != sessionId.Hex() && sessionId.Hex() != config.C.Root.SessionId) ||
-		(sessionId.Hex() == config.C.Root.SessionId && objId.Hex() == config.C.Root.SessionId) {
+	if (staffId.Hex() != sessionId.Hex() && sessionId.Hex() != config.C.Root.SessionId) ||
+		(sessionId.Hex() == config.C.Root.SessionId && staffId.Hex() == config.C.Root.SessionId) {
 		ginx.JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
-	if err := a.bll.SignOff(ctx, &objId); err != nil {
+	if err := a.bll.SignOff(ctx, &staffId); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -205,13 +205,13 @@ func (a *Staff) SignOff(c *gin.Context) {
 // @router /staff/:id [PUT]
 func (a *Staff) Update(c *gin.Context) {
 	ctx := c.Request.Context()
-	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
 	sessionId := ginx.SessionIdFromGinX(c)
-	if objId.Hex() != sessionId.Hex() || sessionId.Hex() != config.C.Root.SessionId {
+	if sessionId.Hex() != staffId.Hex() && sessionId.Hex() != config.C.Root.SessionId {
 		ginx.JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
@@ -241,12 +241,12 @@ func (a *Staff) Update(c *gin.Context) {
 // @router /staff/:id [GET]
 func (a *Staff) Profile(c *gin.Context) {
 	ctx := c.Request.Context()
-	objId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	res, err := a.bll.Profile(ctx, &objId)
+	res, err := a.bll.Profile(ctx, &staffId)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return

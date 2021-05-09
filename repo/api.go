@@ -2,7 +2,9 @@ package repo
 
 import (
 	"context"
+	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx"
@@ -34,4 +36,8 @@ type Api struct {
 
 func (a *Api) Collection() *mongo.Collection {
 	return a.coll
+}
+
+func (a *Api) FindByID(ctx context.Context, id *primitive.ObjectID) (*model.Api, error) {
+	return nil, nil
 }

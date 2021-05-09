@@ -18,6 +18,44 @@
     "host": "localhost:8000",
     "basePath": "/api/v1",
     "paths": {
+        "/casbin/priority": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get predefined priority range of roles.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "casbin"
+                ],
+                "summary": "Get predefined priority range of roles.",
+                "operationId": "casbin-role-priority",
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "minimum and maximum value of the predefined priority range.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/picCaptcha": {
             "get": {
                 "description": "Get a new picture captcha id and base64 string of the picture, and delete the obsolete captcha of the obsolete_id, if has.",

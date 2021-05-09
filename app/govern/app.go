@@ -22,6 +22,7 @@ import (
 
 type App struct {
 	StaffApi     *api.Staff
+	RoleApi      *api.Role
 	CasbinApi    *api.Casbin
 	AccessLogApi *api.AccessLog
 	UserApi      *api.User
@@ -106,6 +107,15 @@ func (a *App) InitRoutes(ctx context.Context) {
 			staff.PUT("/:id", a.StaffApi.Update)
 			staff.GET("/:id", a.StaffApi.Profile)
 			staff.GET("", a.StaffApi.List)
+		}
+
+		role := v1.Group("/role")
+		{
+			role.POST("", a.RoleApi.AddRole)
+			role.DELETE("/:id", a.RoleApi.EvictRole)
+			role.PUT("/:id", a.RoleApi.UpdateRole)
+			role.PUT("/:id/authorize", a.RoleApi.AllocateAuthority)
+
 		}
 
 		casbin := v1.Group("/casbin")

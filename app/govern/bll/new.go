@@ -29,12 +29,20 @@ func NewApi(repo *repo.Api) *Api {
 }
 
 type Role struct {
-	roleRepo *repo.Role
+	roleRepo  *repo.Role
+	staffRepo *repo.Staff
+	menuRepo  *repo.Menu
+	apiRepo   *repo.Api
+	enforcer  *casbin.Enforcer
 }
 
-func NewRole(repo *repo.Role) *Role {
+func NewRole(roleRepo *repo.Role, staffRepo *repo.Staff, menuRepo *repo.Menu, apiRepo *repo.Api, enforcer *casbin.Enforcer) *Role {
 	return &Role{
-		roleRepo: repo,
+		roleRepo:  roleRepo,
+		staffRepo: staffRepo,
+		menuRepo:  menuRepo,
+		apiRepo:   apiRepo,
+		enforcer:  enforcer,
 	}
 }
 

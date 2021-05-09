@@ -50,7 +50,7 @@ func (a *Casbin) AllApiObjActMap(c *gin.Context) {
 // @summary Add a role
 func (a *Casbin) AddRole(c *gin.Context) {
 	ctx := c.Request.Context()
-	var arg bll.AddRoleReq
+	var arg bll.CasbinAddRoleReq
 	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return

@@ -115,6 +115,30 @@ info:
   title: Govern APIs
   version: 0.0.1-beta
 paths:
+  /casbin/priority:
+    get:
+      description: Get predefined priority range of roles.
+      operationId: casbin-role-priority
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: minimum and maximum value of the predefined priority range.
+          schema:
+            items:
+              items:
+                type: integer
+              type: array
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get predefined priority range of roles.
+      tags:
+      - casbin
   /picCaptcha:
     get:
       description: Get a new picture captcha id and base64 string of the picture,

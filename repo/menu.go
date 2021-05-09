@@ -2,7 +2,9 @@ package repo
 
 import (
 	"context"
+	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx"
@@ -39,4 +41,8 @@ type Menu struct {
 
 func (a *Menu) Collection() *mongo.Collection {
 	return a.coll
+}
+
+func (a *Menu) FindByID(ctx context.Context, id *primitive.ObjectID) (*model.Menu, error) {
+	return nil, nil
 }
