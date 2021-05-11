@@ -6,28 +6,28 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type StaffUpdateReq struct {
-	Password          string   `json:"password" binding:"gte=8,lte=32"`
-	Email             string   `json:"email" binding:"required,email"`
-	Phone             string   `json:"phone" binding:"gte=11,lte=14"`
-	SignInIpWhitelist []string `json:"signInIpWhitelist" binding:"dive,ip"`
+type UpdateStaffReq struct {
+	Password          string   `json:"password" binding:"omitempty,gte=8,lte=32"`
+	Email             string   `json:"email" binding:"omitempty,email"`
+	Phone             string   `json:"phone" binding:"omitempty,gte=11,lte=14"`
+	SignInIpWhitelist []string `json:"signInIpWhitelist" binding:"omitempty,dive,ip"`
 }
 
-func (a *Staff) Update(ctx context.Context, objId *primitive.ObjectID, req *StaffUpdateReq) error {
-	obj := &model.Staff{ID: objId}
+func (a *Staff) UpdateStaff(ctx context.Context, argId *primitive.ObjectID, req *UpdateStaffReq) error {
+	arg := &model.Staff{ID: argId}
 	if req.Password != "" {
 		salt := model.NewPasswdSalt()
-		obj.Password = model.PasswdPtr(req.Password, salt)
-		obj.PasswordSalt = &salt
+		arg.Password = model.PasswdPtr(req.Password, salt)
+		arg.PasswordSalt = &salt
 	}
 	if req.Email != "" {
-		obj.Email = &req.Email
+		arg.Email = &req.Email
 	}
 	if req.Phone != "" {
-		obj.Phone = &req.Phone
+		arg.Phone = &req.Phone
 	}
 	if req.SignInIpWhitelist != nil {
-		obj.SignInIpWhitelist = req.SignInIpWhitelist
+		arg.SignInIpWhitelist = req.SignInIpWhitelist
 	}
-	return a.staffRepo.UpdateOne(ctx, obj)
+	return a.staffRepo.UpdateOneByID(ctx, arg)
 }

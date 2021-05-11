@@ -191,14 +191,14 @@ func (a *Staff) SignOff(c *gin.Context) {
 }
 
 // Update
-// @description Update all updatable attributes of a staff account.
+// @description UpdateStaff all updatable attributes of a staff account.
 // @id staff-update
 // @tags staff
-// @summary Update attributes of a staff.
+// @summary UpdateStaff attributes of a staff.
 // @accept json
 // @produce json
 // @param id path string true "id of the staff account to update."
-// @param body body bll.StaffUpdateReq true "attributes to update."
+// @param body body bll.UpdateStaffReq true "attributes to update."
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
@@ -215,12 +215,12 @@ func (a *Staff) Update(c *gin.Context) {
 		ginx.JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
 		return
 	}
-	var arg bll.StaffUpdateReq
+	var arg bll.UpdateStaffReq
 	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	if err := a.bll.Update(ctx, sessionId, &arg); err != nil {
+	if err := a.bll.UpdateStaff(ctx, &staffId, &arg); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -236,7 +236,7 @@ func (a *Staff) Update(c *gin.Context) {
 // @produce json
 // @param id path string true "id of the staff account."
 // @security ApiKeyAuth
-// @success 2000 {object} bll.ProfileResp "profile of the staff."
+// @success 2000 {object} bll.ProfileStaffResp "profile of the staff."
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /staff/:id [GET]
 func (a *Staff) Profile(c *gin.Context) {
@@ -246,7 +246,7 @@ func (a *Staff) Profile(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	res, err := a.bll.Profile(ctx, &staffId)
+	res, err := a.bll.ProfileStaff(ctx, &staffId)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
@@ -260,15 +260,15 @@ func (a *Staff) Profile(c *gin.Context) {
 // @id staff-list
 // @tags staff
 // @summary Get a list of staff accounts.
-// @product json
-// @param query query bll.StaffListReq false "search criteria."
+// @produce json
+// @param query query bll.ListStaffReq false "search criteria."
 // @security ApiKeyAuth
-// @success 2000 {object} bll.StaffListResp "staff list."
+// @success 2000 {object} bll.ListStaffResp "staff list."
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /staff [GET]
 func (a *Staff) List(c *gin.Context) {
 	ctx := c.Request.Context()
-	var arg bll.StaffListReq
+	var arg bll.ListStaffReq
 	if err := c.ShouldBindQuery(&arg); err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
@@ -284,7 +284,7 @@ func (a *Staff) List(c *gin.Context) {
 			sort[k] = v
 		}
 	}
-	res, err := a.bll.List(ctx, &arg, sort)
+	res, err := a.bll.ListStaff(ctx, &arg, sort)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return

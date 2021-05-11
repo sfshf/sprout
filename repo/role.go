@@ -50,15 +50,20 @@ func (a *Role) InsertOne(ctx context.Context, newM *model.Role) error {
 	return nil
 }
 
-func (a *Role) FindByID(ctx context.Context, id *primitive.ObjectID) (*model.Role, error) {
+func (a *Role) FindOneByID(ctx context.Context, argId *primitive.ObjectID) (*model.Role, error) {
 	var res model.Role
-	if err := a.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&res); err != nil {
+	if err := a.coll.FindOne(ctx, bson.M{"_id": argId}).Decode(&res); err != nil {
 		return nil, err
 	}
 	return &res, nil
 }
 
-func (a *Role) EvictRole(ctx context.Context, id *primitive.ObjectID) error {
-	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": id})
+func (a *Role) EvictRole(ctx context.Context, argId *primitive.ObjectID) error {
+	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": argId})
+	return err
+}
+
+func (a *Role) UpdateOneByID(ctx context.Context, arg *model.Role) error {
+	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": arg.ID}, bson.M{"$set": arg})
 	return err
 }

@@ -439,7 +439,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Update all updatable attributes of a staff account.",
+                "description": "UpdateStaff all updatable attributes of a staff account.",
                 "consumes": [
                     "application/json"
                 ],
@@ -449,7 +449,7 @@ var doc = `{
                 "tags": [
                     "staff"
                 ],
-                "summary": "Update attributes of a staff.",
+                "summary": "UpdateStaff attributes of a staff.",
                 "operationId": "staff-update",
                 "parameters": [
                     {

@@ -19,5 +19,5 @@ func (a *Casbin) UnsetRole(ctx context.Context, staffId *primitive.ObjectID, rol
 		ID:    staffId,
 		Roles: roles,
 	}
-	return a.staffRepo.UpdateOne(ctx, staff)
+	return a.staffRepo.UpdateOneByID(ctx, staff)
 }

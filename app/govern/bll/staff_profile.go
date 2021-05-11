@@ -5,46 +5,57 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ProfileResp struct {
-	Account           string   `json:"account"`
-	RealName          string   `json:"realName"`
-	Email             string   `json:"email"`
-	Phone             string   `json:"phone"`
-	Gender            string   `json:"gender"`
-	Role              string   `json:"role"`
-	SignInIpWhiteList []string `json:"signInIpWhiteList"`
-	SignUpAt          int64    `json:"signUpAt"`
-	LastSignInIp      string   `json:"lastSignInIp"`
-	LastSignInTime    int64    `json:"lastSignInTime"`
+type ProfileStaffResp struct {
+	Account           string   `json:"account,omitempty"`
+	RealName          string   `json:"realName,omitempty"`
+	Email             string   `json:"email,omitempty"`
+	Phone             string   `json:"phone,omitempty"`
+	Gender            string   `json:"gender,omitempty"`
+	Roles             []string `json:"roles,omitempty"`
+	SignInIpWhiteList []string `json:"signInIpWhiteList,omitempty"`
+	SignUpAt          int64    `json:"signUpAt,omitempty"`
+	LastSignInIp      string   `json:"lastSignInIp,omitempty"`
+	LastSignInTime    int64    `json:"lastSignInTime,omitempty"`
+	Enable            bool     `json:"enable,omitempty"`
+	CreatedAt         int64    `json:"createdAt,omitempty"`
+	UpdatedAt         int64    `json:"updatedAt,omitempty"`
 }
 
-func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileResp, error) {
-	obj, err := a.staffRepo.FindOneByID(ctx, objId)
+func (a *Staff) ProfileStaff(ctx context.Context, argId *primitive.ObjectID) (*ProfileStaffResp, error) {
+	arg, err := a.staffRepo.FindOneByID(ctx, argId)
 	if err != nil {
 		return nil, err
 	}
-	res := ProfileResp{
-		Account:           *obj.Account,
-		SignInIpWhiteList: obj.SignInIpWhitelist,
-		SignUpAt:          int64(*obj.SignUpAt),
+	res := &ProfileStaffResp{
+		Account:           *arg.Account,
+		Roles:             arg.Roles,
+		SignInIpWhiteList: arg.SignInIpWhitelist,
+		SignUpAt:          int64(*arg.SignUpAt),
+		CreatedAt:         int64(*arg.CreatedAt),
 	}
-	if obj.RealName != nil {
-		res.RealName = *obj.RealName
+	if arg.RealName != nil {
+		res.RealName = *arg.RealName
 	}
-	if obj.Gender != nil {
-		res.Gender = *obj.Gender
+	if arg.Email != nil {
+		res.Email = *arg.Email
 	}
-	if obj.Email != nil {
-		res.Email = *obj.Email
+	if arg.Phone != nil {
+		res.Phone = *arg.Phone
 	}
-	if obj.Phone != nil {
-		res.Phone = *obj.Phone
+	if arg.Gender != nil {
+		res.Gender = *arg.Gender
 	}
-	if obj.LastSignInIp != nil {
-		res.LastSignInIp = *obj.LastSignInIp
+	if arg.LastSignInIp != nil {
+		res.LastSignInIp = *arg.LastSignInIp
 	}
-	if obj.LastSignInTime != nil {
-		res.LastSignInTime = int64(*obj.LastSignInTime)
+	if arg.LastSignInTime != nil {
+		res.LastSignInTime = int64(*arg.LastSignInTime)
 	}
-	return &res, nil
+	if arg.Enable != nil {
+		res.Enable = *arg.Enable
+	}
+	if arg.UpdatedAt != nil {
+		res.UpdatedAt = int64(*arg.UpdatedAt)
+	}
+	return res, nil
 }

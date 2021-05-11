@@ -32,7 +32,7 @@ func (a *Casbin) DeleteRole(ctx context.Context, role string) error {
 			ID:    &staffId,
 			Roles: roles,
 		}
-		if err = a.staffRepo.UpdateOne(ctx, staff); err != nil {
+		if err = a.staffRepo.UpdateOneByID(ctx, staff); err != nil {
 			return err
 		}
 	}

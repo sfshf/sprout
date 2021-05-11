@@ -10,7 +10,7 @@ type AllocateAuthorityReq struct {
 }
 
 func (a *Role) AllocateAuthority(ctx context.Context, roleId *primitive.ObjectID, arg *AllocateAuthorityReq) error {
-	_, err := a.roleRepo.FindByID(ctx, roleId)
+	_, err := a.roleRepo.FindOneByID(ctx, roleId)
 	if err != nil {
 		return err
 	}

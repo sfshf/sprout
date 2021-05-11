@@ -8,6 +8,18 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// AddRole
+// @description Add a new role.
+// @id role-add
+// @tags role
+// @summary Add a new role.
+// @accept json
+// @produce json
+// @param body body bll.AddRoleReq true "required attributes to add a new role."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role [POST]
 func (a *Role) AddRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddRoleReq
@@ -24,6 +36,19 @@ func (a *Role) AddRole(c *gin.Context) {
 	return
 }
 
+// AllocateAuthority
+// @description Allocate authorities to a specific role.
+// @id role-allocate-authority
+// @tags role
+// @summary Allocate authorities to a specific role.
+// @accept json
+// @produce json
+// @param id path string true "id of the role to be allocated authorities."
+// @param body body bll.AllocateAuthorityReq true "menu-widget pairs."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role/:id/authorize [PUT]
 func (a *Role) AllocateAuthority(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -44,6 +69,17 @@ func (a *Role) AllocateAuthority(c *gin.Context) {
 	return
 }
 
+// EvictRole
+// @description Evict a specific role.
+// @id role-evict
+// @tags role
+// @summary Evict a specific role.
+// @produce json
+// @param id path string true "id of the role to evict."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action"
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role/:id [DELETE]
 func (a *Role) EvictRole(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -59,20 +95,76 @@ func (a *Role) EvictRole(c *gin.Context) {
 	return
 }
 
+// UpdateRole
+// @description UpdateStaff a specific role.
+// @id role-update
+// @tags role
+// @summary UpdateStaff a specific role.
+// @accept json
+// @produce json
+// @param id path string true "id of the role to evict."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action"
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role/:id [DELETE]
 func (a *Role) UpdateRole(c *gin.Context) {
-	//ctx := c.Request.Context()
-	//var arg bll.UpdateRoleReq
-	//if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
-	//	ginx.JSONWithInvalidArguments(c, err.Error())
-	//	return
-	//}
-
+	ctx := c.Request.Context()
+	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateRoleReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.UpdateRole(ctx, &roleId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
 }
 
+// Profile
+// @description Get the profile of a role.
+// @id role-profile
+// @tags role
+// @summary Get infos of a role.
+// @produce json
+// @param id path string true "id of the role."
+// @security ApiKeyAuth
+// @success 2000 {object} bll.ProfileRoleResp "profile of the role."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role/:id [GET]
 func (a *Role) Profile(c *gin.Context) {
-
+	ctx := c.Request.Context()
+	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.ProfileRole(ctx, &roleId)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }
 
+// List
+// @description Get a list of role.
+// @id role-list
+// @tags role
+// @summary Get a list of role.
+// @produce json
+// @param query query bll.ListRoleReq false "search criteria."
+// @security ApiKeyAuth
+// @success 2000 {object} bll.ListRoleResp "role list."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role [GET]
 func (a *Role) List(c *gin.Context) {
 
 }

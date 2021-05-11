@@ -72,35 +72,35 @@ func (a *Staff) UpsertRootAccount(ctx context.Context, account, password string)
 	return res.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
-func (a *Staff) InsertOne(ctx context.Context, m *model.Staff) error {
-	res, err := a.coll.InsertOne(ctx, m)
+func (a *Staff) InsertOne(ctx context.Context, arg *model.Staff) error {
+	res, err := a.coll.InsertOne(ctx, arg)
 	if err != nil {
 		return err
 	}
 	if res != nil {
 		if id, is := res.InsertedID.(primitive.ObjectID); is {
-			m.ID = &id
+			arg.ID = &id
 		}
 	}
 	return nil
 }
 
-func (a *Staff) DeleteOne(ctx context.Context, id *primitive.ObjectID) error {
-	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": id})
+func (a *Staff) DeleteOne(ctx context.Context, argId *primitive.ObjectID) error {
+	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": argId})
 	return err
 }
 
-func (a *Staff) FindOneByID(ctx context.Context, id *primitive.ObjectID) (*model.Staff, error) {
+func (a *Staff) FindOneByID(ctx context.Context, argId *primitive.ObjectID) (*model.Staff, error) {
 	var m model.Staff
-	if err := a.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&m); err != nil {
+	if err := a.coll.FindOne(ctx, bson.M{"_id": argId}).Decode(&m); err != nil {
 		return nil, err
 	}
 	return &m, nil
 }
 
-func (a *Staff) FindOneByAccount(ctx context.Context, username string) (*model.Staff, error) {
+func (a *Staff) FindOneByAccount(ctx context.Context, account string) (*model.Staff, error) {
 	var m model.Staff
-	if err := a.coll.FindOne(ctx, bson.M{"account": username}).Decode(&m); err != nil {
+	if err := a.coll.FindOne(ctx, bson.M{"account": account}).Decode(&m); err != nil {
 		return nil, err
 	}
 	return &m, nil
@@ -118,8 +118,8 @@ func (a *Staff) TokenExists(ctx context.Context, id string, token string) bool {
 	return true
 }
 
-func (a *Staff) UpdateOne(ctx context.Context, obj *model.Staff) error {
-	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": obj.ID}, bson.M{"$set": obj})
+func (a *Staff) UpdateOneByID(ctx context.Context, arg *model.Staff) error {
+	_, err := a.coll.UpdateOne(ctx, bson.M{"_id": arg.ID}, bson.M{"$set": arg})
 	return err
 }
 
@@ -146,11 +146,11 @@ func (a *Staff) CountByFilter(ctx context.Context, filter interface{}) (int64, e
 	return a.coll.CountDocuments(ctx, filter, options.Count().SetMaxTime(time.Minute))
 }
 
-func (a *Staff) EvictRole(ctx context.Context, id *primitive.ObjectID, role *string) error {
+func (a *Staff) EvictRole(ctx context.Context, argId *primitive.ObjectID, role *string) error {
 	_, err := a.coll.UpdateOne(
 		ctx,
 		bson.D{
-			{"_id", id},
+			{"_id", argId},
 			{"roles", role},
 		},
 		bson.M{

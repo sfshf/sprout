@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type StaffListReq struct {
+type ListStaffReq struct {
 	Account             string          `form:"account" binding:""`
 	SignIn              bool            `form:"signIn" binding:""`
 	Email               string          `form:"email" binding:""`
@@ -37,12 +37,12 @@ type StaffListElem struct {
 	LastSignInTime int64  `json:"lastSignInTime"`
 }
 
-type StaffListResp struct {
+type ListStaffResp struct {
 	schema.PaginationResp
 }
 
 // TODO: model to schema, should use reflect?!
-func (a *Staff) List(ctx context.Context, arg *StaffListReq, sort bson.M) (*StaffListResp, error) {
+func (a *Staff) ListStaff(ctx context.Context, arg *ListStaffReq, sort bson.M) (*ListStaffResp, error) {
 	var and bson.A
 	if arg.Account != "" {
 		and = append(and, bson.M{"account": arg.Account})
@@ -109,7 +109,7 @@ func (a *Staff) List(ctx context.Context, arg *StaffListReq, sort bson.M) (*Staf
 		}
 		data = append(data, elem)
 	}
-	return &StaffListResp{
+	return &ListStaffResp{
 		schema.PaginationResp{
 			Data:  data,
 			Total: total,

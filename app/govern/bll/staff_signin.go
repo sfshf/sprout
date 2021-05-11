@@ -72,7 +72,7 @@ func (a *Staff) SignIn(ctx context.Context, objId *primitive.ObjectID, ip *strin
 		LastSignInIp:   ip,
 		LastSignInTime: ts,
 	}
-	if err := a.staffRepo.UpdateOne(ctx, obj); err != nil {
+	if err := a.staffRepo.UpdateOneByID(ctx, obj); err != nil {
 		return nil, err
 	}
 	if !a.redisCache.Set(ctx, ginx.RedisKeyPrefix+objId.Hex(), token, time.Unix(0, expiresAt*1e6).Sub(time.Now())) {

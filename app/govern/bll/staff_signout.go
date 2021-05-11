@@ -13,5 +13,5 @@ func (a *Staff) SignOut(ctx context.Context, objId *primitive.ObjectID) error {
 		ID:          objId,
 		SignInToken: model.StringPtr(""),
 	}
-	return a.staffRepo.UpdateOne(ctx, obj)
+	return a.staffRepo.UpdateOneByID(ctx, obj)
 }
