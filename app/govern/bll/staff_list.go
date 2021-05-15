@@ -18,23 +18,23 @@ type ListStaffReq struct {
 	Gender              string          `form:"gender" binding:""`
 	Role                string          `form:"role" binding:""`
 	LastSignInIp        string          `form:"lastSignInIp" binding:""`
-	LastSignInTimeBegin int64           `form:"lastSignInTimeBegin" binding:""`
-	LastSignInTimeEnd   int64           `form:"lastSignInTimeEnd" binding:""`
+	LastSignInTimeBegin int64           `form:"lastSignInTimeBegin" binding:"gte=0"`
+	LastSignInTimeEnd   int64           `form:"lastSignInTimeEnd" binding:"gte=0"`
 	OrderBy             *schema.OrderBy `form:"orderBy" binding:""`
 	schema.PaginationReq
 }
 
 type StaffListElem struct {
-	ID             string `json:"id"`
-	Account        string `json:"account"`
-	SignIn         bool   `json:"signIn"`
-	Email          string `json:"email"`
-	Phone          string `json:"phone"`
-	Gender         string `json:"gender"`
-	Role           string `json:"role"`
-	SignUpAt       int64  `json:"signUpAt"`
-	LastSignInIp   string `json:"lastSignInIp"`
-	LastSignInTime int64  `json:"lastSignInTime"`
+	ID             string `json:"id,omitempty"`
+	Account        string `json:"account,omitempty"`
+	SignIn         bool   `json:"signIn,omitempty"`
+	Email          string `json:"email,omitempty"`
+	Phone          string `json:"phone,omitempty"`
+	Gender         string `json:"gender,omitempty"`
+	Role           string `json:"role,omitempty"`
+	SignUpAt       int64  `json:"signUpAt,omitempty"`
+	LastSignInIp   string `json:"lastSignInIp,omitempty"`
+	LastSignInTime int64  `json:"lastSignInTime,omitempty"`
 }
 
 type ListStaffResp struct {

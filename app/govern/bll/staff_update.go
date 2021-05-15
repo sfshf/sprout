@@ -7,10 +7,10 @@ import (
 )
 
 type UpdateStaffReq struct {
-	Password          string   `json:"password" binding:"omitempty,gte=8,lte=32"`
-	Email             string   `json:"email" binding:"omitempty,email"`
-	Phone             string   `json:"phone" binding:"omitempty,gte=11,lte=14"`
-	SignInIpWhitelist []string `json:"signInIpWhitelist" binding:"omitempty,dive,ip"`
+	Password          string    `json:"password" binding:"omitempty,gte=8,lte=32"`
+	Email             string    `json:"email" binding:"omitempty,email"`
+	Phone             string    `json:"phone" binding:"omitempty,gte=11,lte=14"`
+	SignInIpWhitelist *[]string `json:"signInIpWhitelist" binding:"omitempty,dive,ip"`
 }
 
 func (a *Staff) UpdateStaff(ctx context.Context, argId *primitive.ObjectID, req *UpdateStaffReq) error {

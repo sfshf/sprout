@@ -10,7 +10,7 @@ type Menu struct {
 	Route     *string             `bson:"route,omitempty"`
 	Memo      *string             `bson:"memo,omitempty"`
 	Show      *bool               `bson:"show,omitempty"`    // true: show; false/nil: hide.
-	Widgets   []Widget            `bson:"widgets,omitempty"` // buttons or input boxes.
+	Widgets   *[]Widget           `bson:"widgets,omitempty"` // buttons or input boxes.
 	ParentID  *primitive.ObjectID `bson:"parentID,omitempty"`
 	Creator   *primitive.ObjectID `bson:"creator,omitempty"`
 	Enable    *bool               `bson:"enable,omitempty"` // true: enable; false/nil: disable.

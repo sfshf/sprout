@@ -14,18 +14,27 @@ import (
 var (
 	ApiSet = wire.NewSet(
 		api.NewStaff,
+		api.NewRole,
+		api.NewMenu,
+		api.NewApi,
 		api.NewCasbin,
 		api.NewAccessLog,
 		api.NewUser,
 	)
 	BllSet = wire.NewSet(
 		bll.NewStaff,
+		bll.NewRole,
+		bll.NewMenu,
+		bll.NewApi,
 		bll.NewCasbin,
 		bll.NewAccessLog,
 		bll.NewUser,
 	)
 	RepoSet = wire.NewSet(
 		repo.NewStaffRepo,
+		repo.NewRoleRepo,
+		repo.NewMenuRepo,
+		repo.NewApiRepo,
 		repo.NewCasbinRepo,
 		repo.NewAccessLogRepo,
 		repo.NewUserRepo,

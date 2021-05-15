@@ -26,7 +26,7 @@ func (a *Staff) SignUp(ctx context.Context, req *SignUpReq) error {
 		Email:             &req.Email,
 		Phone:             &req.Phone,
 		Gender:            model.UpperStringPtr(req.Gender),
-		SignInIpWhitelist: req.SignInIpWhitelist,
+		SignInIpWhitelist: &req.SignInIpWhitelist,
 		SignUpAt:          model.DatetimePtr(req.Timestamp),
 	}
 	if err := a.staffRepo.InsertOne(ctx, &newM); err != nil {

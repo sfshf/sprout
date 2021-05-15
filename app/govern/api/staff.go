@@ -8,7 +8,6 @@ import (
 	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/app/govern/schema"
 	"github.com/sfshf/sprout/model"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -90,7 +89,7 @@ func (a *Staff) SignIn(c *gin.Context) {
 	clientIp := model.StringPtr(c.ClientIP())
 	if staff.SignInIpWhitelist != nil {
 		var validIp bool
-		for _, ip := range staff.SignInIpWhitelist {
+		for _, ip := range *staff.SignInIpWhitelist {
 			if ip == *clientIp {
 				validIp = true
 				break
@@ -273,16 +272,10 @@ func (a *Staff) List(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	sort := make(bson.M, 0)
-	if arg.OrderBy != nil {
-		orderBy, err := arg.OrderBy.Values()
-		if err != nil {
-			ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
-			return
-		}
-		for k, v := range orderBy {
-			sort[k] = v
-		}
+	sort, err := schema.OrderByToBsonM(arg.OrderBy)
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
+		return
 	}
 	res, err := a.bll.ListStaff(ctx, &arg, sort)
 	if err != nil {

@@ -24,7 +24,7 @@ func (a *Role) AllocateAuthority(ctx context.Context, roleId *primitive.ObjectID
 		if err != nil {
 			return err
 		}
-		for _, widget := range menu.Widgets {
+		for _, widget := range *menu.Widgets {
 			for _, widgetID := range widgetIDs {
 				if widget.ID.Hex() == widgetID {
 					apiIds = append(apiIds, widget.Api)

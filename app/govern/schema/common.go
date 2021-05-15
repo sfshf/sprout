@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"strconv"
 	"strings"
 )
@@ -33,4 +34,16 @@ func (a OrderBy) Values() (map[string]int, error) {
 		values[kvs[0]] = order
 	}
 	return values, nil
+}
+
+func OrderByToBsonM(a *OrderBy) (bson.M, error) {
+	orderBy, err := a.Values()
+	if err != nil {
+		return nil, err
+	}
+	sort := make(bson.M, 0)
+	for k, v := range orderBy {
+		sort[k] = v
+	}
+	return sort, nil
 }

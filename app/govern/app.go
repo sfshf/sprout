@@ -115,7 +115,8 @@ func (a *App) InitRoutes(ctx context.Context) {
 			role.DELETE("/:id", a.RoleApi.EvictRole)
 			role.PUT("/:id", a.RoleApi.UpdateRole)
 			role.PUT("/:id/authorize", a.RoleApi.AllocateAuthority)
-
+			role.GET("/:id", a.RoleApi.Profile)
+			role.GET("", a.RoleApi.List)
 		}
 
 		casbin := v1.Group("/casbin")

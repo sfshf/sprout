@@ -5,7 +5,6 @@ import (
 	"github.com/sfshf/sprout/app/govern/bll"
 	"github.com/sfshf/sprout/app/govern/ginx"
 	"github.com/sfshf/sprout/app/govern/schema"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (a *AccessLog) List(c *gin.Context) {
@@ -15,16 +14,10 @@ func (a *AccessLog) List(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	sort := make(bson.M, 0)
-	if arg.OrderBy != nil {
-		orderBy, err := arg.OrderBy.Values()
-		if err != nil {
-			ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
-			return
-		}
-		for k, v := range orderBy {
-			sort[k] = v
-		}
+	sort, err := schema.OrderByToBsonM(arg.OrderBy)
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
+		return
 	}
 	res, err := a.bll.List(ctx, &arg, sort)
 	if err != nil {

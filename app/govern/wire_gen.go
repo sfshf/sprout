@@ -15,6 +15,7 @@ import (
 )
 
 import (
+	_ "github.com/sfshf/sprout/app/govern/docs"
 	_ "net/http/pprof"
 )
 
@@ -36,8 +37,13 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	captcha := NewPictureCaptcha()
 	bllStaff := bll.NewStaff(staff, redisCache, jwtAuth, captcha)
 	apiStaff := api.NewStaff(bllStaff)
+	role := repo.NewRoleRepo(ctx, database)
+	menu := repo.NewMenuRepo(ctx, database)
+	repoApi := repo.NewApiRepo(ctx, database)
 	casbin := repo.NewCasbinRepo(ctx, database)
 	enforcer := NewCasbin(ctx, casbin)
+	bllRole := bll.NewRole(role, staff, menu, repoApi, enforcer)
+	apiRole := api.NewRole(bllRole)
 	bllCasbin := bll.NewCasbin(enforcer, staff)
 	apiCasbin := api.NewCasbin(bllCasbin)
 	accessLog := repo.NewAccessLogRepo(ctx, database)
@@ -63,6 +69,7 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	engine := NewRouter(ctx, logger)
 	app := &App{
 		StaffApi:      apiStaff,
+		RoleApi:       apiRole,
 		CasbinApi:     apiCasbin,
 		AccessLogApi:  apiAccessLog,
 		UserApi:       apiUser,
@@ -88,9 +95,9 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 // wire.go:
 
 var (
-	ApiSet   = wire.NewSet(api.NewStaff, api.NewCasbin, api.NewAccessLog, api.NewUser)
-	BllSet   = wire.NewSet(bll.NewStaff, bll.NewCasbin, bll.NewAccessLog, bll.NewUser)
-	RepoSet  = wire.NewSet(repo.NewStaffRepo, repo.NewCasbinRepo, repo.NewAccessLogRepo, repo.NewUserRepo)
+	ApiSet   = wire.NewSet(api.NewStaff, api.NewRole, api.NewMenu, api.NewApi, api.NewCasbin, api.NewAccessLog, api.NewUser)
+	BllSet   = wire.NewSet(bll.NewStaff, bll.NewRole, bll.NewMenu, bll.NewApi, bll.NewCasbin, bll.NewAccessLog, bll.NewUser)
+	RepoSet  = wire.NewSet(repo.NewStaffRepo, repo.NewRoleRepo, repo.NewMenuRepo, repo.NewApiRepo, repo.NewCasbinRepo, repo.NewAccessLogRepo, repo.NewUserRepo)
 	CacheSet = wire.NewSet(cache.NewMemoryCache, cache.NewRedisCache)
 	AppSet   = wire.NewSet(
 		NewAuth,

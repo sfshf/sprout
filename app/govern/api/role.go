@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/sfshf/sprout/app/govern/bll"
 	"github.com/sfshf/sprout/app/govern/ginx"
+	"github.com/sfshf/sprout/app/govern/schema"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -166,5 +167,22 @@ func (a *Role) Profile(c *gin.Context) {
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /role [GET]
 func (a *Role) List(c *gin.Context) {
-
+	ctx := c.Request.Context()
+	var arg bll.ListRoleReq
+	if err := c.ShouldBindQuery(&arg); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	sort, err := schema.OrderByToBsonM(arg.OrderBy)
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
+		return
+	}
+	res, err := a.bll.ListRole(ctx, &arg, sort)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }
