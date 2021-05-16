@@ -12,19 +12,21 @@ type Menu struct {
 	menuRepo *repo.Menu
 }
 
-func NewMenu(repo *repo.Menu) *Menu {
+func NewMenu(menuRepo *repo.Menu) *Menu {
 	return &Menu{
-		menuRepo: repo,
+		menuRepo: menuRepo,
 	}
 }
 
 type Api struct {
-	apiRepo *repo.Api
+	apiRepo   *repo.Api
+	staffRepo *repo.Staff
 }
 
-func NewApi(repo *repo.Api) *Api {
+func NewApi(apiRepo *repo.Api, staffRepo *repo.Staff) *Api {
 	return &Api{
-		apiRepo: repo,
+		apiRepo:   apiRepo,
+		staffRepo: staffRepo,
 	}
 }
 

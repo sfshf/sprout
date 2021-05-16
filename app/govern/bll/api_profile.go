@@ -5,30 +5,25 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// TODO return menu-widgits pairs of a role.
-type ProfileRoleResp struct {
+type ProfileApiResp struct {
 	Group     string `json:"group,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Seq       int    `json:"seq,omitempty"`
-	Icon      string `json:"icon,omitempty"`
-	Memo      string `json:"memo,omitempty"`
-	Enable    bool   `json:"enable,omitempty"`
+	Method    string `json:"method,omitempty"`
+	Path      string `json:"path,omitempty"`
 	Creator   string `json:"creator,omitempty"`
+	Enable    bool   `json:"enable,omitempty"`
 	CreatedAt int64  `json:"createdAt,omitempty"`
 	UpdatedAt int64  `json:"updatedAt,omitempty"`
 }
 
-func (a *Role) Profile(ctx context.Context, argId *primitive.ObjectID) (*ProfileRoleResp, error) {
-	arg, err := a.roleRepo.FindOneByID(ctx, argId)
+func (a *Api) Profile(ctx context.Context, argId *primitive.ObjectID) (*ProfileApiResp, error) {
+	arg, err := a.apiRepo.FindOneByID(ctx, argId)
 	if err != nil {
 		return nil, err
 	}
-	res := &ProfileRoleResp{
+	res := &ProfileApiResp{
 		Group:     *arg.Group,
-		Name:      *arg.Name,
-		Seq:       *arg.Seq,
-		Icon:      *arg.Icon,
-		Memo:      *arg.Memo,
+		Method:    *arg.Method,
+		Path:      *arg.Path,
 		Enable:    *arg.Enable,
 		CreatedAt: int64(*arg.CreatedAt),
 	}

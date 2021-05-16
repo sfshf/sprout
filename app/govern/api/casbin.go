@@ -43,7 +43,7 @@ func (a *Casbin) AllApiObjActMap(c *gin.Context) {
 	return
 }
 
-// AddRole
+// Add
 // @description Add a role.
 // @id casbin-role-add
 // @tags casbin

@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// AddRole
+// Add
 // @description Add a new role.
 // @id role-add
 // @tags role
@@ -21,7 +21,7 @@ import (
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /role [POST]
-func (a *Role) AddRole(c *gin.Context) {
+func (a *Role) Add(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddRoleReq
 	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
@@ -29,7 +29,7 @@ func (a *Role) AddRole(c *gin.Context) {
 		return
 	}
 	creator := ginx.SessionIdFromGinX(c)
-	if err := a.bll.AddRole(ctx, creator, &arg); err != nil {
+	if err := a.bll.Add(ctx, creator, &arg); err != nil {
 		ginx.JSONWithDuplicateEntity(c, err.Error())
 		return
 	}
@@ -37,32 +37,32 @@ func (a *Role) AddRole(c *gin.Context) {
 	return
 }
 
-// AllocateAuthority
-// @description Allocate authorities to a specific role.
+// Authorize
+// @description Allocate authorities to a specific role using menu-widgets pairs.
 // @id role-allocate-authority
 // @tags role
 // @summary Allocate authorities to a specific role.
 // @accept json
 // @produce json
 // @param id path string true "id of the role to be allocated authorities."
-// @param body body bll.AllocateAuthorityReq true "menu-widget pairs."
+// @param body body bll.AuthorizeReq true "menu-widgets pairs."
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /role/:id/authorize [PUT]
-func (a *Role) AllocateAuthority(c *gin.Context) {
+func (a *Role) Authorize(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	var arg bll.AllocateAuthorityReq
+	var arg bll.AuthorizeReq
 	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	if err := a.bll.AllocateAuthority(ctx, &roleId, &arg); err != nil {
+	if err := a.bll.Authorize(ctx, &roleId, &arg); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -70,7 +70,7 @@ func (a *Role) AllocateAuthority(c *gin.Context) {
 	return
 }
 
-// EvictRole
+// Evict
 // @description Evict a specific role.
 // @id role-evict
 // @tags role
@@ -81,14 +81,14 @@ func (a *Role) AllocateAuthority(c *gin.Context) {
 // @success 2000 {null} null "successful action"
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /role/:id [DELETE]
-func (a *Role) EvictRole(c *gin.Context) {
+func (a *Role) Evict(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	if err := a.bll.EvictRole(ctx, &roleId); err != nil {
+	if err := a.bll.Evict(ctx, &roleId); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -96,19 +96,20 @@ func (a *Role) EvictRole(c *gin.Context) {
 	return
 }
 
-// UpdateRole
-// @description UpdateStaff a specific role.
+// Update
+// @description Update a specific role.
 // @id role-update
 // @tags role
-// @summary UpdateStaff a specific role.
+// @summary Update a specific role.
 // @accept json
 // @produce json
 // @param id path string true "id of the role to evict."
+// @param body body bll.UpdateRoleReq true "attributes need to update."
 // @security ApiKeyAuth
-// @success 2000 {null} null "successful action"
+// @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id [DELETE]
-func (a *Role) UpdateRole(c *gin.Context) {
+// @router /role/:id [PUT]
+func (a *Role) Update(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
@@ -120,7 +121,7 @@ func (a *Role) UpdateRole(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	if err := a.bll.UpdateRole(ctx, &roleId, &arg); err != nil {
+	if err := a.bll.Update(ctx, &roleId, &arg); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -146,7 +147,8 @@ func (a *Role) Profile(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	res, err := a.bll.ProfileRole(ctx, &roleId)
+	// TODO return menu-widgits pairs of a role.
+	res, err := a.bll.Profile(ctx, &roleId)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
@@ -178,11 +180,44 @@ func (a *Role) List(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
 		return
 	}
-	res, err := a.bll.ListRole(ctx, &arg, sort)
+	res, err := a.bll.List(ctx, &arg, sort)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, res)
+	return
+}
+
+// Enable
+// @description Enable or disable a role.
+// @id role-enable
+// @tags role
+// @summary Enable or disable a role.
+// @accept json
+// @produce json
+// @param id path string true "id of the role."
+// @param body body bll.EnableRoleReq true "true for enable, or false for disable."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /role/:id/enable [PATCH]
+func (a *Role) Enable(c *gin.Context) {
+	ctx := c.Request.Context()
+	var arg bll.EnableRoleReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.Enable(ctx, &roleId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
 	return
 }

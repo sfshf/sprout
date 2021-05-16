@@ -42,35 +42,35 @@ type ListStaffResp struct {
 }
 
 // TODO: model to schema, should use reflect?!
-func (a *Staff) ListStaff(ctx context.Context, arg *ListStaffReq, sort bson.M) (*ListStaffResp, error) {
+func (a *Staff) List(ctx context.Context, req *ListStaffReq, sort bson.M) (*ListStaffResp, error) {
 	var and bson.A
-	if arg.Account != "" {
-		and = append(and, bson.M{"account": arg.Account})
+	if req.Account != "" {
+		and = append(and, bson.M{"account": req.Account})
 	}
-	if arg.SignIn {
+	if req.SignIn {
 		and = append(and, bson.M{"signInToken": bson.M{"$exists": bsonx.Boolean(true)}})
 		and = append(and, bson.M{"signInToken": bson.M{"$ne": ""}})
 	}
-	if arg.Email != "" {
-		and = append(and, bson.M{"email": arg.Email})
+	if req.Email != "" {
+		and = append(and, bson.M{"email": req.Email})
 	}
-	if arg.Phone != "" {
-		and = append(and, bson.M{"phone": arg.Phone})
+	if req.Phone != "" {
+		and = append(and, bson.M{"phone": req.Phone})
 	}
-	if arg.Gender != "" {
-		and = append(and, bson.M{"gender": strings.ToUpper(arg.Gender)})
+	if req.Gender != "" {
+		and = append(and, bson.M{"gender": strings.ToUpper(req.Gender)})
 	}
-	if arg.Role != "" {
-		and = append(and, bson.M{"role": strings.ToUpper(arg.Role)})
+	if req.Role != "" {
+		and = append(and, bson.M{"role": strings.ToUpper(req.Role)})
 	}
-	if arg.LastSignInIp != "" {
-		and = append(and, bson.M{"lastSignInIp": arg.LastSignInIp})
+	if req.LastSignInIp != "" {
+		and = append(and, bson.M{"lastSignInIp": req.LastSignInIp})
 	}
-	if arg.LastSignInTimeBegin > 0 {
-		and = append(and, bson.M{"lastSignInTime": bson.M{"$gte": primitive.DateTime(arg.LastSignInTimeBegin)}})
+	if req.LastSignInTimeBegin > 0 {
+		and = append(and, bson.M{"lastSignInTime": bson.M{"$gte": primitive.DateTime(req.LastSignInTimeBegin)}})
 	}
-	if arg.LastSignInTimeEnd > 0 {
-		and = append(and, bson.M{"lastSignInTime": bson.M{"$lt": primitive.DateTime(arg.LastSignInTimeEnd)}})
+	if req.LastSignInTimeEnd > 0 {
+		and = append(and, bson.M{"lastSignInTime": bson.M{"$lt": primitive.DateTime(req.LastSignInTimeEnd)}})
 	}
 	var filter bson.M
 	if len(and) > 0 {
@@ -80,7 +80,7 @@ func (a *Staff) ListStaff(ctx context.Context, arg *ListStaffReq, sort bson.M) (
 	if err != nil {
 		return nil, err
 	}
-	opt := options.Find().SetSort(sort).SetSkip(arg.PerPage * (arg.Page - 1)).SetLimit(arg.PerPage)
+	opt := options.Find().SetSort(sort).SetSkip(req.PerPage * (req.Page - 1)).SetLimit(req.PerPage)
 	res, err := a.staffRepo.FindManyByFilter(ctx, filter, opt)
 	if err != nil {
 		return nil, err

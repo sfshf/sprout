@@ -23,6 +23,8 @@ import (
 type App struct {
 	StaffApi     *api.Staff
 	RoleApi      *api.Role
+	MenuApi      *api.Menu
+	ApiApi       *api.Api
 	CasbinApi    *api.Casbin
 	AccessLogApi *api.AccessLog
 	UserApi      *api.User
@@ -104,23 +106,48 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 		staff := v1.Group("/staff")
 		{
-			staff.PUT("/:id", a.StaffApi.Update)
+			staff.PATCH("/:id/password", a.StaffApi.UpdatePassword)
+			staff.PATCH("/:id/email", a.StaffApi.UpdateEmail)
+			staff.PATCH("/:id/phone", a.StaffApi.UpdatePhone)
+			staff.PATCH("/:id/roles", ginx.MustRoot(config.C.Root.SessionId), a.StaffApi.UpdateRoles)
+			staff.PATCH("/:id/signInIpWhitelist", a.StaffApi.UpdateSignInIpWhitelist)
 			staff.GET("/:id", a.StaffApi.Profile)
 			staff.GET("", a.StaffApi.List)
+			staff.PATCH("/:id/enable", ginx.MustRoot(config.C.Root.SessionId), a.StaffApi.Enable)
 		}
 
-		role := v1.Group("/role")
+		role := v1.Group("/role", ginx.MustRoot(config.C.Root.SessionId))
 		{
-			role.POST("", a.RoleApi.AddRole)
-			role.DELETE("/:id", a.RoleApi.EvictRole)
-			role.PUT("/:id", a.RoleApi.UpdateRole)
-			role.PUT("/:id/authorize", a.RoleApi.AllocateAuthority)
+			role.POST("", a.RoleApi.Add)
+			role.DELETE("/:id", a.RoleApi.Evict)
+			role.PUT("/:id", a.RoleApi.Update)
+			role.PUT("/:id/authorize", a.RoleApi.Authorize)
 			role.GET("/:id", a.RoleApi.Profile)
 			role.GET("", a.RoleApi.List)
+			role.PATCH("/:id/enable", a.RoleApi.Enable)
 		}
 
-		casbin := v1.Group("/casbin")
-		casbin.Use(ginx.IsRoot(config.C.Root.SessionId))
+		menu := v1.Group("/menu", ginx.MustRoot(config.C.Root.SessionId))
+		{
+			menu.POST("", a.MenuApi.Add)
+			menu.DELETE("/:id", a.MenuApi.Evict)
+			menu.PUT("/:id", a.MenuApi.Update)
+			menu.GET("/:id", a.MenuApi.Profile)
+			menu.GET("", a.MenuApi.List)
+			menu.PATCH("/:id/enable", a.MenuApi.Enable)
+		}
+
+		api := v1.Group("/api", ginx.MustRoot(config.C.Root.SessionId))
+		{
+			api.POST("", a.ApiApi.Add)
+			api.DELETE("/:id", a.ApiApi.Evict)
+			api.PUT("/:id", a.ApiApi.Update)
+			api.GET("/:id", a.ApiApi.Profile)
+			api.GET("", a.ApiApi.List)
+			api.PATCH("/:id/enable", a.ApiApi.Enable)
+		}
+
+		casbin := v1.Group("/casbin", ginx.MustRoot(config.C.Root.SessionId))
 		{
 			priority := casbin.Group("/priority")
 			{

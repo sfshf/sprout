@@ -46,3 +46,16 @@ func (a *Menu) Collection() *mongo.Collection {
 func (a *Menu) FindByID(ctx context.Context, id *primitive.ObjectID) (*model.Menu, error) {
 	return nil, nil
 }
+
+func (a *Menu) InsertOne(ctx context.Context, newM *model.Menu) error {
+	res, err := a.coll.InsertOne(ctx, newM)
+	if err != nil {
+		return err
+	}
+	if res != nil {
+		if id, is := res.InsertedID.(primitive.ObjectID); is {
+			newM.ID = &id
+		}
+	}
+	return nil
+}

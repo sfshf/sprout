@@ -15,18 +15,15 @@ type AddRoleReq struct {
 	Enable bool   `json:"enable" binding:""`
 }
 
-func (a *Role) AddRole(ctx context.Context, creator *primitive.ObjectID, arg *AddRoleReq) error {
-	newM := model.Role{
-		Group:   &arg.Group,
-		Name:    &arg.Name,
-		Seq:     &arg.Seq,
-		Icon:    &arg.Icon,
-		Memo:    &arg.Memo,
-		Enable:  &arg.Enable,
+func (a *Role) Add(ctx context.Context, creator *primitive.ObjectID, req *AddRoleReq) error {
+	newM := &model.Role{
+		Group:   &req.Group,
+		Name:    &req.Name,
+		Seq:     &req.Seq,
+		Icon:    &req.Icon,
+		Memo:    &req.Memo,
+		Enable:  &req.Enable,
 		Creator: creator,
 	}
-	if err := a.roleRepo.InsertOne(ctx, &newM); err != nil {
-		return err
-	}
-	return nil
+	return a.roleRepo.InsertOne(ctx, newM)
 }

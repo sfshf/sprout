@@ -189,37 +189,180 @@ func (a *Staff) SignOff(c *gin.Context) {
 	return
 }
 
-// Update
-// @description UpdateStaff all updatable attributes of a staff account.
-// @id staff-update
+// UpdatePassword
+// @description Update the password of a staff account.
+// @id staff-update-password
 // @tags staff
-// @summary UpdateStaff attributes of a staff.
+// @summary Update the password of a staff account.
 // @accept json
 // @produce json
 // @param id path string true "id of the staff account to update."
-// @param body body bll.UpdateStaffReq true "attributes to update."
+// @param body body bll.UpdateStaffPasswordReq true "attributes need to update the password."
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id [PUT]
-func (a *Staff) Update(c *gin.Context) {
+// @router /staff/:id/password [PATCH]
+func (a *Staff) UpdatePassword(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	sessionId := ginx.SessionIdFromGinX(c)
-	if sessionId.Hex() != staffId.Hex() && sessionId.Hex() != config.C.Root.SessionId {
-		ginx.JSONWithUnauthorized(c, schema.ErrUnauthorized.Error())
-		return
-	}
-	var arg bll.UpdateStaffReq
+	var arg bll.UpdateStaffPasswordReq
 	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	if err := a.bll.UpdateStaff(ctx, &staffId, &arg); err != nil {
+	if arg.NewPassword != arg.NewPasswordRepeat {
+		ginx.JSONWithInvalidArguments(c, "conflicting new password from it's repeat")
+		return
+	}
+	if err := a.bll.UpdatePassword(ctx, &staffId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// UpdateEmail
+// @description Update the email of a staff account.
+// @id staff-update-email
+// @tags staff
+// @summary Update the email of a staff account.
+// @accept json
+// @produce json
+// @param id path string true "id of the staff account to update."
+// @param body body bll.UpdateStaffEmailReq true "attributes need to update the email."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /staff/:id/email [PATCH]
+func (a *Staff) UpdateEmail(c *gin.Context) {
+	ctx := c.Request.Context()
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateStaffEmailReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	// TODO email captcha.
+	sessionId := ginx.SessionIdFromGinX(c)
+	if arg.CaptchaFromOldEmail != "888888" && sessionId.Hex() != config.C.Root.SessionId {
+		ginx.JSONWithInvalidCaptcha(c, schema.ErrInvalidCaptcha.Error())
+		return
+	}
+	if err := a.bll.UpdateEmail(ctx, &staffId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// UpdatePhone
+// @description Update the phone of a staff account.
+// @id staff-update-phone
+// @tags staff
+// @summary Update the phone of a staff account.
+// @accept json
+// @produce json
+// @param id path string true "id of the staff account to update."
+// @param body body bll.UpdateStaffPasswordReq true "attributes need to update the phone."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /staff/:id/phone [PATCH]
+func (a *Staff) UpdatePhone(c *gin.Context) {
+	ctx := c.Request.Context()
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateStaffPhoneReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	// TODO phone captcha.
+	sessionId := ginx.SessionIdFromGinX(c)
+	if arg.CaptchaFromOldPhone != "888888" && sessionId.Hex() != config.C.Root.SessionId {
+		ginx.JSONWithInvalidCaptcha(c, schema.ErrInvalidCaptcha.Error())
+		return
+	}
+	if err := a.bll.UpdatePhone(ctx, &staffId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// UpdateRoles
+// @description Update the roles of a staff account.
+// @id staff-update-roles
+// @tags staff
+// @summary Update the roles of a staff account.
+// @accept json
+// @produce json
+// @param id path string true "id of the staff account to update."
+// @param body body bll.UpdateStaffPasswordReq true "attributes need to update the roles."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /staff/:id/roles [PATCH]
+func (a *Staff) UpdateRoles(c *gin.Context) {
+	ctx := c.Request.Context()
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateStaffRolesReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.UpdateRoles(ctx, &staffId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// UpdateSignInIpWhitelist
+// @description Update the sign-in ip-whitelist of a staff account.
+// @id staff-update-signInIpWhitelist
+// @tags staff
+// @summary Update the sign-in ip-whitelist of a staff account.
+// @accept json
+// @produce json
+// @param id path string true "id of the staff account to update."
+// @param body body bll.UpdateStaffSignInIpWhitelistReq true "attributes need to update the sign-in ip-whitelist."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /staff/:id/signInIpWhitelist [PATCH]
+func (a *Staff) UpdateSignInIpWhitelist(c *gin.Context) {
+	ctx := c.Request.Context()
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateStaffSignInIpWhitelistReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.UpdateSignInIpWhitelist(ctx, &staffId, &arg); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
@@ -245,7 +388,7 @@ func (a *Staff) Profile(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	res, err := a.bll.ProfileStaff(ctx, &staffId)
+	res, err := a.bll.Profile(ctx, &staffId)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
@@ -277,11 +420,44 @@ func (a *Staff) List(c *gin.Context) {
 		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
 		return
 	}
-	res, err := a.bll.ListStaff(ctx, &arg, sort)
+	res, err := a.bll.List(ctx, &arg, sort)
 	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
 		return
 	}
 	ginx.JSONWithSuccess(c, res)
+	return
+}
+
+// Enable
+// @description Enable or disable a staff account.
+// @id staff-enable
+// @tags staff
+// @summary Enable or disable a staff account.
+// @accept json
+// @produce json
+// @param id path string true "id of the staff account."
+// @param enable body bool true "true for enable, or false for disable."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /staff/:id/enable [PATCH]
+func (a *Staff) Enable(c *gin.Context) {
+	ctx := c.Request.Context()
+	var arg bll.EnableStaffReq
+	if err := c.ShouldBindJSON(&arg); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.Enable(ctx, &staffId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
 	return
 }

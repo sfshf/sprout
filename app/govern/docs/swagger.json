@@ -18,6 +18,318 @@
     "host": "localhost:8000",
     "basePath": "/api/v1",
     "paths": {
+        "/api": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a list of api.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Get a list of api.",
+                "operationId": "api-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "createdAtBegin",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "createdAtEnd",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "creator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "method",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "path",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "api list.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ListApiResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add a new api.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Add a new api.",
+                "operationId": "api-add",
+                "parameters": [
+                    {
+                        "description": "required attributes to add a new api.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.AddApiReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the profile of a api.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Get infos of an api.",
+                "operationId": "api-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the api.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "profile of the api.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ProfileApiResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update a specific api.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Update a specific api.",
+                "operationId": "api-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the api to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateApiReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Evict a specific api.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Evict a specific api.",
+                "operationId": "api-evict",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the api to evict.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/:id/enable": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Enable or disable an api.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Enable or disable an api.",
+                "operationId": "api-enable",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the api.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "true for enable, or false for disable.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.EnableApiReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
         "/casbin/priority": {
             "get": {
                 "security": [
@@ -51,6 +363,283 @@
                                     "type": "integer"
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/menu": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a list of menu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Get a list of menu.",
+                "operationId": "menu-list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "menu list.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ListMenuResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add a new menu, with widgets if has.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Add a new menu, with widgets if has.",
+                "operationId": "menu-add",
+                "parameters": [
+                    {
+                        "description": "required attributes to add a new menu.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.AddMenuReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the profile of a menu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Get infos of a menu.",
+                "operationId": "menu-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "profile of the api.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ProfileMenuResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update a specific menu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Update a specific menu.",
+                "operationId": "menu-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateMenuReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Evict a specific menu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Evict a specific menu.",
+                "operationId": "menu-evict",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu to evict.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/:id/enable": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Enable or disable a menu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Enable or disable a menu.",
+                "operationId": "menu-enable",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "true for enable, or false for disable.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.EnableMenuReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
                         }
                     }
                 }
@@ -127,6 +716,371 @@
                         "description": "captcha answer code",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a list of role.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Get a list of role.",
+                "operationId": "role-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "createdAtBegin",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "createdAtEnd",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "creator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "perPage",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "seq",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "role list.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ListRoleResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add a new role.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Add a new role.",
+                "operationId": "role-add",
+                "parameters": [
+                    {
+                        "description": "required attributes to add a new role.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.AddRoleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the profile of a role.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Get infos of a role.",
+                "operationId": "role-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the role.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "profile of the role.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ProfileRoleResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update a specific role.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Update a specific role.",
+                "operationId": "role-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the role to evict.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateRoleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Evict a specific role.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Evict a specific role.",
+                "operationId": "role-evict",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the role to evict.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/:id/authorize": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allocate authorities to a specific role using menu-widgets pairs.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Allocate authorities to a specific role.",
+                "operationId": "role-allocate-authority",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the role to be allocated authorities.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "menu-widgets pairs.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.AuthorizeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/:id/enable": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Enable or disable a role.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Enable or disable a role.",
+                "operationId": "role-enable",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the role.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "true for enable, or false for disable.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.EnableRoleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
                         }
                     }
                 }
@@ -295,6 +1249,9 @@
                     }
                 ],
                 "description": "Get a list of staff accounts.",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "staff"
                 ],
@@ -372,7 +1329,7 @@
                     "2000": {
                         "description": "staff list.",
                         "schema": {
-                            "$ref": "#/definitions/bll.StaffListResp"
+                            "$ref": "#/definitions/bll.ListStaffResp"
                         }
                     }
                 }
@@ -413,18 +1370,20 @@
                     "2000": {
                         "description": "profile of the staff.",
                         "schema": {
-                            "$ref": "#/definitions/bll.ProfileResp"
+                            "$ref": "#/definitions/bll.ProfileStaffResp"
                         }
                     }
                 }
-            },
-            "put": {
+            }
+        },
+        "/staff/:id/email": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Update all updatable attributes of a staff account.",
+                "description": "Update the email of a staff account.",
                 "consumes": [
                     "application/json"
                 ],
@@ -434,8 +1393,8 @@
                 "tags": [
                     "staff"
                 ],
-                "summary": "Update attributes of a staff.",
-                "operationId": "staff-update",
+                "summary": "Update the email of a staff account.",
+                "operationId": "staff-update-email",
                 "parameters": [
                     {
                         "type": "string",
@@ -445,12 +1404,277 @@
                         "required": true
                     },
                     {
-                        "description": "attributes to update.",
+                        "description": "attributes need to update the email.",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/bll.StaffUpdateReq"
+                            "$ref": "#/definitions/bll.UpdateStaffEmailReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/:id/enable": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Enable or disable a staff account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Enable or disable a staff account.",
+                "operationId": "staff-enable",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the staff account.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "true for enable, or false for disable.",
+                        "name": "enable",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/:id/password": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the password of a staff account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Update the password of a staff account.",
+                "operationId": "staff-update-password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the staff account to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update the password.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateStaffPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/:id/phone": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the phone of a staff account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Update the phone of a staff account.",
+                "operationId": "staff-update-phone",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the staff account to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update the phone.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateStaffPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/:id/roles": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the roles of a staff account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Update the roles of a staff account.",
+                "operationId": "staff-update-roles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the staff account to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update the roles.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateStaffPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/:id/signInIpWhitelist": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the sign-in ip-whitelist of a staff account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Update the sign-in ip-whitelist of a staff account.",
+                "operationId": "staff-update-signInIpWhitelist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the staff account to update.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "attributes need to update the sign-in ip-whitelist.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateStaffSignInIpWhitelistReq"
                         }
                     }
                 ],
@@ -472,6 +1696,144 @@
         }
     },
     "definitions": {
+        "bll.AddApiReq": {
+            "type": "object",
+            "required": [
+                "method",
+                "path"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "bll.AddMenuReq": {
+            "type": "object",
+            "required": [
+                "name",
+                "route",
+                "seq"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                },
+                "route": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
+                },
+                "widgets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/bll.Widget"
+                    }
+                }
+            }
+        },
+        "bll.AddRoleReq": {
+            "type": "object",
+            "required": [
+                "name",
+                "seq"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.AuthorizeReq": {
+            "type": "object",
+            "required": [
+                "menuWidgetMap"
+            ],
+            "properties": {
+                "menuWidgetMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "bll.EnableApiReq": {
+            "type": "object",
+            "required": [
+                "enable"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "bll.EnableMenuReq": {
+            "type": "object",
+            "required": [
+                "enable"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "bll.EnableRoleReq": {
+            "type": "object",
+            "required": [
+                "enable"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            }
+        },
         "bll.GetPicCaptchaResp": {
             "type": "object",
             "properties": {
@@ -483,7 +1845,112 @@
                 }
             }
         },
-        "bll.ProfileResp": {
+        "bll.ListApiResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ListMenuResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ListRoleResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ListStaffResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ProfileApiResp": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ProfileMenuResp": {
+            "type": "object"
+        },
+        "bll.ProfileRoleResp": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ProfileStaffResp": {
             "type": "object",
             "properties": {
                 "account": {
@@ -491,6 +1958,9 @@
                 },
                 "email": {
                     "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
                 },
                 "gender": {
                     "type": "string"
@@ -507,8 +1977,11 @@
                 "realName": {
                     "type": "string"
                 },
-                "role": {
-                    "type": "string"
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "signInIpWhiteList": {
                     "type": "array",
@@ -517,6 +1990,9 @@
                     }
                 },
                 "signUpAt": {
+                    "type": "integer"
+                },
+                "updatedAt": {
                     "type": "integer"
                 }
             }
@@ -592,37 +2068,113 @@
                 }
             }
         },
-        "bll.StaffListResp": {
+        "bll.UpdateApiReq": {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "object"
+                "group": {
+                    "type": "string"
                 },
-                "total": {
+                "method": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "bll.UpdateMenuReq": {
+            "type": "object"
+        },
+        "bll.UpdateRoleReq": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seq": {
                     "type": "integer"
                 }
             }
         },
-        "bll.StaffUpdateReq": {
+        "bll.UpdateStaffEmailReq": {
             "type": "object",
             "required": [
-                "email"
+                "newEmail"
             ],
             "properties": {
-                "email": {
+                "captchaFromOldEmail": {
                     "type": "string"
                 },
-                "password": {
+                "newEmail": {
+                    "type": "string"
+                }
+            }
+        },
+        "bll.UpdateStaffPasswordReq": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
                     "type": "string"
                 },
-                "phone": {
+                "newPasswordRepeat": {
                     "type": "string"
                 },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "bll.UpdateStaffSignInIpWhitelistReq": {
+            "type": "object",
+            "properties": {
                 "signInIpWhitelist": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "bll.Widget": {
+            "type": "object",
+            "required": [
+                "api",
+                "name",
+                "seq"
+            ],
+            "properties": {
+                "api": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
                 }
             }
         }

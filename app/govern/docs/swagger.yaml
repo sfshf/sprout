@@ -1,5 +1,96 @@
 basePath: /api/v1
 definitions:
+  bll.AddApiReq:
+    properties:
+      enable:
+        type: boolean
+      group:
+        type: string
+      method:
+        type: string
+      path:
+        type: string
+    required:
+    - method
+    - path
+    type: object
+  bll.AddMenuReq:
+    properties:
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      parentID:
+        type: string
+      route:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
+      widgets:
+        items:
+          $ref: '#/definitions/bll.Widget'
+        type: array
+    required:
+    - name
+    - route
+    - seq
+    type: object
+  bll.AddRoleReq:
+    properties:
+      enable:
+        type: boolean
+      group:
+        type: string
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      seq:
+        type: integer
+    required:
+    - name
+    - seq
+    type: object
+  bll.AuthorizeReq:
+    properties:
+      menuWidgetMap:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+    required:
+    - menuWidgetMap
+    type: object
+  bll.EnableApiReq:
+    properties:
+      enable:
+        type: boolean
+    required:
+    - enable
+    type: object
+  bll.EnableMenuReq:
+    properties:
+      enable:
+        type: boolean
+    required:
+    - enable
+    type: object
+  bll.EnableRoleReq:
+    properties:
+      enable:
+        type: boolean
+    required:
+    - enable
+    type: object
   bll.GetPicCaptchaResp:
     properties:
       picCaptchaB64s:
@@ -7,12 +98,82 @@ definitions:
       picCaptchaId:
         type: string
     type: object
-  bll.ProfileResp:
+  bll.ListApiResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  bll.ListMenuResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  bll.ListRoleResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  bll.ListStaffResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  bll.ProfileApiResp:
+    properties:
+      createdAt:
+        type: integer
+      creator:
+        type: string
+      enable:
+        type: boolean
+      group:
+        type: string
+      method:
+        type: string
+      path:
+        type: string
+      updatedAt:
+        type: integer
+    type: object
+  bll.ProfileMenuResp:
+    type: object
+  bll.ProfileRoleResp:
+    properties:
+      createdAt:
+        type: integer
+      creator:
+        type: string
+      enable:
+        type: boolean
+      group:
+        type: string
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      seq:
+        type: integer
+      updatedAt:
+        type: integer
+    type: object
+  bll.ProfileStaffResp:
     properties:
       account:
         type: string
       email:
         type: string
+      enable:
+        type: boolean
       gender:
         type: string
       lastSignInIp:
@@ -23,13 +184,17 @@ definitions:
         type: string
       realName:
         type: string
-      role:
-        type: string
+      roles:
+        items:
+          type: string
+        type: array
       signInIpWhiteList:
         items:
           type: string
         type: array
       signUpAt:
+        type: integer
+      updatedAt:
         type: integer
     type: object
   bll.SignInReq:
@@ -79,27 +244,77 @@ definitions:
     - email
     - timestamp
     type: object
-  bll.StaffListResp:
+  bll.UpdateApiReq:
     properties:
-      data:
-        type: object
-      total:
+      group:
+        type: string
+      method:
+        type: string
+      path:
+        type: string
+    type: object
+  bll.UpdateMenuReq:
+    type: object
+  bll.UpdateRoleReq:
+    properties:
+      group:
+        type: string
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      seq:
         type: integer
     type: object
-  bll.StaffUpdateReq:
+  bll.UpdateStaffEmailReq:
     properties:
-      email:
+      captchaFromOldEmail:
         type: string
-      password:
+      newEmail:
         type: string
-      phone:
+    required:
+    - newEmail
+    type: object
+  bll.UpdateStaffPasswordReq:
+    properties:
+      newPassword:
         type: string
+      newPasswordRepeat:
+        type: string
+      oldPassword:
+        type: string
+    type: object
+  bll.UpdateStaffSignInIpWhitelistReq:
+    properties:
       signInIpWhitelist:
         items:
           type: string
         type: array
+    type: object
+  bll.Widget:
+    properties:
+      api:
+        type: string
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      parentID:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
     required:
-    - email
+    - api
+    - name
+    - seq
     type: object
 host: localhost:8000
 info:
@@ -115,6 +330,203 @@ info:
   title: Govern APIs
   version: 0.0.1-beta
 paths:
+  /api:
+    get:
+      description: Get a list of api.
+      operationId: api-list
+      parameters:
+      - in: query
+        name: createdAtBegin
+        type: integer
+      - in: query
+        name: createdAtEnd
+        type: integer
+      - in: query
+        name: creator
+        type: string
+      - in: query
+        name: enable
+        type: boolean
+      - in: query
+        name: group
+        type: string
+      - in: query
+        name: method
+        type: string
+      - in: query
+        name: orderBy
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: path
+        type: string
+      - in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: api list.
+          schema:
+            $ref: '#/definitions/bll.ListApiResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of api.
+      tags:
+      - api
+    post:
+      consumes:
+      - application/json
+      description: Add a new api.
+      operationId: api-add
+      parameters:
+      - description: required attributes to add a new api.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.AddApiReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new api.
+      tags:
+      - api
+  /api/:id:
+    delete:
+      description: Evict a specific api.
+      operationId: api-evict
+      parameters:
+      - description: id of the api to evict.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Evict a specific api.
+      tags:
+      - api
+    get:
+      description: Get the profile of a api.
+      operationId: api-profile
+      parameters:
+      - description: id of the api.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: profile of the api.
+          schema:
+            $ref: '#/definitions/bll.ProfileApiResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get infos of an api.
+      tags:
+      - api
+    put:
+      consumes:
+      - application/json
+      description: Update a specific api.
+      operationId: api-update
+      parameters:
+      - description: id of the api to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateApiReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update a specific api.
+      tags:
+      - api
+  /api/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      description: Enable or disable an api.
+      operationId: api-enable
+      parameters:
+      - description: id of the api.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: true for enable, or false for disable.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.EnableApiReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Enable or disable an api.
+      tags:
+      - api
   /casbin/priority:
     get:
       description: Get predefined priority range of roles.
@@ -139,6 +551,182 @@ paths:
       summary: Get predefined priority range of roles.
       tags:
       - casbin
+  /menu:
+    get:
+      description: Get a list of menu.
+      operationId: menu-list
+      parameters:
+      - in: query
+        name: orderBy
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: menu list.
+          schema:
+            $ref: '#/definitions/bll.ListMenuResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of menu.
+      tags:
+      - menu
+    post:
+      consumes:
+      - application/json
+      description: Add a new menu, with widgets if has.
+      operationId: menu-add
+      parameters:
+      - description: required attributes to add a new menu.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.AddMenuReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new menu, with widgets if has.
+      tags:
+      - menu
+  /menu/:id:
+    delete:
+      description: Evict a specific menu.
+      operationId: menu-evict
+      parameters:
+      - description: id of the menu to evict.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Evict a specific menu.
+      tags:
+      - menu
+    get:
+      description: Get the profile of a menu.
+      operationId: menu-profile
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: profile of the api.
+          schema:
+            $ref: '#/definitions/bll.ProfileMenuResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get infos of a menu.
+      tags:
+      - menu
+    put:
+      consumes:
+      - application/json
+      description: Update a specific menu.
+      operationId: menu-update
+      parameters:
+      - description: id of the menu to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateMenuReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update a specific menu.
+      tags:
+      - menu
+  /menu/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      description: Enable or disable a menu.
+      operationId: menu-enable
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: true for enable, or false for disable.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.EnableMenuReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Enable or disable a menu.
+      tags:
+      - menu
   /picCaptcha:
     get:
       description: Get a new picture captcha id and base64 string of the picture,
@@ -189,6 +777,237 @@ paths:
       summary: Get the answer code of a picture captcha.
       tags:
       - staff
+  /role:
+    get:
+      description: Get a list of role.
+      operationId: role-list
+      parameters:
+      - in: query
+        name: createdAtBegin
+        type: integer
+      - in: query
+        name: createdAtEnd
+        type: integer
+      - in: query
+        name: creator
+        type: string
+      - in: query
+        name: enable
+        type: boolean
+      - in: query
+        name: group
+        type: string
+      - in: query
+        name: name
+        type: string
+      - in: query
+        name: orderBy
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: perPage
+        type: integer
+      - in: query
+        name: seq
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: role list.
+          schema:
+            $ref: '#/definitions/bll.ListRoleResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of role.
+      tags:
+      - role
+    post:
+      consumes:
+      - application/json
+      description: Add a new role.
+      operationId: role-add
+      parameters:
+      - description: required attributes to add a new role.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.AddRoleReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new role.
+      tags:
+      - role
+  /role/:id:
+    delete:
+      description: Evict a specific role.
+      operationId: role-evict
+      parameters:
+      - description: id of the role to evict.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Evict a specific role.
+      tags:
+      - role
+    get:
+      description: Get the profile of a role.
+      operationId: role-profile
+      parameters:
+      - description: id of the role.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: profile of the role.
+          schema:
+            $ref: '#/definitions/bll.ProfileRoleResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get infos of a role.
+      tags:
+      - role
+    put:
+      consumes:
+      - application/json
+      description: Update a specific role.
+      operationId: role-update
+      parameters:
+      - description: id of the role to evict.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateRoleReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update a specific role.
+      tags:
+      - role
+  /role/:id/authorize:
+    put:
+      consumes:
+      - application/json
+      description: Allocate authorities to a specific role using menu-widgets pairs.
+      operationId: role-allocate-authority
+      parameters:
+      - description: id of the role to be allocated authorities.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: menu-widgets pairs.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.AuthorizeReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Allocate authorities to a specific role.
+      tags:
+      - role
+  /role/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      description: Enable or disable a role.
+      operationId: role-enable
+      parameters:
+      - description: id of the role.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: true for enable, or false for disable.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.EnableRoleReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Enable or disable a role.
+      tags:
+      - role
   /signIn:
     patch:
       consumes:
@@ -331,6 +1150,8 @@ paths:
       - in: query
         name: signIn
         type: boolean
+      produces:
+      - application/json
       responses:
         "1000":
           description: feasible and predictable errors.
@@ -339,7 +1160,7 @@ paths:
         "2000":
           description: staff list.
           schema:
-            $ref: '#/definitions/bll.StaffListResp'
+            $ref: '#/definitions/bll.ListStaffResp'
       security:
       - ApiKeyAuth: []
       summary: Get a list of staff accounts.
@@ -365,29 +1186,30 @@ paths:
         "2000":
           description: profile of the staff.
           schema:
-            $ref: '#/definitions/bll.ProfileResp'
+            $ref: '#/definitions/bll.ProfileStaffResp'
       security:
       - ApiKeyAuth: []
       summary: Get infos of a staff account.
       tags:
       - staff
-    put:
+  /staff/:id/email:
+    patch:
       consumes:
       - application/json
-      description: Update all updatable attributes of a staff account.
-      operationId: staff-update
+      description: Update the email of a staff account.
+      operationId: staff-update-email
       parameters:
       - description: id of the staff account to update.
         in: path
         name: id
         required: true
         type: string
-      - description: attributes to update.
+      - description: attributes need to update the email.
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/bll.StaffUpdateReq'
+          $ref: '#/definitions/bll.UpdateStaffEmailReq'
       produces:
       - application/json
       responses:
@@ -401,7 +1223,177 @@ paths:
             type: "null"
       security:
       - ApiKeyAuth: []
-      summary: Update attributes of a staff.
+      summary: Update the email of a staff account.
+      tags:
+      - staff
+  /staff/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      description: Enable or disable a staff account.
+      operationId: staff-enable
+      parameters:
+      - description: id of the staff account.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: true for enable, or false for disable.
+        in: body
+        name: enable
+        required: true
+        schema:
+          type: boolean
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Enable or disable a staff account.
+      tags:
+      - staff
+  /staff/:id/password:
+    patch:
+      consumes:
+      - application/json
+      description: Update the password of a staff account.
+      operationId: staff-update-password
+      parameters:
+      - description: id of the staff account to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update the password.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateStaffPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update the password of a staff account.
+      tags:
+      - staff
+  /staff/:id/phone:
+    patch:
+      consumes:
+      - application/json
+      description: Update the phone of a staff account.
+      operationId: staff-update-phone
+      parameters:
+      - description: id of the staff account to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update the phone.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateStaffPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update the phone of a staff account.
+      tags:
+      - staff
+  /staff/:id/roles:
+    patch:
+      consumes:
+      - application/json
+      description: Update the roles of a staff account.
+      operationId: staff-update-roles
+      parameters:
+      - description: id of the staff account to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update the roles.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateStaffPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update the roles of a staff account.
+      tags:
+      - staff
+  /staff/:id/signInIpWhitelist:
+    patch:
+      consumes:
+      - application/json
+      description: Update the sign-in ip-whitelist of a staff account.
+      operationId: staff-update-signInIpWhitelist
+      parameters:
+      - description: id of the staff account to update.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: attributes need to update the sign-in ip-whitelist.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateStaffSignInIpWhitelistReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update the sign-in ip-whitelist of a staff account.
       tags:
       - staff
 securityDefinitions:

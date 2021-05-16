@@ -18,7 +18,7 @@ type SignUpReq struct {
 
 func (a *Staff) SignUp(ctx context.Context, req *SignUpReq) error {
 	salt := model.NewPasswdSalt()
-	newM := model.Staff{
+	newM := &model.Staff{
 		Account:           &req.Account,
 		Password:          model.PasswdPtr(req.Password, salt),
 		PasswordSalt:      &salt,
@@ -29,8 +29,5 @@ func (a *Staff) SignUp(ctx context.Context, req *SignUpReq) error {
 		SignInIpWhitelist: &req.SignInIpWhitelist,
 		SignUpAt:          model.DatetimePtr(req.Timestamp),
 	}
-	if err := a.staffRepo.InsertOne(ctx, &newM); err != nil {
-		return err
-	}
-	return nil
+	return a.staffRepo.InsertOne(ctx, newM)
 }

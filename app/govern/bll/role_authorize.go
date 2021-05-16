@@ -2,20 +2,22 @@ package bll
 
 import (
 	"context"
+	"github.com/sfshf/sprout/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type AllocateAuthorityReq struct {
+type AuthorizeReq struct {
 	MenuWidgetMap map[string][]string `json:"menuWidgetMap" binding:"required"`
 }
 
-func (a *Role) AllocateAuthority(ctx context.Context, roleId *primitive.ObjectID, arg *AllocateAuthorityReq) error {
-	_, err := a.roleRepo.FindOneByID(ctx, roleId)
+func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *AuthorizeReq) error {
+	_, err := a.roleRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return err
 	}
+	menuWidgets := make(map[primitive.ObjectID][]primitive.ObjectID)
 	var apiIds []*primitive.ObjectID
-	for menuID, widgetIDs := range arg.MenuWidgetMap {
+	for menuID, widgetIDs := range req.MenuWidgetMap {
 		menuId, err := primitive.ObjectIDFromHex(menuID)
 		if err != nil {
 			return err
@@ -24,22 +26,26 @@ func (a *Role) AllocateAuthority(ctx context.Context, roleId *primitive.ObjectID
 		if err != nil {
 			return err
 		}
+		widgets := make([]primitive.ObjectID, 0, len(*menu.Widgets))
 		for _, widget := range *menu.Widgets {
 			for _, widgetID := range widgetIDs {
 				if widget.ID.Hex() == widgetID {
 					apiIds = append(apiIds, widget.Api)
 				}
 			}
+			widgets = append(widgets, *widget.ID)
 		}
+		menuWidgets[menuId] = widgets
 	}
+	// TODO evict obsolete policies when necessary.
 	for _, apiId := range apiIds {
-		api, err := a.apiRepo.FindByID(ctx, apiId)
+		api, err := a.apiRepo.FindOneByID(ctx, apiId)
 		if err != nil {
 			return err
 		}
 		if *api.Enable {
 			_, err = a.enforcer.AddPolicy(
-				roleId.Hex(),
+				objId.Hex(),
 				api.Path,
 				api.Method,
 			)
@@ -48,5 +54,9 @@ func (a *Role) AllocateAuthority(ctx context.Context, roleId *primitive.ObjectID
 			}
 		}
 	}
-	return nil
+	arg := &model.Role{
+		ID:          objId,
+		MenuWidgets: &menuWidgets,
+	}
+	return a.roleRepo.UpdateOneByID(ctx, arg)
 }

@@ -20,8 +20,8 @@ type ProfileStaffResp struct {
 	UpdatedAt         int64    `json:"updatedAt,omitempty"`
 }
 
-func (a *Staff) ProfileStaff(ctx context.Context, argId *primitive.ObjectID) (*ProfileStaffResp, error) {
-	arg, err := a.staffRepo.FindOneByID(ctx, argId)
+func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileStaffResp, error) {
+	arg, err := a.staffRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return nil, err
 	}

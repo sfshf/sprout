@@ -44,6 +44,10 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	enforcer := NewCasbin(ctx, casbin)
 	bllRole := bll.NewRole(role, staff, menu, repoApi, enforcer)
 	apiRole := api.NewRole(bllRole)
+	bllMenu := bll.NewMenu(menu)
+	apiMenu := api.NewMenu(bllMenu)
+	bllApi := bll.NewApi(repoApi, staff)
+	apiApi := api.NewApi(bllApi)
 	bllCasbin := bll.NewCasbin(enforcer, staff)
 	apiCasbin := api.NewCasbin(bllCasbin)
 	accessLog := repo.NewAccessLogRepo(ctx, database)
@@ -70,6 +74,8 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	app := &App{
 		StaffApi:      apiStaff,
 		RoleApi:       apiRole,
+		MenuApi:       apiMenu,
+		ApiApi:        apiApi,
 		CasbinApi:     apiCasbin,
 		AccessLogApi:  apiAccessLog,
 		UserApi:       apiUser,

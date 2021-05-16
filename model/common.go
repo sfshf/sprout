@@ -40,3 +40,8 @@ func NewDatetime(t time.Time) *primitive.DateTime {
 	dt := primitive.NewDateTimeFromTime(t)
 	return &dt
 }
+
+func NewObjectIDPtr() *primitive.ObjectID {
+	one := primitive.NewObjectID()
+	return &one
+}

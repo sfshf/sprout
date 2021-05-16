@@ -5,7 +5,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (a *Role) EvictRole(ctx context.Context, argId *primitive.ObjectID) error {
+// TODO verify validity of  multi-level roles.
+func (a *Role) Evict(ctx context.Context, argId *primitive.ObjectID) error {
 	arg, err := a.roleRepo.FindOneByID(ctx, argId)
 	if err != nil {
 		return err

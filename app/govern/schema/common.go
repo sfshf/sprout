@@ -37,6 +37,9 @@ func (a OrderBy) Values() (map[string]int, error) {
 }
 
 func OrderByToBsonM(a *OrderBy) (bson.M, error) {
+	if a == nil || *a == "" {
+		return nil, nil
+	}
 	orderBy, err := a.Values()
 	if err != nil {
 		return nil, err
