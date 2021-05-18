@@ -15,25 +15,25 @@ type ProfileApiResp struct {
 	UpdatedAt int64  `json:"updatedAt,omitempty"`
 }
 
-func (a *Api) Profile(ctx context.Context, argId *primitive.ObjectID) (*ProfileApiResp, error) {
-	arg, err := a.apiRepo.FindOneByID(ctx, argId)
+func (a *Api) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileApiResp, error) {
+	obj, err := a.apiRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return nil, err
 	}
 	res := &ProfileApiResp{
-		Group:     *arg.Group,
-		Method:    *arg.Method,
-		Path:      *arg.Path,
-		Enable:    *arg.Enable,
-		CreatedAt: int64(*arg.CreatedAt),
+		Group:     *obj.Group,
+		Method:    *obj.Method,
+		Path:      *obj.Path,
+		Enable:    *obj.Enable,
+		CreatedAt: int64(*obj.CreatedAt),
 	}
-	if one, err := a.staffRepo.FindOneByID(ctx, arg.Creator); err != nil {
+	if one, err := a.staffRepo.FindOneByID(ctx, obj.Creator); err != nil {
 		return nil, err
 	} else {
 		res.Creator = *one.Account
 	}
-	if arg.UpdatedAt != nil {
-		res.UpdatedAt = int64(*arg.UpdatedAt)
+	if obj.UpdatedAt != nil {
+		res.UpdatedAt = int64(*obj.UpdatedAt)
 	}
 	return res, nil
 }

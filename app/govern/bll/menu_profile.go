@@ -8,6 +8,6 @@ import (
 type ProfileMenuResp struct {
 }
 
-func (a *Menu) Profile(ctx context.Context, argId *primitive.ObjectID) (*ProfileMenuResp, error) {
+func (a *Menu) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileMenuResp, error) {
 	return nil, nil
 }

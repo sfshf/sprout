@@ -6,17 +6,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (a *Casbin) UnsetRole(ctx context.Context, staffId *primitive.ObjectID, role string) error {
+func (a *Casbin) UnsetRole(ctx context.Context, objId *primitive.ObjectID, role string) error {
 	_, err := a.enforcer.RemoveFilteredGroupingPolicy(1, role)
 	if err != nil {
 		return err
 	}
-	roles, err := a.enforcer.GetRolesForUser(staffId.Hex())
+	roles, err := a.enforcer.GetRolesForUser(objId.Hex())
 	if err != nil {
 		return err
 	}
 	staff := &model.Staff{
-		ID:    staffId,
+		ID:    objId,
 		Roles: &roles,
 	}
 	return a.staffRepo.UpdateOneByID(ctx, staff)

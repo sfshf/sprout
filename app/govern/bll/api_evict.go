@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (a *Api) Evict(ctx context.Context, argId *primitive.ObjectID) error {
-	return a.apiRepo.DeleteOne(ctx, argId)
+// TODO evict an api, and remove corresponding casbin policy.
+func (a *Api) Evict(ctx context.Context, objId *primitive.ObjectID) error {
+	return a.apiRepo.DeleteOne(ctx, objId)
 }

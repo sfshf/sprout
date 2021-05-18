@@ -6,20 +6,20 @@ import (
 )
 
 // TODO verify validity of  multi-level roles.
-func (a *Role) Evict(ctx context.Context, argId *primitive.ObjectID) error {
-	arg, err := a.roleRepo.FindOneByID(ctx, argId)
+func (a *Role) Evict(ctx context.Context, objId *primitive.ObjectID) error {
+	obj, err := a.roleRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return err
 	}
-	_, err = a.enforcer.RemoveFilteredPolicy(0, argId.Hex())
+	_, err = a.enforcer.RemoveFilteredPolicy(0, objId.Hex())
 	if err != nil {
 		return err
 	}
-	staffIDs, err := a.enforcer.GetUsersForRole(argId.Hex())
+	staffIDs, err := a.enforcer.GetUsersForRole(objId.Hex())
 	if err != nil {
 		return err
 	}
-	_, err = a.enforcer.RemoveFilteredGroupingPolicy(1, argId.Hex())
+	_, err = a.enforcer.RemoveFilteredGroupingPolicy(1, objId.Hex())
 	if err != nil {
 		return err
 	}
@@ -28,10 +28,10 @@ func (a *Role) Evict(ctx context.Context, argId *primitive.ObjectID) error {
 		if err != nil {
 			return err
 		}
-		err = a.staffRepo.EvictRole(ctx, &staffId, arg.Name)
+		err = a.staffRepo.EvictRole(ctx, &staffId, obj.Name)
 		if err != nil {
 			return err
 		}
 	}
-	return a.roleRepo.EvictRole(ctx, argId)
+	return a.roleRepo.EvictRole(ctx, objId)
 }

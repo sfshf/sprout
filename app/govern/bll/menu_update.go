@@ -8,6 +8,6 @@ import (
 type UpdateMenuReq struct {
 }
 
-func (a *Menu) Update(ctx context.Context, argId *primitive.ObjectID, req *UpdateMenuReq) error {
+func (a *Menu) Update(ctx context.Context, objId *primitive.ObjectID, req *UpdateMenuReq) error {
 	return nil
 }

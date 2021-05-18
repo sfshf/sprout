@@ -14,8 +14,8 @@ type UpdateRoleReq struct {
 	Memo  *string `json:"memo" binding:"omitempty"`
 }
 
-func (a *Role) Update(ctx context.Context, argId *primitive.ObjectID, req *UpdateRoleReq) error {
-	arg := &model.Role{ID: argId}
+func (a *Role) Update(ctx context.Context, objId *primitive.ObjectID, req *UpdateRoleReq) error {
+	arg := &model.Role{ID: objId}
 	if req.Group != nil {
 		arg.Group = req.Group
 	}

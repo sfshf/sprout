@@ -10,11 +10,17 @@ import (
 
 type Menu struct {
 	menuRepo *repo.Menu
+	apiRepo  *repo.Api
+	roleRepo *repo.Role
+	enforcer *casbin.Enforcer
 }
 
-func NewMenu(menuRepo *repo.Menu) *Menu {
+func NewMenu(menuRepo *repo.Menu, apiRepo *repo.Api, roleRepo *repo.Role, enforcer *casbin.Enforcer) *Menu {
 	return &Menu{
 		menuRepo: menuRepo,
+		apiRepo:  apiRepo,
+		roleRepo: roleRepo,
+		enforcer: enforcer,
 	}
 }
 

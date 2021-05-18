@@ -15,27 +15,31 @@ func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *Au
 	if err != nil {
 		return err
 	}
-	menuWidgets := make(map[primitive.ObjectID][]primitive.ObjectID)
+	menuWidgets := make([]model.MenuWidgets, len(req.MenuWidgetMap))
 	var apiIds []*primitive.ObjectID
 	for menuID, widgetIDs := range req.MenuWidgetMap {
 		menuId, err := primitive.ObjectIDFromHex(menuID)
 		if err != nil {
 			return err
 		}
-		menu, err := a.menuRepo.FindByID(ctx, &menuId)
+		// TODO suggest to use projection-query function.
+		menu, err := a.menuRepo.FindOneByID(ctx, &menuId)
 		if err != nil {
 			return err
 		}
-		widgets := make([]primitive.ObjectID, 0, len(*menu.Widgets))
+		widgets := make([]*primitive.ObjectID, 0, len(*menu.Widgets))
 		for _, widget := range *menu.Widgets {
 			for _, widgetID := range widgetIDs {
 				if widget.ID.Hex() == widgetID {
 					apiIds = append(apiIds, widget.Api)
 				}
 			}
-			widgets = append(widgets, *widget.ID)
+			widgets = append(widgets, widget.ID)
 		}
-		menuWidgets[menuId] = widgets
+		menuWidgets = append(menuWidgets, model.MenuWidgets{
+			MenuID:  &menuId,
+			Widgets: widgets,
+		})
 	}
 	// TODO evict obsolete policies when necessary.
 	for _, apiId := range apiIds {

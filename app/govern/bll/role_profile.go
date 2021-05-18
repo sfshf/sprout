@@ -18,8 +18,8 @@ type ProfileRoleResp struct {
 	UpdatedAt int64  `json:"updatedAt,omitempty"`
 }
 
-func (a *Role) Profile(ctx context.Context, argId *primitive.ObjectID) (*ProfileRoleResp, error) {
-	arg, err := a.roleRepo.FindOneByID(ctx, argId)
+func (a *Role) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileRoleResp, error) {
+	arg, err := a.roleRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return nil, err
 	}

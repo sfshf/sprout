@@ -91,3 +91,7 @@ func (a *Role) FindManyByFilter(ctx context.Context, filter interface{}, opts ..
 	}
 	return res, nil
 }
+
+func (a *Role) EvictMenu(ctx context.Context, objId *primitive.ObjectID) error {
+	return nil
+}

@@ -46,31 +46,31 @@ type AccessLogListResp struct {
 	schema.PaginationResp
 }
 
-func (a *AccessLog) List(ctx context.Context, arg *AccessLogListReq, sort bson.M) (*AccessLogListResp, error) {
+func (a *AccessLog) List(ctx context.Context, req *AccessLogListReq, sort bson.M) (*AccessLogListResp, error) {
 	var and bson.A
-	if arg.Level != "" {
-		and = append(and, bson.M{"level": arg.Level})
+	if req.Level != "" {
+		and = append(and, bson.M{"level": req.Level})
 	}
-	if !arg.TimeBegin.IsZero() {
-		and = append(and, bson.M{"time": bson.M{"$gte": arg.TimeBegin}})
+	if !req.TimeBegin.IsZero() {
+		and = append(and, bson.M{"time": bson.M{"$gte": req.TimeBegin}})
 	}
-	if !arg.TimeEnd.IsZero() {
-		and = append(and, bson.M{"time": bson.M{"$lt": arg.TimeEnd}})
+	if !req.TimeEnd.IsZero() {
+		and = append(and, bson.M{"time": bson.M{"$lt": req.TimeEnd}})
 	}
-	if arg.ClientIp != "" {
-		and = append(and, bson.M{"clientIp": arg.ClientIp})
+	if req.ClientIp != "" {
+		and = append(and, bson.M{"clientIp": req.ClientIp})
 	}
-	if arg.Path != "" {
-		and = append(and, bson.M{"path": arg.Path})
+	if req.Path != "" {
+		and = append(and, bson.M{"path": req.Path})
 	}
-	if arg.TraceId != "" {
-		and = append(and, bson.M{"traceId": arg.TraceId})
+	if req.TraceId != "" {
+		and = append(and, bson.M{"traceId": req.TraceId})
 	}
-	if arg.SessionId != "" {
-		and = append(and, bson.M{"sessionId": arg.SessionId})
+	if req.SessionId != "" {
+		and = append(and, bson.M{"sessionId": req.SessionId})
 	}
-	if arg.Tag != "" {
-		and = append(and, bson.M{"tag": arg.Tag})
+	if req.Tag != "" {
+		and = append(and, bson.M{"tag": req.Tag})
 	}
 	var filter bson.M
 	if len(and) > 0 {
@@ -80,7 +80,7 @@ func (a *AccessLog) List(ctx context.Context, arg *AccessLogListReq, sort bson.M
 	if err != nil {
 		return nil, err
 	}
-	opt := options.Find().SetSort(sort).SetSkip(arg.PerPage * (arg.Page - 1)).SetLimit(arg.PerPage)
+	opt := options.Find().SetSort(sort).SetSkip(req.PerPage * (req.Page - 1)).SetLimit(req.PerPage)
 	res, err := a.accessLog.FindManyByFilter(ctx, filter, opt)
 	if err != nil {
 		return nil, err

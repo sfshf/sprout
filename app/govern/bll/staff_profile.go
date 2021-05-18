@@ -21,41 +21,41 @@ type ProfileStaffResp struct {
 }
 
 func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*ProfileStaffResp, error) {
-	arg, err := a.staffRepo.FindOneByID(ctx, objId)
+	obj, err := a.staffRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return nil, err
 	}
 	res := &ProfileStaffResp{
-		Account:           *arg.Account,
-		SignInIpWhiteList: *arg.SignInIpWhitelist,
-		SignUpAt:          int64(*arg.SignUpAt),
+		Account:           *obj.Account,
+		SignInIpWhiteList: *obj.SignInIpWhitelist,
+		SignUpAt:          int64(*obj.SignUpAt),
 	}
-	if arg.RealName != nil {
-		res.RealName = *arg.RealName
+	if obj.RealName != nil {
+		res.RealName = *obj.RealName
 	}
-	if arg.Email != nil {
-		res.Email = *arg.Email
+	if obj.Email != nil {
+		res.Email = *obj.Email
 	}
-	if arg.Phone != nil {
-		res.Phone = *arg.Phone
+	if obj.Phone != nil {
+		res.Phone = *obj.Phone
 	}
-	if arg.Gender != nil {
-		res.Gender = *arg.Gender
+	if obj.Gender != nil {
+		res.Gender = *obj.Gender
 	}
-	if arg.Roles != nil {
-		res.Roles = *arg.Roles
+	if obj.Roles != nil {
+		res.Roles = *obj.Roles
 	}
-	if arg.LastSignInIp != nil {
-		res.LastSignInIp = *arg.LastSignInIp
+	if obj.LastSignInIp != nil {
+		res.LastSignInIp = *obj.LastSignInIp
 	}
-	if arg.LastSignInTime != nil {
-		res.LastSignInTime = int64(*arg.LastSignInTime)
+	if obj.LastSignInTime != nil {
+		res.LastSignInTime = int64(*obj.LastSignInTime)
 	}
-	if arg.Enable != nil {
-		res.Enable = *arg.Enable
+	if obj.Enable != nil {
+		res.Enable = *obj.Enable
 	}
-	if arg.UpdatedAt != nil {
-		res.UpdatedAt = int64(*arg.UpdatedAt)
+	if obj.UpdatedAt != nil {
+		res.UpdatedAt = int64(*obj.UpdatedAt)
 	}
 	return res, nil
 }

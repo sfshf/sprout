@@ -11,11 +11,11 @@ type CasbinAddRoleReq struct {
 	Action  string `json:"action" binding:"oneof=GET HEAD POST PUT PATCH DELETE CONNECT OPTIONS TRACE"`
 }
 
-func (a *Casbin) AddRole(ctx context.Context, arg *CasbinAddRoleReq) error {
+func (a *Casbin) AddRole(ctx context.Context, req *CasbinAddRoleReq) error {
 	_, err := a.enforcer.AddPolicy(
-		strings.ToUpper(arg.Subject),
-		arg.Object,
-		arg.Action,
+		strings.ToUpper(req.Subject),
+		req.Object,
+		req.Action,
 	)
 	return err
 }

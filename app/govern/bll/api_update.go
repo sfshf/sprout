@@ -12,16 +12,17 @@ type UpdateApiReq struct {
 	Path   string  `json:"path" binding:""`
 }
 
-func (a *Api) Update(ctx context.Context, argId *primitive.ObjectID, req *UpdateApiReq) error {
-	arg := &model.Api{ID: argId}
+// TODO Update the method or path of an api, and update corresponding casbin policies.
+func (a *Api) Update(ctx context.Context, objId *primitive.ObjectID, req *UpdateApiReq) error {
+	obj := &model.Api{ID: objId}
 	if req.Group != nil {
-		arg.Group = req.Group
+		obj.Group = req.Group
 	}
 	if req.Method != "" {
-		arg.Method = &req.Method
+		obj.Method = &req.Method
 	}
 	if req.Path != "" {
-		arg.Path = &req.Path
+		obj.Path = &req.Path
 	}
-	return a.apiRepo.UpdateOneByID(ctx, arg)
+	return a.apiRepo.UpdateOneByID(ctx, obj)
 }

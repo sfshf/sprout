@@ -43,7 +43,7 @@ func (a *Menu) Collection() *mongo.Collection {
 	return a.coll
 }
 
-func (a *Menu) FindByID(ctx context.Context, id *primitive.ObjectID) (*model.Menu, error) {
+func (a *Menu) FindOneByID(ctx context.Context, id *primitive.ObjectID) (*model.Menu, error) {
 	return nil, nil
 }
 
