@@ -59,7 +59,15 @@ func (a *Role) FindOneByID(ctx context.Context, argId *primitive.ObjectID) (*mod
 	return &res, nil
 }
 
-func (a *Role) EvictRole(ctx context.Context, argId *primitive.ObjectID) error {
+func (a *Role) FindOneAndDeleteByID(ctx context.Context, argId *primitive.ObjectID) (*model.Role, error) {
+	var res model.Role
+	if err := a.coll.FindOneAndDelete(ctx, bson.M{"_id": argId}).Decode(&res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (a *Role) DeleteOneByID(ctx context.Context, argId *primitive.ObjectID) error {
 	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": argId})
 	return err
 }
@@ -90,8 +98,4 @@ func (a *Role) FindManyByFilter(ctx context.Context, filter interface{}, opts ..
 		return nil, err
 	}
 	return res, nil
-}
-
-func (a *Role) EvictMenu(ctx context.Context, objId *primitive.ObjectID) error {
-	return nil
 }

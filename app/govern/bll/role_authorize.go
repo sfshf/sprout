@@ -3,7 +3,10 @@ package bll
 import (
 	"context"
 	"github.com/sfshf/sprout/model"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 type AuthorizeReq struct {
@@ -11,7 +14,7 @@ type AuthorizeReq struct {
 }
 
 func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *AuthorizeReq) error {
-	_, err := a.roleRepo.FindOneByID(ctx, objId)
+	role, err := a.roleRepo.FindOneByID(ctx, objId)
 	if err != nil {
 		return err
 	}
@@ -22,8 +25,7 @@ func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *Au
 		if err != nil {
 			return err
 		}
-		// TODO suggest to use projection-query function.
-		menu, err := a.menuRepo.FindOneByID(ctx, &menuId)
+		menu, err := a.menuRepo.FindOneByFilter(ctx, bson.M{"_id": menuId}, options.FindOne().SetProjection(bson.M{"widgets._id": bsonx.Int32(1), "widgets.api": bsonx.Int32(1)}))
 		if err != nil {
 			return err
 		}
@@ -41,7 +43,9 @@ func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *Au
 			Widgets: widgets,
 		})
 	}
-	// TODO evict obsolete policies when necessary.
+	if _, err = a.enforcer.DeleteRole(role.ID.Hex()); err != nil {
+		return err
+	}
 	for _, apiId := range apiIds {
 		api, err := a.apiRepo.FindOneByID(ctx, apiId)
 		if err != nil {

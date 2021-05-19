@@ -43,8 +43,28 @@ func (a *Menu) Collection() *mongo.Collection {
 	return a.coll
 }
 
-func (a *Menu) FindOneByID(ctx context.Context, id *primitive.ObjectID) (*model.Menu, error) {
-	return nil, nil
+func (a *Menu) FindOneByFilter(ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (*model.Menu, error) {
+	var res model.Menu
+	if err := a.coll.FindOne(ctx, filter, opts...).Decode(&res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (a *Menu) FindOneByID(ctx context.Context, argId *primitive.ObjectID) (*model.Menu, error) {
+	var res model.Menu
+	if err := a.coll.FindOne(ctx, bson.M{"_id": argId}).Decode(&res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (a *Menu) FindOneAndDeleteByID(ctx context.Context, argId *primitive.ObjectID) (*model.Menu, error) {
+	var res model.Menu
+	if err := a.coll.FindOneAndDelete(ctx, bson.M{"_id": argId}).Decode(&res); err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 func (a *Menu) InsertOne(ctx context.Context, newM *model.Menu) error {
@@ -58,4 +78,9 @@ func (a *Menu) InsertOne(ctx context.Context, newM *model.Menu) error {
 		}
 	}
 	return nil
+}
+
+func (a *Menu) DeleteOneByID(ctx context.Context, argId *primitive.ObjectID) error {
+	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": argId})
+	return err
 }
