@@ -63,35 +63,35 @@ func (a *Api) Evict(c *gin.Context) {
 	return
 }
 
-// Update
-// @description Update a specific api.
-// @id api-update
+// List
+// @description Get a list of api.
+// @id api-list
 // @tags api
-// @summary Update a specific api.
-// @accept json
+// @summary Get a list of api.
 // @produce json
-// @param id path string true "id of the api to update."
-// @param body body bll.UpdateApiReq true "attributes need to update."
+// @param query query bll.ListApiReq false "search criteria."
 // @security ApiKeyAuth
-// @success 2000 {null} null "successful action."
+// @success 2000 {object} bll.ListApiResp "api list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api/:id [PUT]
-func (a *Api) Update(c *gin.Context) {
+// @router /api [GET]
+func (a *Api) List(c *gin.Context) {
 	ctx := c.Request.Context()
-	apiId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	var arg bll.ListApiReq
+	if err := c.ShouldBindQuery(&arg); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	sort, err := schema.OrderByToBsonM(arg.OrderBy)
 	if err != nil {
-		ginx.JSONWithInvalidArguments(c, err.Error())
+		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
 		return
 	}
-	var arg bll.UpdateApiReq
-	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
-		ginx.JSONWithInvalidArguments(c, err.Error())
-		return
-	}
-	if err := a.bll.Update(ctx, &apiId, &arg); err != nil {
+	res, err := a.bll.List(ctx, &arg, sort)
+	if err != nil {
 		ginx.JSONWithFailure(c, err.Error())
+		return
 	}
-	ginx.JSONWithSuccess(c, nil)
+	ginx.JSONWithSuccess(c, res)
 	return
 }
 
@@ -122,35 +122,35 @@ func (a *Api) Profile(c *gin.Context) {
 	return
 }
 
-// List
-// @description Get a list of api.
-// @id api-list
+// Update
+// @description Update a specific api.
+// @id api-update
 // @tags api
-// @summary Get a list of api.
+// @summary Update a specific api.
+// @accept json
 // @produce json
-// @param query query bll.ListApiReq false "search criteria."
+// @param id path string true "id of the api to update."
+// @param body body bll.UpdateApiReq true "attributes need to update."
 // @security ApiKeyAuth
-// @success 2000 {object} bll.ListApiResp "api list."
+// @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api [GET]
-func (a *Api) List(c *gin.Context) {
+// @router /api/:id [PUT]
+func (a *Api) Update(c *gin.Context) {
 	ctx := c.Request.Context()
-	var arg bll.ListApiReq
-	if err := c.ShouldBindQuery(&arg); err != nil {
+	apiId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
 		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	sort, err := schema.OrderByToBsonM(arg.OrderBy)
-	if err != nil {
-		ginx.JSONWithInvalidArguments(c, schema.ErrInvalidArguments.Error())
+	var arg bll.UpdateApiReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
 		return
 	}
-	res, err := a.bll.List(ctx, &arg, sort)
-	if err != nil {
+	if err := a.bll.Update(ctx, &apiId, &arg); err != nil {
 		ginx.JSONWithFailure(c, err.Error())
-		return
 	}
-	ginx.JSONWithSuccess(c, res)
+	ginx.JSONWithSuccess(c, nil)
 	return
 }
 

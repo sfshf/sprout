@@ -62,21 +62,31 @@ func (a *Menu) Evict(c *gin.Context) {
 	return
 }
 
-// Update
-// @description Update a specific menu.
-// @id menu-update
+// List
+// @description Get a list of menu.
+// @id menu-list
 // @tags menu
-// @summary Update a specific menu.
-// @accept json
+// @summary Get a list of menu.
 // @produce json
-// @param id path string true "id of the menu to update."
-// @param body body bll.UpdateMenuReq true "attributes need to update."
+// @param query query bll.ListMenuReq false "search criteria."
 // @security ApiKeyAuth
-// @success 2000 {null} null "successful action."
+// @success 2000 {object} bll.ListMenuResp "menu list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id [PUT]
-func (a *Menu) Update(c *gin.Context) {
-
+// @router /menu [GET]
+func (a *Menu) List(c *gin.Context) {
+	ctx := c.Request.Context()
+	var arg bll.ListMenuReq
+	if err := c.ShouldBindQuery(&arg); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.List(ctx, &arg, nil)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }
 
 // Profile
@@ -91,22 +101,79 @@ func (a *Menu) Update(c *gin.Context) {
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /menu/:id [GET]
 func (a *Menu) Profile(c *gin.Context) {
-
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.Profile(ctx, &menuId)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
 }
 
-// List
-// @description Get a list of menu.
-// @id menu-list
+// ListWidget
+// @description Get a widget list of a specific menu.
+// @id menu-profile-widgetList
 // @tags menu
-// @summary Get a list of menu.
+// @summary Get a widget list of a specific menu.
 // @produce json
-// @param query query bll.ListMenuReq false "search criteria."
+// @param id path string true "id of the menu."
 // @security ApiKeyAuth
-// @success 2000 {object} bll.ListMenuResp "menu list."
+// @success 2000 {object} bll.ListWidgetResp "widget list of a specific menu."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu [GET]
-func (a *Menu) List(c *gin.Context) {
+// @router /menu/:id/widget [GET]
+func (a *Menu) ListWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.ListWidget(ctx, &menuId)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
+}
 
+// Update
+// @description Update a specific menu.
+// @id menu-update
+// @tags menu
+// @summary Update a specific menu.
+// @accept json
+// @produce json
+// @param id path string true "id of the menu to update."
+// @param body body bll.UpdateMenuReq true "attributes need to update."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id [PUT]
+func (a *Menu) Update(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateMenuReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.Update(ctx, &menuId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
 }
 
 // Enable
@@ -123,5 +190,198 @@ func (a *Menu) List(c *gin.Context) {
 // @failure 1000 {error} error "feasible and predictable errors."
 // @router /menu/:id/enable [PATCH]
 func (a *Menu) Enable(c *gin.Context) {
+	ctx := c.Request.Context()
+	var arg bll.EnableMenuReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.Enable(ctx, &menuId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
 
+// AddWidget
+// @description Add a widget for a specific menu.
+// @id menu-update-widget-add
+// @tags menu
+// @summary Add a widget for a specific menu.
+// @accept json
+// @produce json
+// @param id path string true "id of the menu."
+// @param body body bll.AddWidgetReq true "necessary attributes to add a widget."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id/widget [POST]
+func (a *Menu) AddWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.AddWidgetReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	creator := ginx.SessionIdFromGinX(c)
+	if err := a.bll.AddWidget(ctx, creator, &menuId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// EvictWidget
+// @description Evict a widget for a specific menu.
+// @id menu-update-widget-evict
+// @tags menu
+// @summary Evict a widget for a specific menu.
+// @accept json
+// @produce json
+// @param id path string true "id of the menu."
+// @param widgetId path string true "id of the widget."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id/widget/:widgetId [DELETE]
+func (a *Menu) EvictWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	widgetId, err := primitive.ObjectIDFromHex(c.Param("widgetId"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.EvictWidget(ctx, &menuId, &widgetId); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
+}
+
+// ProfileWidget
+// @description Get the profile of a widget.
+// @id menu-profile-widget-profile
+// @tags menu
+// @summary Get infos of a widget.
+// @produce json
+// @param id path string true "id of the menu."
+// @param widgetId path string true "id the a widget."
+// @security ApiKeyAuth
+// @success 2000 {object} bll.ProfileWidgetResp "profile of the widget."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id/widget/:widgetId [GET]
+func (a *Menu) ProfileWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	widgetId, err := primitive.ObjectIDFromHex(c.Param("widgetId"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	res, err := a.bll.ProfileWidget(ctx, &menuId, &widgetId)
+	if err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, res)
+	return
+}
+
+// UpdateWidget
+// @description Update infos of a widget.
+// @id menu-update-widget-update
+// @tags menu
+// @summary Update infos of a widget.
+// @accept json
+// @produce json
+// @param id path string true "id of the menu."
+// @param widgetId path string true "id the a widget."
+// @param body body bll.UpdateWidgetReq true "some attributes to update."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id/widget/:widgetId [PUT]
+func (a *Menu) UpdateWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	widgetId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.UpdateWidgetReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.UpdateWidget(ctx, &menuId, &widgetId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, err.Error())
+	return
+}
+
+// EnableWidget
+// @description Enable or disable a widget.
+// @id menu-update-widget-profile
+// @tags menu
+// @summary Enable or disable a widget.
+// @produce json
+// @param id path string true "id of the menu."
+// @param widgetId path string true "id the a widget."
+// @param body body bll.EnableWidgetReq true "true for enable, or false for disable."
+// @security ApiKeyAuth
+// @success 2000 {null} null "successful action."
+// @failure 1000 {error} error "feasible and predictable errors."
+// @router /menu/:id/widget/:widgetId/enable [PATCH]
+func (a *Menu) EnableWidget(c *gin.Context) {
+	ctx := c.Request.Context()
+	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	widgetId, err := primitive.ObjectIDFromHex(c.Param("widgetId"))
+	if err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	var arg bll.EnableWidgetReq
+	if err := c.ShouldBindBodyWith(&arg, binding.JSON); err != nil {
+		ginx.JSONWithInvalidArguments(c, err.Error())
+		return
+	}
+	if err := a.bll.EnableWidget(ctx, &menuId, &widgetId, &arg); err != nil {
+		ginx.JSONWithFailure(c, err.Error())
+		return
+	}
+	ginx.JSONWithSuccess(c, nil)
+	return
 }

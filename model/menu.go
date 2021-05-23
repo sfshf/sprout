@@ -26,7 +26,6 @@ type Widget struct {
 	Api       *primitive.ObjectID `bson:"api,omitempty"`
 	Memo      *string             `bson:"memo,omitempty"`
 	Show      *bool               `bson:"show,omitempty"` // true: show; false/nil: hide.
-	ParentID  *primitive.ObjectID `bson:"parentID,omitempty"`
 	Creator   *primitive.ObjectID `bson:"creator,omitempty"`
 	Enable    *bool               `bson:"enable,omitempty"` // true: enable; false/nil: disable.
 	CreatedAt *primitive.DateTime `bson:"createdAt,omitempty"`

@@ -3,30 +3,32 @@ package bll
 import (
 	"context"
 	"github.com/sfshf/sprout/model"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 type AddMenuReq struct {
-	Name     string    `json:"name" binding:"required"`
-	Seq      int       `json:"seq" binding:"required"`
-	Icon     string    `json:"icon" binding:""`
-	Route    string    `json:"route" binding:"required"`
-	Memo     string    `json:"memo" binding:""`
-	Show     bool      `json:"show" binding:""`
-	ParentID string    `json:"parentID" binding:""`
-	Enable   bool      `json:"enable" binding:""`
-	Widgets  []*Widget `json:"widgets" binding:""`
+	Name     string       `json:"name" binding:"required"`
+	Seq      int          `json:"seq" binding:"required"`
+	Icon     string       `json:"icon" binding:""`
+	Route    string       `json:"route" binding:"required"`
+	Memo     string       `json:"memo" binding:""`
+	Show     bool         `json:"show" binding:""`
+	ParentID string       `json:"parentID" binding:""`
+	Enable   bool         `json:"enable" binding:""`
+	Widgets  []*AddWidget `json:"widgets" binding:""`
 }
 
-type Widget struct {
-	Name     string `json:"name" binding:"required"`
-	Seq      int    `json:"seq" binding:"required"`
-	Icon     string `json:"icon" binding:""`
-	Api      string `json:"api" binding:"required"`
-	Memo     string `json:"memo" binding:""`
-	Show     bool   `json:"show" binding:""`
-	ParentID string `json:"parentID" binding:""`
-	Enable   bool   `json:"enable" binding:""`
+type AddWidget struct {
+	Name   string `json:"name" binding:"required"`
+	Seq    int    `json:"seq" binding:"required"`
+	Icon   string `json:"icon" binding:""`
+	Api    string `json:"api" binding:"required"`
+	Memo   string `json:"memo" binding:""`
+	Show   bool   `json:"show" binding:""`
+	Enable bool   `json:"enable" binding:""`
 }
 
 func (a *Menu) Add(ctx context.Context, creator *primitive.ObjectID, req *AddMenuReq) error {
@@ -60,19 +62,16 @@ func (a *Menu) Add(ctx context.Context, creator *primitive.ObjectID, req *AddMen
 				Creator: creator,
 				Enable:  &one.Enable,
 			}
-			if one.ParentID != "" {
-				parentId, err := primitive.ObjectIDFromHex(one.ParentID)
-				if err != nil {
-					return err
-				}
-				widget.ParentID = &parentId
-			}
 			if one.Api != "" {
 				apiId, err := primitive.ObjectIDFromHex(one.Api)
 				if err != nil {
 					return err
 				}
-				widget.Api = &apiId
+				api, err := a.apiRepo.FindOneByFilter(ctx, bson.M{"_id": apiId}, options.FindOne().SetProjection(bson.M{"_id": bsonx.Int32(1)}))
+				if err != nil {
+					return err
+				}
+				widget.Api = api.ID
 			}
 			widgets = append(widgets, widget)
 		}

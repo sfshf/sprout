@@ -27,20 +27,13 @@ func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*Profil
 	}
 	res := &ProfileStaffResp{
 		Account:           *obj.Account,
+		RealName:          *obj.RealName,
+		Email:             *obj.Email,
+		Phone:             *obj.Phone,
+		Gender:            *obj.Gender,
 		SignInIpWhiteList: *obj.SignInIpWhitelist,
+		Enable:            *obj.Enable,
 		SignUpAt:          int64(*obj.SignUpAt),
-	}
-	if obj.RealName != nil {
-		res.RealName = *obj.RealName
-	}
-	if obj.Email != nil {
-		res.Email = *obj.Email
-	}
-	if obj.Phone != nil {
-		res.Phone = *obj.Phone
-	}
-	if obj.Gender != nil {
-		res.Gender = *obj.Gender
 	}
 	if obj.Roles != nil {
 		res.Roles = *obj.Roles
@@ -50,9 +43,6 @@ func (a *Staff) Profile(ctx context.Context, objId *primitive.ObjectID) (*Profil
 	}
 	if obj.LastSignInTime != nil {
 		res.LastSignInTime = int64(*obj.LastSignInTime)
-	}
-	if obj.Enable != nil {
-		res.Enable = *obj.Enable
 	}
 	if obj.UpdatedAt != nil {
 		res.UpdatedAt = int64(*obj.UpdatedAt)

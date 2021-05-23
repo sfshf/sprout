@@ -47,6 +47,30 @@ func (a *Api) FindOneByID(ctx context.Context, argId *primitive.ObjectID) (*mode
 	return &m, nil
 }
 
+func (a *Api) FindOneByFilter(ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (*model.Api, error) {
+	var m model.Api
+	if err := a.coll.FindOne(ctx, filter, opts...).Decode(&m); err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
+func (a *Api) FindOneAndDeleteByID(ctx context.Context, argId *primitive.ObjectID) (*model.Api, error) {
+	var m model.Api
+	if err := a.coll.FindOneAndDelete(ctx, bson.M{"_id": argId}).Decode(&m); err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
+func (a *Api) FindOneAndUpdateByID(ctx context.Context, arg *model.Api) (*model.Api, error) {
+	var m model.Api
+	if err := a.coll.FindOneAndUpdate(ctx, bson.M{"_id": arg.ID}, bson.M{"$set": arg}).Decode(&m); err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
 func (a *Api) InsertOne(ctx context.Context, newM *model.Api) error {
 	res, err := a.coll.InsertOne(ctx, newM)
 	if err != nil {
@@ -60,7 +84,7 @@ func (a *Api) InsertOne(ctx context.Context, newM *model.Api) error {
 	return nil
 }
 
-func (a *Api) DeleteOne(ctx context.Context, argId *primitive.ObjectID) error {
+func (a *Api) DeleteOneByID(ctx context.Context, argId *primitive.ObjectID) error {
 	_, err := a.coll.DeleteOne(ctx, bson.M{"_id": argId})
 	return err
 }

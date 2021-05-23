@@ -27,11 +27,9 @@ type App struct {
 	ApiApi       *api.Api
 	CasbinApi    *api.Casbin
 	AccessLogApi *api.AccessLog
-	UserApi      *api.User
 
 	StaffRepo     *repo.Staff
 	CasbinRepo    *repo.Casbin
-	UserRepo      *repo.User
 	AccessLogRepo *repo.AccessLog
 	RedisCache    *cache.RedisCache
 	MemoryCache   *cache.MemoryCache
@@ -106,13 +104,13 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 		staff := v1.Group("/staff")
 		{
+			staff.GET("", a.StaffApi.List)
+			staff.GET("/:id", a.StaffApi.Profile)
 			staff.PATCH("/:id/password", a.StaffApi.UpdatePassword)
 			staff.PATCH("/:id/email", a.StaffApi.UpdateEmail)
 			staff.PATCH("/:id/phone", a.StaffApi.UpdatePhone)
 			staff.PATCH("/:id/roles", ginx.MustRoot(config.C.Root.SessionId), a.StaffApi.UpdateRoles)
 			staff.PATCH("/:id/signInIpWhitelist", a.StaffApi.UpdateSignInIpWhitelist)
-			staff.GET("/:id", a.StaffApi.Profile)
-			staff.GET("", a.StaffApi.List)
 			staff.PATCH("/:id/enable", ginx.MustRoot(config.C.Root.SessionId), a.StaffApi.Enable)
 		}
 
@@ -120,10 +118,10 @@ func (a *App) InitRoutes(ctx context.Context) {
 		{
 			role.POST("", a.RoleApi.Add)
 			role.DELETE("/:id", a.RoleApi.Evict)
+			role.GET("", a.RoleApi.List)
+			role.GET("/:id", a.RoleApi.Profile)
 			role.PUT("/:id", a.RoleApi.Update)
 			role.PUT("/:id/authorize", a.RoleApi.Authorize)
-			role.GET("/:id", a.RoleApi.Profile)
-			role.GET("", a.RoleApi.List)
 			role.PATCH("/:id/enable", a.RoleApi.Enable)
 		}
 
@@ -131,19 +129,25 @@ func (a *App) InitRoutes(ctx context.Context) {
 		{
 			menu.POST("", a.MenuApi.Add)
 			menu.DELETE("/:id", a.MenuApi.Evict)
-			menu.PUT("/:id", a.MenuApi.Update)
-			menu.GET("/:id", a.MenuApi.Profile)
 			menu.GET("", a.MenuApi.List)
+			menu.GET("/:id", a.MenuApi.Profile)
+			menu.GET("/:id/widget", a.MenuApi.ListWidget)
+			menu.PUT("/:id", a.MenuApi.Update)
 			menu.PATCH("/:id/enable", a.MenuApi.Enable)
+			menu.POST("/:id/widget", a.MenuApi.AddWidget)
+			menu.DELETE("/:id/widget/:widgetId", a.MenuApi.EvictWidget)
+			menu.GET("/:id/widget/:widgetId", a.MenuApi.ProfileWidget)
+			menu.PUT("/:id/widget/:widgetId", a.MenuApi.UpdateWidget)
+			menu.PATCH("/:id/widget/:widgetId/enable", a.MenuApi.EnableWidget)
 		}
 
 		api := v1.Group("/api", ginx.MustRoot(config.C.Root.SessionId))
 		{
 			api.POST("", a.ApiApi.Add)
 			api.DELETE("/:id", a.ApiApi.Evict)
-			api.PUT("/:id", a.ApiApi.Update)
-			api.GET("/:id", a.ApiApi.Profile)
 			api.GET("", a.ApiApi.List)
+			api.GET("/:id", a.ApiApi.Profile)
+			api.PUT("/:id", a.ApiApi.Update)
 			api.PATCH("/:id/enable", a.ApiApi.Enable)
 		}
 
@@ -151,36 +155,25 @@ func (a *App) InitRoutes(ctx context.Context) {
 		{
 			priority := casbin.Group("/priority")
 			{
-				priority.GET("", a.CasbinApi.Priorities)
+				priority.GET("", nil)
 			}
-
 			object := casbin.Group("/resource")
 			{
-				object.GET("", a.CasbinApi.AllApiObjActMap)
+				object.GET("", nil)
 			}
-
 			policy := casbin.Group("/policy")
 			{
-				//policy.POST("", a.CasbinApi.AddPolicy)
-				policy.GET("/:role", a.CasbinApi.PoliciesOfRole)
-				//policy.PUT("/:id", a.CasbinApi.UpdatePolicy)
-				//policy.DELETE("/:id", a.CasbinApi.RemovePolicy)
-				//policy.GET("", a.CasbinApi.Policies)
+				policy.GET("/:role", nil)
 			}
 
 			role := casbin.Group("/role")
 			{
-				role.POST("", a.CasbinApi.AddRole)
-				role.DELETE("/:role", a.CasbinApi.DeleteRole)
-				role.PUT("/:role/set/:staffId", a.CasbinApi.SetRole)
-				role.DELETE("/:role/unset/:staffId", a.CasbinApi.UnsetRole)
-				role.GET("", a.CasbinApi.AllRoles)
-				role.GET("/:staffId", a.CasbinApi.RolesOfStaff)
+				role.POST("", nil)
 			}
 
 			staff := casbin.Group("/staff")
 			{
-				staff.GET("/:role", a.CasbinApi.StaffsOfRole)
+				staff.GET("/:role", nil)
 			}
 		}
 
@@ -188,15 +181,5 @@ func (a *App) InitRoutes(ctx context.Context) {
 		{
 			accessLog.GET("", a.AccessLogApi.List)
 		}
-
-		user := v1.Group("/user")
-		{
-			user.POST("", a.UserApi.Add)
-			user.DELETE("/:id", a.UserApi.Delete)
-			user.PUT("/:id", a.UserApi.Update)
-			user.GET("/:id", a.UserApi.Info)
-			user.GET("", a.UserApi.List)
-		}
 	}
-	a.CasbinApi.Routes = a.Router.Routes()
 }

@@ -26,13 +26,19 @@ func NewMenu(menuRepo *repo.Menu, apiRepo *repo.Api, roleRepo *repo.Role, enforc
 
 type Api struct {
 	apiRepo   *repo.Api
+	menuRepo  *repo.Menu
+	roleRepo  *repo.Role
 	staffRepo *repo.Staff
+	enforcer  *casbin.Enforcer
 }
 
-func NewApi(apiRepo *repo.Api, staffRepo *repo.Staff) *Api {
+func NewApi(apiRepo *repo.Api, menuRepo *repo.Menu, roleRepo *repo.Role, staffRepo *repo.Staff, enforcer *casbin.Enforcer) *Api {
 	return &Api{
 		apiRepo:   apiRepo,
+		menuRepo:  menuRepo,
+		roleRepo:  roleRepo,
 		staffRepo: staffRepo,
+		enforcer:  enforcer,
 	}
 }
 
@@ -89,15 +95,5 @@ type AccessLog struct {
 func NewAccessLog(repo *repo.AccessLog) *AccessLog {
 	return &AccessLog{
 		accessLog: repo,
-	}
-}
-
-type User struct {
-	userRepo *repo.User
-}
-
-func NewUser(repo *repo.User) *User {
-	return &User{
-		userRepo: repo,
 	}
 }

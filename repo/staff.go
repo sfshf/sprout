@@ -146,6 +146,7 @@ func (a *Staff) CountByFilter(ctx context.Context, filter interface{}) (int64, e
 	return a.coll.CountDocuments(ctx, filter, options.Count().SetMaxTime(time.Minute))
 }
 
+// https://docs.mongodb.com/manual/reference/operator/update/pull/#mongodb-update-up.-pull
 func (a *Staff) EvictRole(ctx context.Context, argId *primitive.ObjectID, role *string) error {
 	_, err := a.coll.UpdateOne(
 		ctx,

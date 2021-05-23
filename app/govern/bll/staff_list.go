@@ -20,6 +20,7 @@ type ListStaffReq struct {
 	LastSignInIp        string          `form:"lastSignInIp" binding:""`
 	LastSignInTimeBegin int64           `form:"lastSignInTimeBegin" binding:"gte=0"`
 	LastSignInTimeEnd   int64           `form:"lastSignInTimeEnd" binding:"gte=0"`
+	Enable              *bool           `form:"enable" binding:""`
 	OrderBy             *schema.OrderBy `form:"orderBy" binding:""`
 	schema.PaginationReq
 }
@@ -71,6 +72,9 @@ func (a *Staff) List(ctx context.Context, req *ListStaffReq, sort bson.M) (*List
 	}
 	if req.LastSignInTimeEnd > 0 {
 		and = append(and, bson.M{"lastSignInTime": bson.M{"$lt": primitive.DateTime(req.LastSignInTimeEnd)}})
+	}
+	if req.Enable != nil {
+		and = append(and, bson.M{"enable": req.Enable})
 	}
 	var filter bson.M
 	if len(and) > 0 {

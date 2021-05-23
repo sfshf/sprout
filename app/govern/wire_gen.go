@@ -44,18 +44,15 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 	enforcer := NewCasbin(ctx, casbin)
 	bllRole := bll.NewRole(role, staff, menu, repoApi, enforcer)
 	apiRole := api.NewRole(bllRole)
-	bllMenu := bll.NewMenu(menu)
+	bllMenu := bll.NewMenu(menu, repoApi, role, enforcer)
 	apiMenu := api.NewMenu(bllMenu)
-	bllApi := bll.NewApi(repoApi, staff)
+	bllApi := bll.NewApi(repoApi, menu, role, staff, enforcer)
 	apiApi := api.NewApi(bllApi)
 	bllCasbin := bll.NewCasbin(enforcer, staff)
 	apiCasbin := api.NewCasbin(bllCasbin)
 	accessLog := repo.NewAccessLogRepo(ctx, database)
 	bllAccessLog := bll.NewAccessLog(accessLog)
 	apiAccessLog := api.NewAccessLog(bllAccessLog)
-	user := repo.NewUserRepo(ctx, database)
-	bllUser := bll.NewUser(user)
-	apiUser := api.NewUser(bllUser)
 	cacheCache, cleanup3, err := NewCache(ctx)
 	if err != nil {
 		cleanup2()
@@ -78,10 +75,8 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 		ApiApi:        apiApi,
 		CasbinApi:     apiCasbin,
 		AccessLogApi:  apiAccessLog,
-		UserApi:       apiUser,
 		StaffRepo:     staff,
 		CasbinRepo:    casbin,
-		UserRepo:      user,
 		AccessLogRepo: accessLog,
 		RedisCache:    redisCache,
 		MemoryCache:   memoryCache,
@@ -101,9 +96,9 @@ func NewApp(ctx context.Context) (*App, func(), error) {
 // wire.go:
 
 var (
-	ApiSet   = wire.NewSet(api.NewStaff, api.NewRole, api.NewMenu, api.NewApi, api.NewCasbin, api.NewAccessLog, api.NewUser)
-	BllSet   = wire.NewSet(bll.NewStaff, bll.NewRole, bll.NewMenu, bll.NewApi, bll.NewCasbin, bll.NewAccessLog, bll.NewUser)
-	RepoSet  = wire.NewSet(repo.NewStaffRepo, repo.NewRoleRepo, repo.NewMenuRepo, repo.NewApiRepo, repo.NewCasbinRepo, repo.NewAccessLogRepo, repo.NewUserRepo)
+	ApiSet   = wire.NewSet(api.NewStaff, api.NewRole, api.NewMenu, api.NewApi, api.NewCasbin, api.NewAccessLog)
+	BllSet   = wire.NewSet(bll.NewStaff, bll.NewRole, bll.NewMenu, bll.NewApi, bll.NewCasbin, bll.NewAccessLog)
+	RepoSet  = wire.NewSet(repo.NewStaffRepo, repo.NewRoleRepo, repo.NewMenuRepo, repo.NewApiRepo, repo.NewCasbinRepo, repo.NewAccessLogRepo)
 	CacheSet = wire.NewSet(cache.NewMemoryCache, cache.NewRedisCache)
 	AppSet   = wire.NewSet(
 		NewAuth,

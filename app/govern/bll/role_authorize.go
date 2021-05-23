@@ -54,8 +54,8 @@ func (a *Role) Authorize(ctx context.Context, objId *primitive.ObjectID, req *Au
 		if *api.Enable {
 			_, err = a.enforcer.AddPolicy(
 				objId.Hex(),
-				api.Path,
-				api.Method,
+				*api.Path,
+				*api.Method,
 			)
 			if err != nil {
 				return err

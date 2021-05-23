@@ -82,11 +82,11 @@ func (a *Role) CountByFilter(ctx context.Context, filter interface{}) (int64, er
 }
 
 func (a *Role) FindManyByFilter(ctx context.Context, filter interface{}, opts ...*options.FindOptions) ([]model.Role, error) {
-	res := make([]model.Role, 0)
 	cursor, err := a.coll.Find(ctx, filter, opts...)
 	if err != nil {
 		return nil, err
 	}
+	var res []model.Role
 	for cursor.Next(ctx) {
 		var one model.Role
 		if err := cursor.Decode(&one); err != nil {

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/sfshf/sprout/app/govern/bll"
 )
 
@@ -46,8 +45,7 @@ func NewStaff(bll *bll.Staff) *Staff {
 }
 
 type Casbin struct {
-	bll    *bll.Casbin
-	Routes gin.RoutesInfo
+	bll *bll.Casbin
 }
 
 func NewCasbin(bll *bll.Casbin) *Casbin {
@@ -62,16 +60,6 @@ type AccessLog struct {
 
 func NewAccessLog(bll *bll.AccessLog) *AccessLog {
 	return &AccessLog{
-		bll: bll,
-	}
-}
-
-type User struct {
-	bll *bll.User
-}
-
-func NewUser(bll *bll.User) *User {
-	return &User{
 		bll: bll,
 	}
 }

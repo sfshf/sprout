@@ -19,7 +19,6 @@ var (
 		api.NewApi,
 		api.NewCasbin,
 		api.NewAccessLog,
-		api.NewUser,
 	)
 	BllSet = wire.NewSet(
 		bll.NewStaff,
@@ -28,7 +27,6 @@ var (
 		bll.NewApi,
 		bll.NewCasbin,
 		bll.NewAccessLog,
-		bll.NewUser,
 	)
 	RepoSet = wire.NewSet(
 		repo.NewStaffRepo,
@@ -37,7 +35,6 @@ var (
 		repo.NewApiRepo,
 		repo.NewCasbinRepo,
 		repo.NewAccessLogRepo,
-		repo.NewUserRepo,
 	)
 	CacheSet = wire.NewSet(
 		cache.NewMemoryCache,

@@ -14,7 +14,7 @@ func (a *Menu) Evict(ctx context.Context, objId *primitive.ObjectID) error {
 	if err != nil {
 		return err
 	}
-	roles, err := a.roleRepo.FindManyByFilter(ctx, bson.M{"menuWidgets.menuID": obj.ID}, options.Find().SetProjection(bson.M{"_id": bsonx.Int32(1), "menuWidgets": bsonx.Int32(1)}))
+	roles, err := a.roleRepo.FindManyByFilter(ctx, bson.M{"menuWidgets": bson.M{"menuID": obj.ID}}, options.Find().SetProjection(bson.M{"_id": bsonx.Int32(1), "menuWidgets": bsonx.Int32(1)}))
 	if err != nil {
 		return err
 	}

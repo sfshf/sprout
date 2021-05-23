@@ -179,7 +179,7 @@ func (a *Casbin) AddPolicy(sec string, pType string, rule []string) error {
 func (a *Casbin) RemovePolicy(sec string, pType string, rule []string) error {
 	//ctx := context.Background()
 	//line := a.lineToBsonM(ctx, pType, rule)
-	//_, err := a.coll.DeleteOne(ctx, line)
+	//_, err := a.coll.DeleteOneByID(ctx, line)
 	return nil
 }
 
