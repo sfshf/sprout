@@ -11,8 +11,8 @@ func NoMethodHandler() gin.HandlerFunc {
 		c.AbortWithStatusJSON(
 			http.StatusOK,
 			schema.Resp{
-				Code: schema.NoMethod,
-				Msg:  schema.NoMethod.String(),
+				BizCode: schema.NoMethod,
+				BizMsg:  schema.NoMethod.String(),
 			},
 		)
 		return

@@ -11,8 +11,8 @@ func NoRouteHandler() gin.HandlerFunc {
 		c.AbortWithStatusJSON(
 			http.StatusOK,
 			schema.Resp{
-				Code: schema.NoRoute,
-				Msg:  schema.NoRoute.String(),
+				BizCode: schema.NoRoute,
+				BizMsg:  schema.NoRoute.String(),
 			},
 		)
 		return

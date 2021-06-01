@@ -1,13 +1,14 @@
 package schema
 
 type Resp struct {
-	Code respCode    `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+	Msg     string      `json:"msg,omitempty"`
+	BizCode bizCode     `json:"bizCode,omitempty"`
+	BizMsg  string      `json:"bizMsg,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
 const (
-	Failure respCode = iota + 1000
+	Failure bizCode = iota + 1000
 	InvalidToken
 	InvalidCaptcha
 	Unauthorized
@@ -19,11 +20,11 @@ const (
 )
 
 const (
-	Success respCode = iota + 2000
+	Success bizCode = iota + 2000
 )
 
 var (
-	respMsgs = map[respCode]string{
+	bizMsgs = map[bizCode]string{
 		Failure:                  "Failure",
 		InvalidToken:             "Invalid Token",
 		InvalidCaptcha:           "Invalid Captcha",
@@ -38,8 +39,8 @@ var (
 	}
 )
 
-type respCode int
+type bizCode int
 
-func (a respCode) String() string {
-	return respMsgs[a]
+func (a bizCode) String() string {
+	return bizMsgs[a]
 }
