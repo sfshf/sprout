@@ -15,6 +15,7 @@ var (
 	EnvCasbinModelFile = "CASBIN_MODEL_FILE"
 	EnvMongoUri        = "MONGO_URI"
 	EnvMongoDatabase   = "MONGO_DATABASE"
+	EnvRedisAddress    = "REDIS_ADDRESS"
 	EnvHttpHost        = "HTTP_HOST"
 	EnvCertFile        = "HTTP_CERT_FILE"
 	EnvCertKeyFile     = "HTTP_CERT_KEY_FILE"
@@ -41,6 +42,9 @@ func init() {
 	}
 	if c := os.Getenv(EnvMongoDatabase); c != "" {
 		C.MongoDB.Database = c
+	}
+	if c := os.Getenv(EnvRedisAddress); c != "" {
+		C.Redis.Addr = c
 	}
 	if c := os.Getenv(EnvHttpHost); c != "" {
 		C.HTTP.Host = c
