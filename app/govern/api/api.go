@@ -20,7 +20,7 @@ import (
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api [POST]
+// @router /apis [POST]
 func (a *Api) Add(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddApiReq
@@ -47,7 +47,7 @@ func (a *Api) Add(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api/:id [DELETE]
+// @router /apis/:id [DELETE]
 func (a *Api) Evict(c *gin.Context) {
 	ctx := c.Request.Context()
 	apiId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -73,7 +73,7 @@ func (a *Api) Evict(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ListApiResp "api list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api [GET]
+// @router /apis [GET]
 func (a *Api) List(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.ListApiReq
@@ -105,7 +105,7 @@ func (a *Api) List(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ProfileApiResp "profile of the api."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api/:id [GET]
+// @router /apis/:id [GET]
 func (a *Api) Profile(c *gin.Context) {
 	ctx := c.Request.Context()
 	apiId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -134,7 +134,7 @@ func (a *Api) Profile(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api/:id [PUT]
+// @router /apis/:id [PUT]
 func (a *Api) Update(c *gin.Context) {
 	ctx := c.Request.Context()
 	apiId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -166,7 +166,7 @@ func (a *Api) Update(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /api/:id/enable [PATCH]
+// @router /apis/:id/enable [PATCH]
 func (a *Api) Enable(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.EnableApiReq

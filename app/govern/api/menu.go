@@ -19,7 +19,7 @@ import (
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu [POST]
+// @router /menus [POST]
 func (a *Menu) Add(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddMenuReq
@@ -46,7 +46,7 @@ func (a *Menu) Add(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id [DELETE]
+// @router /menus/:id [DELETE]
 func (a *Menu) Evict(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -72,7 +72,7 @@ func (a *Menu) Evict(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ListMenuResp "menu list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu [GET]
+// @router /menus [GET]
 func (a *Menu) List(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.ListMenuReq
@@ -99,7 +99,7 @@ func (a *Menu) List(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ProfileMenuResp "profile of the api."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id [GET]
+// @router /menus/:id [GET]
 func (a *Menu) Profile(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -126,7 +126,7 @@ func (a *Menu) Profile(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ListWidgetResp "widget list of a specific menu."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget [GET]
+// @router /menus/:id/widgets [GET]
 func (a *Menu) ListWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -155,7 +155,7 @@ func (a *Menu) ListWidget(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id [PUT]
+// @router /menus/:id [PUT]
 func (a *Menu) Update(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -188,7 +188,7 @@ func (a *Menu) Update(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/enable [PATCH]
+// @router /menus/:id/enable [PATCH]
 func (a *Menu) Enable(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.EnableMenuReq
@@ -221,7 +221,7 @@ func (a *Menu) Enable(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget [POST]
+// @router /menus/:id/widgets [POST]
 func (a *Menu) AddWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -255,7 +255,7 @@ func (a *Menu) AddWidget(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget/:widgetId [DELETE]
+// @router /menus/:id/widgets/:widgetId [DELETE]
 func (a *Menu) EvictWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -287,7 +287,7 @@ func (a *Menu) EvictWidget(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ProfileWidgetResp "profile of the widget."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget/:widgetId [GET]
+// @router /menus/:id/widgets/:widgetId [GET]
 func (a *Menu) ProfileWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -322,7 +322,7 @@ func (a *Menu) ProfileWidget(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget/:widgetId [PUT]
+// @router /menus/:id/widgets/:widgetId [PUT]
 func (a *Menu) UpdateWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -360,7 +360,7 @@ func (a *Menu) UpdateWidget(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /menu/:id/widget/:widgetId/enable [PATCH]
+// @router /menus/:id/widgets/:widgetId/enable [PATCH]
 func (a *Menu) EnableWidget(c *gin.Context) {
 	ctx := c.Request.Context()
 	menuId, err := primitive.ObjectIDFromHex(c.Param("id"))

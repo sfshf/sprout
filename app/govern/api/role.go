@@ -20,7 +20,7 @@ import (
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role [POST]
+// @router /roles [POST]
 func (a *Role) Add(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.AddRoleReq
@@ -47,7 +47,7 @@ func (a *Role) Add(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action"
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id [DELETE]
+// @router /roles/:id [DELETE]
 func (a *Role) Evict(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -73,7 +73,7 @@ func (a *Role) Evict(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ListRoleResp "role list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role [GET]
+// @router /roles [GET]
 func (a *Role) List(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.ListRoleReq
@@ -105,7 +105,7 @@ func (a *Role) List(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ProfileRoleResp "profile of the role."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id [GET]
+// @router /roles/:id [GET]
 func (a *Role) Profile(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -135,7 +135,7 @@ func (a *Role) Profile(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id [PUT]
+// @router /roles/:id [PUT]
 func (a *Role) Update(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -168,7 +168,7 @@ func (a *Role) Update(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id/authorize [PUT]
+// @router /roles/:id/authorize [PUT]
 func (a *Role) Authorize(c *gin.Context) {
 	ctx := c.Request.Context()
 	roleId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -201,7 +201,7 @@ func (a *Role) Authorize(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /role/:id/enable [PATCH]
+// @router /roles/:id/enable [PATCH]
 func (a *Role) Enable(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.EnableRoleReq

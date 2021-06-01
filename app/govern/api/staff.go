@@ -201,7 +201,7 @@ func (a *Staff) SignOff(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/password [PATCH]
+// @router /staffs/:id/password [PATCH]
 func (a *Staff) UpdatePassword(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -238,7 +238,7 @@ func (a *Staff) UpdatePassword(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/email [PATCH]
+// @router /staffs/:id/email [PATCH]
 func (a *Staff) UpdateEmail(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -277,7 +277,7 @@ func (a *Staff) UpdateEmail(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/phone [PATCH]
+// @router /staffs/:id/phone [PATCH]
 func (a *Staff) UpdatePhone(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -316,7 +316,7 @@ func (a *Staff) UpdatePhone(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/roles [PATCH]
+// @router /staffs/:id/roles [PATCH]
 func (a *Staff) UpdateRoles(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -349,7 +349,7 @@ func (a *Staff) UpdateRoles(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/signInIpWhitelist [PATCH]
+// @router /staffs/:id/signInIpWhitelist [PATCH]
 func (a *Staff) UpdateSignInIpWhitelist(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -380,7 +380,7 @@ func (a *Staff) UpdateSignInIpWhitelist(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ProfileStaffResp "profile of the staff."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id [GET]
+// @router /staffs/:id [GET]
 func (a *Staff) Profile(c *gin.Context) {
 	ctx := c.Request.Context()
 	staffId, err := primitive.ObjectIDFromHex(c.Param("id"))
@@ -407,7 +407,7 @@ func (a *Staff) Profile(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {object} bll.ListStaffResp "staff list."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff [GET]
+// @router /staffs [GET]
 func (a *Staff) List(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.ListStaffReq
@@ -441,7 +441,7 @@ func (a *Staff) List(c *gin.Context) {
 // @security ApiKeyAuth
 // @success 2000 {null} null "successful action."
 // @failure 1000 {error} error "feasible and predictable errors."
-// @router /staff/:id/enable [PATCH]
+// @router /staffs/:id/enable [PATCH]
 func (a *Staff) Enable(c *gin.Context) {
 	ctx := c.Request.Context()
 	var arg bll.EnableStaffReq

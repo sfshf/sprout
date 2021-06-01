@@ -34,7 +34,7 @@ definitions:
         type: boolean
       widgets:
         items:
-          $ref: '#/definitions/bll.Widget'
+          $ref: '#/definitions/bll.AddWidget'
         type: array
     required:
     - name
@@ -56,6 +56,50 @@ definitions:
       seq:
         type: integer
     required:
+    - name
+    - seq
+    type: object
+  bll.AddWidget:
+    properties:
+      api:
+        type: string
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
+    required:
+    - api
+    - name
+    - seq
+    type: object
+  bll.AddWidgetReq:
+    properties:
+      api:
+        type: string
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      parentID:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
+    required:
+    - api
     - name
     - seq
     type: object
@@ -85,6 +129,13 @@ definitions:
     - enable
     type: object
   bll.EnableRoleReq:
+    properties:
+      enable:
+        type: boolean
+    required:
+    - enable
+    type: object
+  bll.EnableWidgetReq:
     properties:
       enable:
         type: boolean
@@ -126,6 +177,13 @@ definitions:
       total:
         type: integer
     type: object
+  bll.ListWidgetResp:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
   bll.ProfileApiResp:
     properties:
       createdAt:
@@ -144,6 +202,29 @@ definitions:
         type: integer
     type: object
   bll.ProfileMenuResp:
+    properties:
+      createdAt:
+        type: integer
+      creator:
+        type: string
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      parentID:
+        type: string
+      route:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
+      updatedAt:
+        type: integer
     type: object
   bll.ProfileRoleResp:
     properties:
@@ -194,6 +275,36 @@ definitions:
         type: array
       signUpAt:
         type: integer
+      updatedAt:
+        type: integer
+    type: object
+  bll.ProfileWidgetResp:
+    properties:
+      api:
+        properties:
+          id:
+            type: string
+          method:
+            type: string
+          path:
+            type: string
+        type: object
+      createdAt:
+        type: integer
+      creator:
+        type: string
+      enable:
+        type: boolean
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
       updatedAt:
         type: integer
     type: object
@@ -254,6 +365,21 @@ definitions:
         type: string
     type: object
   bll.UpdateMenuReq:
+    properties:
+      icon:
+        type: string
+      memo:
+        type: string
+      name:
+        type: string
+      parentID:
+        type: string
+      route:
+        type: string
+      seq:
+        type: integer
+      show:
+        type: boolean
     type: object
   bll.UpdateRoleReq:
     properties:
@@ -293,28 +419,20 @@ definitions:
           type: string
         type: array
     type: object
-  bll.Widget:
+  bll.UpdateWidgetReq:
     properties:
       api:
         type: string
-      enable:
-        type: boolean
       icon:
         type: string
       memo:
         type: string
       name:
         type: string
-      parentID:
-        type: string
       seq:
         type: integer
       show:
         type: boolean
-    required:
-    - api
-    - name
-    - seq
     type: object
 host: localhost:8000
 info:
@@ -330,7 +448,7 @@ info:
   title: Govern APIs
   version: 0.0.1-beta
 paths:
-  /api:
+  /apis:
     get:
       description: Get a list of api.
       operationId: api-list
@@ -409,7 +527,7 @@ paths:
       summary: Add a new api.
       tags:
       - api
-  /api/:id:
+  /apis/:id:
     delete:
       description: Evict a specific api.
       operationId: api-evict
@@ -493,7 +611,7 @@ paths:
       summary: Update a specific api.
       tags:
       - api
-  /api/:id/enable:
+  /apis/:id/enable:
     patch:
       consumes:
       - application/json
@@ -527,44 +645,23 @@ paths:
       summary: Enable or disable an api.
       tags:
       - api
-  /casbin/priority:
-    get:
-      description: Get predefined priority range of roles.
-      operationId: casbin-role-priority
-      produces:
-      - application/json
-      responses:
-        "1000":
-          description: feasible and predictable errors.
-          schema:
-            type: error
-        "2000":
-          description: minimum and maximum value of the predefined priority range.
-          schema:
-            items:
-              items:
-                type: integer
-              type: array
-            type: array
-      security:
-      - ApiKeyAuth: []
-      summary: Get predefined priority range of roles.
-      tags:
-      - casbin
-  /menu:
+  /menus:
     get:
       description: Get a list of menu.
       operationId: menu-list
       parameters:
       - in: query
-        name: orderBy
+        name: enable
+        type: boolean
+      - in: query
+        name: name
         type: string
       - in: query
-        name: page
-        type: integer
+        name: route
+        type: string
       - in: query
-        name: perPage
-        type: integer
+        name: show
+        type: boolean
       produces:
       - application/json
       responses:
@@ -609,7 +706,7 @@ paths:
       summary: Add a new menu, with widgets if has.
       tags:
       - menu
-  /menu/:id:
+  /menus/:id:
     delete:
       description: Evict a specific menu.
       operationId: menu-evict
@@ -693,7 +790,7 @@ paths:
       summary: Update a specific menu.
       tags:
       - menu
-  /menu/:id/enable:
+  /menus/:id/enable:
     patch:
       consumes:
       - application/json
@@ -725,6 +822,203 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Enable or disable a menu.
+      tags:
+      - menu
+  /menus/:id/widgets:
+    get:
+      description: Get a widget list of a specific menu.
+      operationId: menu-profile-widgetList
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: widget list of a specific menu.
+          schema:
+            $ref: '#/definitions/bll.ListWidgetResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a widget list of a specific menu.
+      tags:
+      - menu
+    post:
+      consumes:
+      - application/json
+      description: Add a widget for a specific menu.
+      operationId: menu-update-widget-add
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: necessary attributes to add a widget.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.AddWidgetReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Add a widget for a specific menu.
+      tags:
+      - menu
+  /menus/:id/widgets/:widgetId:
+    delete:
+      consumes:
+      - application/json
+      description: Evict a widget for a specific menu.
+      operationId: menu-update-widget-evict
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: id of the widget.
+        in: path
+        name: widgetId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Evict a widget for a specific menu.
+      tags:
+      - menu
+    get:
+      description: Get the profile of a widget.
+      operationId: menu-profile-widget-profile
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: id the a widget.
+        in: path
+        name: widgetId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: profile of the widget.
+          schema:
+            $ref: '#/definitions/bll.ProfileWidgetResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Get infos of a widget.
+      tags:
+      - menu
+    put:
+      consumes:
+      - application/json
+      description: Update infos of a widget.
+      operationId: menu-update-widget-update
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: id the a widget.
+        in: path
+        name: widgetId
+        required: true
+        type: string
+      - description: some attributes to update.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.UpdateWidgetReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Update infos of a widget.
+      tags:
+      - menu
+  /menus/:id/widgets/:widgetId/enable:
+    patch:
+      description: Enable or disable a widget.
+      operationId: menu-update-widget-profile
+      parameters:
+      - description: id of the menu.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: id the a widget.
+        in: path
+        name: widgetId
+        required: true
+        type: string
+      - description: true for enable, or false for disable.
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bll.EnableWidgetReq'
+      produces:
+      - application/json
+      responses:
+        "1000":
+          description: feasible and predictable errors.
+          schema:
+            type: error
+        "2000":
+          description: successful action.
+          schema:
+            type: "null"
+      security:
+      - ApiKeyAuth: []
+      summary: Enable or disable a widget.
       tags:
       - menu
   /picCaptcha:
@@ -777,7 +1071,7 @@ paths:
       summary: Get the answer code of a picture captcha.
       tags:
       - staff
-  /role:
+  /roles:
     get:
       description: Get a list of role.
       operationId: role-list
@@ -856,7 +1150,7 @@ paths:
       summary: Add a new role.
       tags:
       - role
-  /role/:id:
+  /roles/:id:
     delete:
       description: Evict a specific role.
       operationId: role-evict
@@ -940,7 +1234,7 @@ paths:
       summary: Update a specific role.
       tags:
       - role
-  /role/:id/authorize:
+  /roles/:id/authorize:
     put:
       consumes:
       - application/json
@@ -974,7 +1268,7 @@ paths:
       summary: Allocate authorities to a specific role.
       tags:
       - role
-  /role/:id/enable:
+  /roles/:id/enable:
     patch:
       consumes:
       - application/json
@@ -1109,7 +1403,7 @@ paths:
       summary: Sign up.
       tags:
       - staff
-  /staff:
+  /staffs:
     get:
       description: Get a list of staff accounts.
       operationId: staff-list
@@ -1120,6 +1414,9 @@ paths:
       - in: query
         name: email
         type: string
+      - in: query
+        name: enable
+        type: boolean
       - in: query
         name: gender
         type: string
@@ -1166,7 +1463,7 @@ paths:
       summary: Get a list of staff accounts.
       tags:
       - staff
-  /staff/:id:
+  /staffs/:id:
     get:
       description: Get the profile of a staff account.
       operationId: staff-profile
@@ -1192,7 +1489,7 @@ paths:
       summary: Get infos of a staff account.
       tags:
       - staff
-  /staff/:id/email:
+  /staffs/:id/email:
     patch:
       consumes:
       - application/json
@@ -1226,7 +1523,7 @@ paths:
       summary: Update the email of a staff account.
       tags:
       - staff
-  /staff/:id/enable:
+  /staffs/:id/enable:
     patch:
       consumes:
       - application/json
@@ -1260,7 +1557,7 @@ paths:
       summary: Enable or disable a staff account.
       tags:
       - staff
-  /staff/:id/password:
+  /staffs/:id/password:
     patch:
       consumes:
       - application/json
@@ -1294,7 +1591,7 @@ paths:
       summary: Update the password of a staff account.
       tags:
       - staff
-  /staff/:id/phone:
+  /staffs/:id/phone:
     patch:
       consumes:
       - application/json
@@ -1328,7 +1625,7 @@ paths:
       summary: Update the phone of a staff account.
       tags:
       - staff
-  /staff/:id/roles:
+  /staffs/:id/roles:
     patch:
       consumes:
       - application/json
@@ -1362,7 +1659,7 @@ paths:
       summary: Update the roles of a staff account.
       tags:
       - staff
-  /staff/:id/signInIpWhitelist:
+  /staffs/:id/signInIpWhitelist:
     patch:
       consumes:
       - application/json

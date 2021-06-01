@@ -33,7 +33,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api": {
+        "/apis": {
             "get": {
                 "security": [
                     {
@@ -161,7 +161,7 @@ var doc = `{
                 }
             }
         },
-        "/api/:id": {
+        "/apis/:id": {
             "get": {
                 "security": [
                     {
@@ -292,7 +292,7 @@ var doc = `{
                 }
             }
         },
-        "/api/:id/enable": {
+        "/apis/:id/enable": {
             "patch": {
                 "security": [
                     {
@@ -345,45 +345,7 @@ var doc = `{
                 }
             }
         },
-        "/casbin/priority": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get predefined priority range of roles.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "casbin"
-                ],
-                "summary": "Get predefined priority range of roles.",
-                "operationId": "casbin-role-priority",
-                "responses": {
-                    "1000": {
-                        "description": "feasible and predictable errors.",
-                        "schema": {
-                            "type": "error"
-                        }
-                    },
-                    "2000": {
-                        "description": "minimum and maximum value of the predefined priority range.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/menu": {
+        "/menus": {
             "get": {
                 "security": [
                     {
@@ -401,18 +363,23 @@ var doc = `{
                 "operationId": "menu-list",
                 "parameters": [
                     {
+                        "type": "boolean",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
-                        "name": "orderBy",
+                        "name": "name",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "name": "page",
+                        "type": "string",
+                        "name": "route",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "name": "perPage",
+                        "type": "boolean",
+                        "name": "show",
                         "in": "query"
                     }
                 ],
@@ -476,7 +443,7 @@ var doc = `{
                 }
             }
         },
-        "/menu/:id": {
+        "/menus/:id": {
             "get": {
                 "security": [
                     {
@@ -607,7 +574,7 @@ var doc = `{
                 }
             }
         },
-        "/menu/:id/enable": {
+        "/menus/:id/enable": {
             "patch": {
                 "security": [
                     {
@@ -641,6 +608,310 @@ var doc = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/bll.EnableMenuReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/:id/widgets": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a widget list of a specific menu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Get a widget list of a specific menu.",
+                "operationId": "menu-profile-widgetList",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "widget list of a specific menu.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ListWidgetResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add a widget for a specific menu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Add a widget for a specific menu.",
+                "operationId": "menu-update-widget-add",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "necessary attributes to add a widget.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.AddWidgetReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/:id/widgets/:widgetId": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the profile of a widget.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Get infos of a widget.",
+                "operationId": "menu-profile-widget-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id the a widget.",
+                        "name": "widgetId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "profile of the widget.",
+                        "schema": {
+                            "$ref": "#/definitions/bll.ProfileWidgetResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update infos of a widget.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Update infos of a widget.",
+                "operationId": "menu-update-widget-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id the a widget.",
+                        "name": "widgetId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "some attributes to update.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.UpdateWidgetReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Evict a widget for a specific menu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Evict a widget for a specific menu.",
+                "operationId": "menu-update-widget-evict",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id of the widget.",
+                        "name": "widgetId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "1000": {
+                        "description": "feasible and predictable errors.",
+                        "schema": {
+                            "type": "error"
+                        }
+                    },
+                    "2000": {
+                        "description": "successful action.",
+                        "schema": {
+                            "type": "null"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/:id/widgets/:widgetId/enable": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Enable or disable a widget.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "menu"
+                ],
+                "summary": "Enable or disable a widget.",
+                "operationId": "menu-update-widget-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of the menu.",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id the a widget.",
+                        "name": "widgetId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "true for enable, or false for disable.",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bll.EnableWidgetReq"
                         }
                     }
                 ],
@@ -736,7 +1007,7 @@ var doc = `{
                 }
             }
         },
-        "/role": {
+        "/roles": {
             "get": {
                 "security": [
                     {
@@ -864,7 +1135,7 @@ var doc = `{
                 }
             }
         },
-        "/role/:id": {
+        "/roles/:id": {
             "get": {
                 "security": [
                     {
@@ -995,7 +1266,7 @@ var doc = `{
                 }
             }
         },
-        "/role/:id/authorize": {
+        "/roles/:id/authorize": {
             "put": {
                 "security": [
                     {
@@ -1048,7 +1319,7 @@ var doc = `{
                 }
             }
         },
-        "/role/:id/enable": {
+        "/roles/:id/enable": {
             "patch": {
                 "security": [
                     {
@@ -1256,7 +1527,7 @@ var doc = `{
                 }
             }
         },
-        "/staff": {
+        "/staffs": {
             "get": {
                 "security": [
                     {
@@ -1281,6 +1552,11 @@ var doc = `{
                     {
                         "type": "string",
                         "name": "email",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "enable",
                         "in": "query"
                     },
                     {
@@ -1350,7 +1626,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id": {
+        "/staffs/:id": {
             "get": {
                 "security": [
                     {
@@ -1391,7 +1667,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/email": {
+        "/staffs/:id/email": {
             "patch": {
                 "security": [
                     {
@@ -1444,7 +1720,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/enable": {
+        "/staffs/:id/enable": {
             "patch": {
                 "security": [
                     {
@@ -1497,7 +1773,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/password": {
+        "/staffs/:id/password": {
             "patch": {
                 "security": [
                     {
@@ -1550,7 +1826,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/phone": {
+        "/staffs/:id/phone": {
             "patch": {
                 "security": [
                     {
@@ -1603,7 +1879,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/roles": {
+        "/staffs/:id/roles": {
             "patch": {
                 "security": [
                     {
@@ -1656,7 +1932,7 @@ var doc = `{
                 }
             }
         },
-        "/staff/:id/signInIpWhitelist": {
+        "/staffs/:id/signInIpWhitelist": {
             "patch": {
                 "security": [
                     {
@@ -1767,7 +2043,7 @@ var doc = `{
                 "widgets": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/bll.Widget"
+                        "$ref": "#/definitions/bll.AddWidget"
                     }
                 }
             }
@@ -1796,6 +2072,71 @@ var doc = `{
                 },
                 "seq": {
                     "type": "integer"
+                }
+            }
+        },
+        "bll.AddWidget": {
+            "type": "object",
+            "required": [
+                "api",
+                "name",
+                "seq"
+            ],
+            "properties": {
+                "api": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "bll.AddWidgetReq": {
+            "type": "object",
+            "required": [
+                "api",
+                "name",
+                "seq"
+            ],
+            "properties": {
+                "api": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
                 }
             }
         },
@@ -1839,6 +2180,17 @@ var doc = `{
             }
         },
         "bll.EnableRoleReq": {
+            "type": "object",
+            "required": [
+                "enable"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "bll.EnableWidgetReq": {
             "type": "object",
             "required": [
                 "enable"
@@ -1904,6 +2256,17 @@ var doc = `{
                 }
             }
         },
+        "bll.ListWidgetResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "bll.ProfileApiResp": {
             "type": "object",
             "properties": {
@@ -1931,7 +2294,42 @@ var doc = `{
             }
         },
         "bll.ProfileMenuResp": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                },
+                "route": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
+                },
+                "updatedAt": {
+                    "type": "integer"
+                }
+            }
         },
         "bll.ProfileRoleResp": {
             "type": "object",
@@ -2006,6 +2404,52 @@ var doc = `{
                 },
                 "signUpAt": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "integer"
+                }
+            }
+        },
+        "bll.ProfileWidgetResp": {
+            "type": "object",
+            "properties": {
+                "api": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "method": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "createdAt": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
                 },
                 "updatedAt": {
                     "type": "integer"
@@ -2098,7 +2542,30 @@ var doc = `{
             }
         },
         "bll.UpdateMenuReq": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                },
+                "route": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "show": {
+                    "type": "boolean"
+                }
+            }
         },
         "bll.UpdateRoleReq": {
             "type": "object",
@@ -2159,19 +2626,11 @@ var doc = `{
                 }
             }
         },
-        "bll.Widget": {
+        "bll.UpdateWidgetReq": {
             "type": "object",
-            "required": [
-                "api",
-                "name",
-                "seq"
-            ],
             "properties": {
                 "api": {
                     "type": "string"
-                },
-                "enable": {
-                    "type": "boolean"
                 },
                 "icon": {
                     "type": "string"
@@ -2180,9 +2639,6 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "parentID": {
                     "type": "string"
                 },
                 "seq": {

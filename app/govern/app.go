@@ -86,6 +86,7 @@ func (a *App) RunHTTPServer(ctx context.Context) func() {
 }
 
 func (a *App) InitRoutes(ctx context.Context) {
+	// https://www.restapitutorial.com/lessons/restquicktips.html
 	v1 := a.Router.Group("/api/v1")
 	{
 		v1.POST("/signUp", a.StaffApi.SignUp)
@@ -102,7 +103,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 
 		v1.Use(ginx.Casbin(a.Enforcer, config.C.Root.SessionId))
 
-		staff := v1.Group("/staff")
+		staff := v1.Group("/staffs")
 		{
 			staff.GET("", a.StaffApi.List)
 			staff.GET("/:id", a.StaffApi.Profile)
@@ -114,7 +115,7 @@ func (a *App) InitRoutes(ctx context.Context) {
 			staff.PATCH("/:id/enable", ginx.MustRoot(config.C.Root.SessionId), a.StaffApi.Enable)
 		}
 
-		role := v1.Group("/role", ginx.MustRoot(config.C.Root.SessionId))
+		role := v1.Group("/roles", ginx.MustRoot(config.C.Root.SessionId))
 		{
 			role.POST("", a.RoleApi.Add)
 			role.DELETE("/:id", a.RoleApi.Evict)
@@ -125,23 +126,23 @@ func (a *App) InitRoutes(ctx context.Context) {
 			role.PATCH("/:id/enable", a.RoleApi.Enable)
 		}
 
-		menu := v1.Group("/menu", ginx.MustRoot(config.C.Root.SessionId))
+		menu := v1.Group("/menus", ginx.MustRoot(config.C.Root.SessionId))
 		{
 			menu.POST("", a.MenuApi.Add)
 			menu.DELETE("/:id", a.MenuApi.Evict)
 			menu.GET("", a.MenuApi.List)
 			menu.GET("/:id", a.MenuApi.Profile)
-			menu.GET("/:id/widget", a.MenuApi.ListWidget)
+			menu.GET("/:id/widgets", a.MenuApi.ListWidget)
 			menu.PUT("/:id", a.MenuApi.Update)
 			menu.PATCH("/:id/enable", a.MenuApi.Enable)
 			menu.POST("/:id/widget", a.MenuApi.AddWidget)
-			menu.DELETE("/:id/widget/:widgetId", a.MenuApi.EvictWidget)
-			menu.GET("/:id/widget/:widgetId", a.MenuApi.ProfileWidget)
-			menu.PUT("/:id/widget/:widgetId", a.MenuApi.UpdateWidget)
-			menu.PATCH("/:id/widget/:widgetId/enable", a.MenuApi.EnableWidget)
+			menu.DELETE("/:id/widgets/:widgetId", a.MenuApi.EvictWidget)
+			menu.GET("/:id/widgets/:widgetId", a.MenuApi.ProfileWidget)
+			menu.PUT("/:id/widgets/:widgetId", a.MenuApi.UpdateWidget)
+			menu.PATCH("/:id/widgets/:widgetId/enable", a.MenuApi.EnableWidget)
 		}
 
-		api := v1.Group("/api", ginx.MustRoot(config.C.Root.SessionId))
+		api := v1.Group("/apis", ginx.MustRoot(config.C.Root.SessionId))
 		{
 			api.POST("", a.ApiApi.Add)
 			api.DELETE("/:id", a.ApiApi.Evict)
