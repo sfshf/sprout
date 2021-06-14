@@ -225,6 +225,7 @@ Out-of-the-box web app, chat server, and so on.
 - [RESTful API](http://restful.p2hp.com/)
 - [REST](https://developer.mozilla.org/zh-CN/docs/Glossary/REST)
 - [Learn REST: A RESTful Tutorial](https://www.restapitutorial.com/)
+- [Architectural Styles and the Design of Network-based Software Architectures](https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm)
 - [Representational State Transfer (REST)](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 
 ### SOA

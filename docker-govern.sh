@@ -26,7 +26,7 @@ redis:latest
 # Build a govern app builder image using the specific Dockerfile.
 docker build \
 --target builder \
--t builder:latest \
+-t govern-builder:latest \
 -f app/govern/Dockerfile .
 # Build a govern app binary image using the specific Dockerfile.
 docker build \

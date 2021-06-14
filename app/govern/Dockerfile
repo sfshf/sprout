@@ -1,5 +1,5 @@
 FROM golang:1.16.3-alpine3.12 AS builder
-LABEL name="builder" version="1.0"
+LABEL name="govern-builder" version="1.0"
 WORKDIR /sprout
 COPY . .
 RUN set -eo pipefail && \
